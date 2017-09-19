@@ -7,7 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
-namespace TestApplication
+namespace PDSProject
 {
     class UDPSender
     {
@@ -26,7 +26,7 @@ namespace TestApplication
             udpclient = new UdpClient();
             groupAddress = IPAddress.Parse(MulticastAddress);
             udpclient.JoinMulticastGroup(groupAddress);
-            Clientdest = new IPEndPoint(groupAddress, 2000);
+            Clientdest = new IPEndPoint(groupAddress, 2000); //Definire port number
         }
 
         private static Byte[] GetByteArray(Char[] ChArray)
@@ -44,7 +44,6 @@ namespace TestApplication
 
             {
                 Thread.Sleep(3000);
-              //  lock (user._UserDatalocker) ;
                 if (user.PrivacyFlag)
                     udpclient.Send(GetByteArray(tGreetings), tGreetings.Length, Clientdest);//TODO: Specificare dati da passare
                 else break;

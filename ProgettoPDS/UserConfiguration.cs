@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace PDSProject
+namespace ProgettoPDS
 {
     class UserConfiguration
     {
@@ -15,7 +15,7 @@ namespace PDSProject
         private static bool _PrivacyFlag; //TRUE: Pubblic, FALSE: Private
         private static string _Username;
         private static string _ImgPath;
-        private static bool mustsaveflag;
+        //       private static bool initializedFlag;
         private static string _multicastaddress;
         private readonly object _UserDatalocker = new object();
 
@@ -29,8 +29,6 @@ namespace PDSProject
                 return _multicastaddress;
             }
         }
-
-
         public bool PrivacyFlag
         {
             get
@@ -45,47 +43,70 @@ namespace PDSProject
                 lock (_UserDatalocker)
                 {
                     _PrivacyFlag = value;
-                    mustsaveflag = true;
-                    DumpConfiguration("Path"); //Gestione di questo parametro. Dump per ogni paramentro o soluzione alternativa? 
                 }
             }
         }
-        public string Username { get { return _Username; } set { _Username = value; } }
-        public string ImgPath { get { return _ImgPath; } set { _ImgPath = value; } }
+        public string Username
+        {
+            get
+            {
+                lock (_UserDatalocker)
+                {
+                    return _Username;
+                }
+            }
+            set
+            {
+                lock (_UserDatalocker)
+                {
+                    _Username = value;
+                }
+            }
+        }
+        public string ImgPath
+        {
+            get
+            {
+                lock (_UserDatalocker)
+                {
+                    return _ImgPath;
+                }
+            }
+            set
+            {
+                lock (_UserDatalocker)
+                {
+                    _ImgPath = value;
+                }
+            }
+        }
 
         public UserConfiguration() { }
 
         [JsonConstructor]
         public UserConfiguration(bool flag, string user, string img, string multicastaddress)
         {
-            _PrivacyFlag = flag;
-            _Username = user;
-            _ImgPath = img;
-            _multicastaddress = multicastaddress;
-            mustsaveflag = false;
+            lock (_UserDatalocker)
+            {
+                _PrivacyFlag = flag;
+                _Username = user;
+                _ImgPath = img;
+                _multicastaddress = multicastaddress;
+                //               initializedFlag = true;
+            }
         }
 
-        private UserConfiguration(bool Flag, string user, string img)
+
+        public void DumpConfiguration(string path) //TODO: Gestione path
         {
-            _PrivacyFlag = Flag;
-            _Username = user;
-            _ImgPath = img;
-            //           mustsaveflag = false;
-        }
-
-        //Eccezioni da gestire per il path
-        /*
-         ArgumentException,DirectoryNotFoundException,DirectoryNotFoundException,UnauthorizedAccessException,FileNotFoundException
-             
-        
-        */
-
-        public void DumpConfiguration(string path)
-        {  //TODO: Gestione eccezioni  -->possibili eccezioni sono date da path errati o permessi mancanti
+            string fullpath = path + @"\config.json";
             string json = JsonConvert.SerializeObject(this);
             try
             {
-                System.IO.File.WriteAllText(@"path", json);
+                System.IO.File.WriteAllText(fullpath, json);
+            }
+            catch (UnauthorizedAccessException ec) {
+                System.Windows.MessageBox.Show(ec.ToString());
             }
             catch (IOException ex)
             {
@@ -94,24 +115,19 @@ namespace PDSProject
             }
         }
 
-        public void LoadConfiguration(string path) //TODO: Gestione eccezioni
+        public int LoadConfiguration(string path)
         {
-            String JSONstring = File.ReadAllText(@path);
-            UserConfiguration user = JsonConvert.DeserializeObject<UserConfiguration>(JSONstring);
+            try
+            {
+                String JSONstring = File.ReadAllText(@path);
+                UserConfiguration user = JsonConvert.DeserializeObject<UserConfiguration>(JSONstring);
+                return 1;
+            }
+            catch (IOException ex)
+            {
+                System.Windows.MessageBox.Show(ex.ToString());
+                throw ex; //Il chiamante deve chiedere all'utente di reinserire i dati
+            }
         }
-
-
-
-        //private static void SaveConfiguration()
-        //{
-
-        //}
-
-        //public void StartConfigurationRoutine()
-        //{
-        //    Thread savingroutine = new Thread(SaveConfiguration); //TODO: Trovare soluzione alternativa
-        //    savingroutine.Name = "savingroutine";
-        //    savingroutine.Priority = ThreadPriority.Lowest;
-        //}
     }
 }

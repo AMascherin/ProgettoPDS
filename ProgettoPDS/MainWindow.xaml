@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProgettoPDS"
         mc:Ignorable="d"
-        Title="OPZIONI UTENTE" Height="350" Width="525" ResizeMode="CanMinimize" Icon="index.jpg">
+        Title="OPZIONI UTENTE" Height="350" Width="525" ResizeMode="CanMinimize" Icon="Media/index.jpg">
     <Window.Resources>
        
             
@@ -154,7 +154,7 @@
             <Label Content="Nome Utente" HorizontalAlignment="Left" Margin="49,165,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.005,0.386"/>
             <Canvas HorizontalAlignment="Left" Height="22" Margin="0,297,0,0" VerticalAlignment="Top" Width="517" RenderTransformOrigin="0.57,-0.149" Style="{StaticResource CanvasStyle}"/>
             <Canvas HorizontalAlignment="Left" Height="16" VerticalAlignment="Top" Width="517" Style="{StaticResource CanvasStyle}"/>
-            <CheckBox x:Name="checkboxstato" HorizontalAlignment="Center" Style="{DynamicResource CheckBoxStyle1}" VerticalAlignment="Center" Content=" Stato Offline/Online" Margin="26,177,313,-191" Height="30" Width="178"/>
+            <CheckBox x:Name="checkboxstato" HorizontalAlignment="Center" Style="{DynamicResource CheckBoxStyle1}" VerticalAlignment="Center" Content=" Stato Offline/Online" Margin="26,177,313,-191" Height="30" Width="178" Checked="checkboxstato_Checked" Unchecked="checkboxstato_Unchecked"/>
         </Grid>
         <TextBox x:Name="textboxpercorso" HorizontalAlignment="Left" Height="23" Margin="60,235,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="264" RenderTransformOrigin="0.526,0.126" Opacity="0"/>
         <Label x:Name="labelutente" Content="Nomeutente&#xD;&#xA;" HorizontalAlignment="Left" Margin="43,149,0,0" VerticalAlignment="Top" Height="29" RenderTransformOrigin="0.266,0.551"/>
@@ -164,7 +164,7 @@
         <Button x:Name="bottonesalva" Content="SALVA" HorizontalAlignment="Left" Margin="409,86,0,0" VerticalAlignment="Top" Width="54" Style="{StaticResource ButtonStyle}" Background="#FFC12828" BorderBrush="#FF20939E" Click="bottonesalva_Click"/>
         <Button x:Name="bottonesceglifile" Content="..." HorizontalAlignment="Left" Margin="329,235,0,0" VerticalAlignment="Top" Width="23" RenderTransformOrigin="0.316,0.505" Height="23" Opacity="0" Click="bottonesceglifile_Click"/>
         <Button x:Name="bottoneimmagine" Content="..." HorizontalAlignment="Left" Margin="152,31,0,0" VerticalAlignment="Top" Width="23" Click="bottoneimmagine_Click"/>
-        <Image x:Name="immagineprofilo2" HorizontalAlignment="Left" Height="118" Margin="28,31,0,0" VerticalAlignment="Top" Width="119" Source="images.png" Stretch="Fill"/>
+        <Image x:Name="immagineprofilo2" HorizontalAlignment="Left" Height="118" Margin="28,31,0,0" VerticalAlignment="Top" Width="119" Source="Media/images.png" Stretch="Fill"/>
 
 
 

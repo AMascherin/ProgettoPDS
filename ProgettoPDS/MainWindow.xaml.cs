@@ -22,11 +22,14 @@ namespace ProgettoPDS
     /// </summary>
     public partial class MainWindow : Window
     {
+        UserConfiguration cfg = new UserConfiguration();
+
         public MainWindow()
-        {
+        {            
             InitializeComponent();
             contenitore.MaxHeight = 319; 
             contenitore.MaxWidth = 517;
+            labelutente.Content = cfg.Username; //TODO: Gestire situazione nome non inizializzato
             
         }
 
@@ -36,14 +39,17 @@ namespace ProgettoPDS
             textboxpercorso.IsEnabled = true;
             bottonesceglifile.Opacity = 100;
             bottonesceglifile.IsEnabled = true;
+            cfg.PrivacyFlag = true;
+            cfg.DumpConfiguration(@"D:\Download\Test");
         }
 
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
-            textboxpercorso.Opacity = 0;
+            textboxpercorso.Opacity = 50;
             textboxpercorso.IsEnabled = false;
-            bottonesceglifile.Opacity = 0;
+            bottonesceglifile.Opacity = 50;
             bottonesceglifile.IsEnabled = false;
+
 
         }
 
@@ -52,7 +58,8 @@ namespace ProgettoPDS
             if (textboxutente.Text != "")
             {
                 labelutente.Content = textboxutente.Text;
-                textboxutente.Text = "";
+                cfg.Username = textboxutente.Text;
+                cfg.DumpConfiguration(@"D:\Download\Test");
             }
         }
 
@@ -76,6 +83,20 @@ namespace ProgettoPDS
                 immagineprofilo2.Source = new BitmapImage(new Uri(fileDialog.FileName));
                 immagineprofilo2.Stretch = Stretch.Fill;
             }
+        }
+
+        private void checkboxstato_Checked(object sender, RoutedEventArgs e)
+        {
+
+            cfg.PrivacyFlag = true;
+            cfg.DumpConfiguration(@"D:\Download\Test");
+        }
+
+        private void checkboxstato_Unchecked(object sender, RoutedEventArgs e)
+        {
+            cfg.PrivacyFlag = false;
+            cfg.DumpConfiguration(@"D:\Download\Test");
+
         }
     }
 }

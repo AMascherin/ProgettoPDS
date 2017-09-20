@@ -76,7 +76,15 @@ namespace PDSProject
 
         public void DumpConfiguration(string path) {  //TODO: Gestione eccezioni  -->possibili eccezioni sono date da path errati o permessi mancanti
             string json = JsonConvert.SerializeObject(this);
-            System.IO.File.WriteAllText(@"path", json); 
+            try
+            {
+                System.IO.File.WriteAllText(@"path", json);
+            }
+            catch (IOException ex)
+            {
+            //    MessageBox.Show(ex.ToString());
+
+            }
         }
 
         public void LoadConfiguration (string path) //TODO: Gestione eccezioni

@@ -6,10 +6,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace WpfApplication1
+namespace ProgettoPDS
 {
     /// <summary>
-    /// Interaction logic for App.xaml
+    /// Logica di interazione per App.xaml
     /// </summary>
     public partial class App : Application
     {

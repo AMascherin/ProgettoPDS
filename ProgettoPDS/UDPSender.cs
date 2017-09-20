@@ -1,24 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Text;
-using System.Net;
-using System.Net.Sockets;
 using System.Threading.Tasks;
+using System.Net.Sockets;
+using System.Net;
+using System.Threading;
 
-namespace PDSProject
+namespace ProgettoPDS
 {
     class UDPSender
     {
-
         private static UdpClient udpclient;
         private static IPAddress groupAddress;
         private IPEndPoint Clientdest;
         private UserConfiguration user;
 
         private static char[] tGreetings = { 'H', 'e', 'l', 'l', 'o', ' ', 'O', 'r', 'i', 'g', 'i', 'n', 'a', 't', 'o', 'r', '!' };
-        
+
         public UDPSender(string MulticastAddress)
 
         {
@@ -52,8 +51,5 @@ namespace PDSProject
         }
 
 
-
     }
-
 }
-

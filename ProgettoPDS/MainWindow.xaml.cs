@@ -40,7 +40,7 @@ namespace ProgettoPDS
             bottonesceglifile.Opacity = 100;
             bottonesceglifile.IsEnabled = true;
             cfg.PrivacyFlag = true;
-            cfg.DumpConfiguration(@"D:\Download\Test");
+            cfg.DumpConfiguration();
         }
 
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
@@ -59,7 +59,7 @@ namespace ProgettoPDS
             {
                 labelutente.Content = textboxutente.Text;
                 cfg.Username = textboxutente.Text;
-                cfg.DumpConfiguration(@"D:\Download\Test");
+                cfg.DumpConfiguration();
             }
         }
 
@@ -89,13 +89,13 @@ namespace ProgettoPDS
         {
 
             cfg.PrivacyFlag = true;
-            cfg.DumpConfiguration(@"D:\Download\Test");
+            cfg.DumpConfiguration();
         }
 
         private void checkboxstato_Unchecked(object sender, RoutedEventArgs e)
         {
             cfg.PrivacyFlag = false;
-            cfg.DumpConfiguration(@"D:\Download\Test");
+            cfg.DumpConfiguration();
 
         }
     }

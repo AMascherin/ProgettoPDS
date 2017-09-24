@@ -16,8 +16,6 @@ namespace ProgettoPDS
         private IPEndPoint Clientdest;
         private UserConfiguration user;
 
-        private static char[] tGreetings = { 'H', 'e', 'l', 'l', 'o', ' ', 'O', 'r', 'i', 'g', 'i', 'n', 'a', 't', 'o', 'r', '!' };
-
         public UDPSender(string MulticastAddress)
 
         {
@@ -28,15 +26,6 @@ namespace ProgettoPDS
             Clientdest = new IPEndPoint(groupAddress, 2000); //Definire port number
         }
 
-        private static Byte[] GetByteArray(Char[] ChArray)
-
-        {
-            Byte[] Ret = new Byte[ChArray.Length];
-            for (int i = 0; i < ChArray.Length; i++)
-                Ret[i] = (Byte)ChArray[i];
-            return Ret;
-        }
-
         public void Start()
         {
             while (true)
@@ -44,7 +33,10 @@ namespace ProgettoPDS
             {
                 Thread.Sleep(3000);
                 if (user.PrivacyFlag)
-                    udpclient.Send(GetByteArray(tGreetings), tGreetings.Length, Clientdest);//TODO: Specificare dati da passare
+                {
+                    string data = user.GetJSONConfiguration();
+                    udpclient.Send(Encoding.Unicode.GetBytes(data), data.Length, Clientdest);
+                }
                 else break;
 
             }

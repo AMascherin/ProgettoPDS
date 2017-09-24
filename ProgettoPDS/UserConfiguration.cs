@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.IO;
@@ -26,7 +27,10 @@ namespace ProgettoPDS
         { //Sola lettura. La variabile viene settata solo dalla LoadConfiguration (TODO: Gestire parsing JSON)
             get
             {
-                return _multicastaddress;
+                lock (_UserDatalocker)
+                {
+                    return _multicastaddress;
+                }
             }
         }
         public bool PrivacyFlag
@@ -97,9 +101,11 @@ namespace ProgettoPDS
         }
 
 
-        public void DumpConfiguration(string path) //TODO: Gestione path
+        public void DumpConfiguration() 
         {
-            string fullpath = path + @"\config.json";
+
+            string folder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+            string fullpath = folder + @"\config.json";
             string json = JsonConvert.SerializeObject(this);
             try
             {
@@ -115,18 +121,24 @@ namespace ProgettoPDS
             }
         }
 
-        public int LoadConfiguration(string path)
+        public string GetJSONConfiguration() {
+            return JsonConvert.SerializeObject(this);     //TODO: Non inviare il path e il multicast address. Controllare la dimensione del risultato
+        }
+
+        public int LoadConfiguration()
         {
             try
             {
-                String JSONstring = File.ReadAllText(@path);
+                string folder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+                string fullpath = folder + @"\config.json";
+                String JSONstring = File.ReadAllText(@fullpath);
                 UserConfiguration user = JsonConvert.DeserializeObject<UserConfiguration>(JSONstring);
                 return 1;
             }
             catch (IOException ex)
             {
                 System.Windows.MessageBox.Show(ex.ToString());
-                throw ex; //Il chiamante deve chiedere all'utente di reinserire i dati
+                throw ex; //TODO: Il chiamante deve chiedere all'utente di reinserire i dati
             }
         }
     }

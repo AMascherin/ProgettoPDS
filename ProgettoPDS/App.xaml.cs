@@ -5,6 +5,8 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Diagnostics;
+using System.IO;
 
 namespace ProgettoPDS
 {
@@ -13,5 +15,27 @@ namespace ProgettoPDS
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            UserConfiguration cfg = new UserConfiguration();
+            try { cfg.LoadConfiguration(); }
+            catch(IOException)
+            {
+                MainWindow mw1 = new MainWindow(true);
+                mw1.Show();
+                string folder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+                string fullpath = folder + @"\config.json";
+                if (!File.Exists(fullpath)) {
+                    string msg = "Non sono stati inseriti i dati richiesti"; //TODO: sincronizzarsi con la schermata principale
+                    System.Windows.MessageBox.Show(msg);
+                    return;
+                }
+
+            }
+           
+            var mw = new MainWindow();
+            mw.Show();
+        }
     }
 }

@@ -16,13 +16,8 @@ namespace ProgettoPDS
         private static bool _PrivacyFlag; //TRUE: Pubblic, FALSE: Private
         private static string _Username;
         private static string _ImgPath;
-        //       private static bool initializedFlag;
         private static string _multicastaddress;
         private readonly object _UserDatalocker = new object();
-
-        /*TRUE=ci sono nuovi dati da salvare. -->Bisogna chiamare un dump
-         FALSE=i dati contenuti in userconfiguration corrispondono a quelli contenuti nel file di configurazione su disco
-         */
         public string multicastaddress
         { //Sola lettura. La variabile viene settata solo dalla LoadConfiguration (TODO: Gestire parsing JSON)
             get
@@ -85,7 +80,13 @@ namespace ProgettoPDS
             }
         }
 
-        public UserConfiguration() { }
+        public UserConfiguration() {
+            if (ImgPath == null)
+            {
+ //               ImgPath = @"Media\image.png";
+            }
+
+        }
 
         [JsonConstructor]
         public UserConfiguration(bool flag, string user, string img, string multicastaddress)
@@ -96,7 +97,6 @@ namespace ProgettoPDS
                 _Username = user;
                 _ImgPath = img;
                 _multicastaddress = multicastaddress;
-                //               initializedFlag = true;
             }
         }
 
@@ -106,6 +106,14 @@ namespace ProgettoPDS
 
             string folder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
             string fullpath = folder + @"\config.json";
+            if (ImgPath == null) {
+                ImgPath = folder + @"\Media\images.png";
+             }
+            if (multicastaddress == null) {
+                lock (_UserDatalocker) {
+                    _multicastaddress = "224.0.0.0";
+                }               
+            }
             string json = JsonConvert.SerializeObject(this);
             try
             {
@@ -137,9 +145,14 @@ namespace ProgettoPDS
             }
             catch (IOException ex)
             {
-                System.Windows.MessageBox.Show(ex.ToString());
-                throw ex; //TODO: Il chiamante deve chiedere all'utente di reinserire i dati
+  //              System.Windows.MessageBox.Show(ex.ToString());
+                throw ex; 
             }
+        }
+
+        public void SetDefaultPath() {
+            string folder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+            ImgPath = folder + @"\Media\images.png";
         }
     }
 }

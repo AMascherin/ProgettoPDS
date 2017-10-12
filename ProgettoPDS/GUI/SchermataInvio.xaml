@@ -1,0 +1,158 @@
+﻿<Window x:Class="ProgettoPDS.SchermataInvio"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProgettoPDS"
+        mc:Ignorable="d"
+         Title="Condividi file con:" Height="664" Width="967.961" Icon="index.jpg" ResizeMode="CanMinimize">
+    <Window.Resources>
+
+
+        <Style x:Key="Check" TargetType="CheckBox">
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}"/>
+            <Setter Property="FocusVisualStyle" Value="{StaticResource CheckBoxFocusVisual}"/>
+            <Setter Property="Foreground" Value="#66CCCC"/>
+            <Setter Property="Background" Value="#66CCCC"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <BulletDecorator Background="Transparent">
+                            <BulletDecorator.Bullet>
+                                <Border x:Name="Border"  
+                 Width="767" 
+                 Height="60" 
+                 Background="#66CCCC"
+                 BorderBrush="#999999"
+                 BorderThickness="1" Opacity="0.25" >
+                                    <Image x:Name="CheckMark"  Width="700" Height="60" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </BulletDecorator.Bullet>
+                            <ContentPresenter Margin="8,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" RecognizesAccessKey="True"/>
+                        </BulletDecorator>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="false">
+                                <Setter TargetName="CheckMark" Property="Visibility" Value="Collapsed"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="Border" Property="Background" Value="#66CCCC" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="#66CCCC"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key = "GridStyle" TargetType="Grid">
+            <Setter Property="Background" Value="White"/>
+        </Style>
+        <Style x:Key = "CanvasStyle" TargetType="Canvas">
+            <Setter Property="Background" Value="#FF71A6DA"/>
+        </Style>
+
+        <Style x:Key="MyButton" TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" BorderThickness="0" BorderBrush="Black" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.8" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key = "LabelStyle" TargetType="Label">
+            <Setter Property="Template">
+
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Label}">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" 
+                BorderThickness="{TemplateBinding BorderThickness}" 
+                Background="{TemplateBinding Background}" 
+                Padding="{TemplateBinding Padding}" 
+                SnapsToDevicePixels="true" 
+                CornerRadius="9">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <ScrollViewer x:Name="scroll" Margin="152,133,95,110" BorderBrush="Black" BorderThickness="2" Background="#FFF1E9E9"  >
+            <StackPanel x:Name="stack" Height="700" Background="#FFF9F6F6"/>
+            <ScrollViewer.Resources>
+                <Style TargetType="{x:Type ScrollViewer}">
+                    <Setter Property="VerticalScrollBarVisibility" Value="Visible" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+
+                                        <ColumnDefinition Width="Auto"/>
+
+                                        <ColumnDefinition Width="*"/>
+
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <Grid.RowDefinitions>
+                                        
+                                        <RowDefinition Height="*"/>
+
+                                        <RowDefinition Height="Auto"/>
+
+                                    </Grid.RowDefinitions>
+
+                                    <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Grid.Row="0" Grid.Column="1" Margin="3" Padding="3" CornerRadius="10">
+
+                                        <ScrollContentPresenter Content="{TemplateBinding ScrollViewer.Content}"/>
+
+                                    </Border>
+
+                                    <ScrollBar Orientation="Vertical" Grid.Row="0" Grid.Column="0" Name="PART_VerticalScrollBar"
+
+                        Minimum="0" Maximum="{TemplateBinding ScrollViewer.ScrollableHeight}" Value="{TemplateBinding ScrollViewer.VerticalOffset}" ViewportSize="{TemplateBinding ScrollViewer.ViewportHeight}" />
+
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ScrollViewer.Resources>
+        </ScrollViewer>
+        <Button x:Name="bottoneinvia" Content="" HorizontalAlignment="Left" Margin="846,552,0,0" VerticalAlignment="Top" Width="55" Height="45" RenderTransformOrigin="0.587,0.362" Style="{StaticResource MyButton}">
+            <Button.Background>
+                <ImageBrush ImageSource="Media/arrow2.png"/>
+            </Button.Background>
+        </Button>
+        <Button x:Name="bottonecanc" Content="" HorizontalAlignment="Left" Margin="745,552,0,0" VerticalAlignment="Top" Width="49" Height="45" Style="{StaticResource MyButton}" Click="bottonecanc_Click">
+            <Button.Background>
+                <ImageBrush ImageSource="Media/Red_X.png"/>
+            </Button.Background>
+        </Button>
+        <Label Content="Scegli con chi condividere i tuoi file:" HorizontalAlignment="Left" Margin="177,96,0,0" VerticalAlignment="Top" Width="674" Height="32" Background="#FFECE8E8" Style="{StaticResource LabelStyle}" FontSize="16" FontWeight="Bold"/>
+
+    </Grid>
+</Window>

@@ -22,19 +22,19 @@ namespace ProgettoPDS
             try { cfg.LoadConfiguration(); }
             catch(IOException)
             {
-                MainWindow mw1 = new MainWindow(true);
+                OptionWindow mw1 = new OptionWindow(true);
                 mw1.Show();
                 string folder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
                 string fullpath = folder + @"\config.json";
-                if (!File.Exists(fullpath)) {
+                if (!File.Exists(fullpath))
+                {
                     string msg = "Non sono stati inseriti i dati richiesti"; //TODO: sincronizzarsi con la schermata principale
                     System.Windows.MessageBox.Show(msg);
                     return;
                 }
-
             }
            
-            var mw = new MainWindow();
+            var mw = new OptionWindow();
             mw.Show();
         }
     }

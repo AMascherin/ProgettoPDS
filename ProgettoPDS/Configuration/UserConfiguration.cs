@@ -7,6 +7,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ProgettoPDS
 {
@@ -18,6 +19,7 @@ namespace ProgettoPDS
         private static string _ImgPath;
         private static string _multicastaddress;
         private readonly object _UserDatalocker = new object();
+
         public string multicastaddress
         { //Sola lettura. La variabile viene settata solo dalla LoadConfiguration (TODO: Gestire parsing JSON)
             get
@@ -28,6 +30,7 @@ namespace ProgettoPDS
                 }
             }
         }
+
         public bool PrivacyFlag
         {
             get
@@ -62,6 +65,8 @@ namespace ProgettoPDS
                 }
             }
         }
+
+
         public string ImgPath
         {
             get
@@ -83,7 +88,7 @@ namespace ProgettoPDS
         public UserConfiguration() {
             if (ImgPath == null)
             {
- //               ImgPath = @"Media\image.png";
+                ImgPath = @"Media\image.png";
             }
 
         }
@@ -129,8 +134,16 @@ namespace ProgettoPDS
             }
         }
 
-        public string GetJSONConfiguration() {
-            return JsonConvert.SerializeObject(this);     //TODO: Non inviare il path e il multicast address. Controllare la dimensione del risultato
+        public string GetJSONConfiguration() {  
+
+            JTokenWriter writer = new JTokenWriter();
+            writer.WriteStartObject();
+            writer.WritePropertyName("Name");
+            writer.WriteValue(Username);
+            writer.WritePropertyName("MACAddress"); //da definire
+            writer.WriteValue("test");
+            JObject o = (JObject)writer.Token;
+            return o.ToString();
         }
 
         public int LoadConfiguration()
@@ -145,7 +158,6 @@ namespace ProgettoPDS
             }
             catch (IOException ex)
             {
-  //              System.Windows.MessageBox.Show(ex.ToString());
                 throw ex; 
             }
         }

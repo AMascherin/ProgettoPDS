@@ -97,9 +97,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="UDPSender.cs" />
-    <Compile Include="UserConfiguration.cs" />
-    <Page Include="MainWindow.xaml">
+    <Compile Include="MainHub.cs" />
+    <Compile Include="GUI\SchermataInvio.xaml.cs">
+      <DependentUpon>SchermataInvio.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UDPManagement\UDPReceiver.cs" />
+    <Compile Include="UDPManagement\UDPSender.cs" />
+    <Compile Include="Configuration\UserConfiguration.cs" />
+    <Page Include="GUI\OptionWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -107,13 +112,17 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="GUI\OptionWindow.xaml.cs">
+      <DependentUpon>OptionWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="GUI\SchermataInvio.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NetworkUser.cs" />
+    <Compile Include="Configuration\NetworkUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -141,6 +150,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Media\perfect-clouds-wallpapers.jpg" />
+    <Resource Include="Media\Red_X.png" />
+    <Resource Include="Media\arrow2.png" />
     <Content Include="Media\images.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

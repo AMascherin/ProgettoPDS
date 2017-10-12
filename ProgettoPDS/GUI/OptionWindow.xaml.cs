@@ -22,13 +22,13 @@ using System.Drawing;
 namespace ProgettoPDS
 {
     /// <summary>
-    /// Logica di interazione per MainWindow.xaml
+    /// Logica di interazione per OptionWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class OptionWindow : Window
     {
         UserConfiguration cfg = new UserConfiguration();
 
-        public MainWindow(bool test) { //TODO: Sistemare la logica della creazione delle window con costruttori appropriati
+        public OptionWindow(bool test) { //TODO: Sistemare la logica della creazione delle window con costruttori appropriati
             InitializeComponent();
             contenitore.MaxHeight = 400;
             contenitore.MaxWidth = 600;
@@ -40,7 +40,7 @@ namespace ProgettoPDS
             labelutente.Content = "Username";
         }
 
-        public MainWindow()
+        public OptionWindow()
         {
             InitializeComponent();
             contenitore.MaxHeight = 400;
@@ -50,9 +50,8 @@ namespace ProgettoPDS
             textboxpercorso.IsEnabled = false;
             bottonesceglifile.IsEnabled = false;
 
-            if (cfg.PrivacyFlag)
-                checkboxstato.IsChecked = true;
-            else checkboxstato.IsChecked = false;
+            checkboxstato.IsChecked = !(cfg.PrivacyFlag);
+
 
             if (!(File.Exists(cfg.ImgPath))) //Se l'immagine scelta dall'utente non è più disponibile....
             {
@@ -62,32 +61,11 @@ namespace ProgettoPDS
             immagineprofilo2.Source = new BitmapImage(new Uri(cfg.ImgPath));
             immagineprofilo2.Stretch = Stretch.Fill;
 
-            //if (cfg.Username != null)
-            //{
-            //    labelutente.Content = cfg.Username;
-            //}
-            //else labelutente.Content = "Username";
+
+            labelutente.Content = cfg.Username;
         }
 
-        private void CheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            textboxpercorso.Opacity = 100;
-            textboxpercorso.IsEnabled = true;
-            bottonesceglifile.Opacity = 100;
-            bottonesceglifile.IsEnabled = true;
-            cfg.PrivacyFlag = true;
-            cfg.DumpConfiguration();
-        }
 
-        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            textboxpercorso.Opacity = 50;
-            textboxpercorso.IsEnabled = false;
-            bottonesceglifile.Opacity = 50;
-            bottonesceglifile.IsEnabled = false;
-
-
-        }
 
         private void bottonesalva_Click(object sender, RoutedEventArgs e)
         {
@@ -150,13 +128,41 @@ namespace ProgettoPDS
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if ((cfg.Username == null)) {
-                string msg = "Scegliere un nome utente per completare la configurazione iniziale. La mancata scelta di un nome utente comporterà la chiusura dell'applicazione";
+                string msg = "Scegliere un nome utente per completare la configurazione. La mancata scelta di un nome utente comporterà la chiusura dell'applicazione";
                 var result= System.Windows.MessageBox.Show(msg, "Attenzione", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Cancel) {
                     e.Cancel = true;
                 }
             }
 
+        }
+
+        private void DownloadCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            textboxpercorso.Opacity = 100;
+            textboxpercorso.IsEnabled = true;
+            bottonesceglifile.Opacity = 100;
+            bottonesceglifile.IsEnabled = true;
+        }
+
+        private void DownloadCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            textboxpercorso.Opacity = 50;
+            textboxpercorso.IsEnabled = false;
+            bottonesceglifile.Opacity = 50;
+            bottonesceglifile.IsEnabled = false;
+        }
+
+        private void PrivacyCheckBox_Checked(object sender, RoutedEventArgs e) //Passaggio alla modalità pubblica
+        {
+            cfg.PrivacyFlag = false;
+            cfg.DumpConfiguration();
+        }
+
+        private void PrivacyCheckBox_Unchecked(object sender, RoutedEventArgs e) //Passaggio alla modalità privata
+        {
+            cfg.PrivacyFlag = true;
+            cfg.DumpConfiguration();
         }
     }
 }

@@ -18,24 +18,11 @@ namespace ProgettoPDS
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            UserConfiguration cfg = new UserConfiguration();
-            try { cfg.LoadConfiguration(); }
-            catch(IOException)
-            {
-                OptionWindow mw1 = new OptionWindow(true);
-                mw1.Show();
-                string folder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
-                string fullpath = folder + @"\config.json";
-                if (!File.Exists(fullpath))
-                {
-                    string msg = "Non sono stati inseriti i dati richiesti"; //TODO: sincronizzarsi con la schermata principale
-                    System.Windows.MessageBox.Show(msg);
-                    return;
-                }
-            }
+            MainHub mainhub = new MainHub();
+            mainhub.Initialize();
            
-            var mw = new OptionWindow();
-            mw.Show();
+  //          var mw = new OptionWindow();
+  //          mw.Show();
         }
     }
 }

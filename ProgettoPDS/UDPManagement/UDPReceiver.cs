@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Net.Sockets;
 using System.Net;
 using System.Threading.Tasks;
@@ -11,23 +13,28 @@ namespace ProgettoPDS
 {
     class UDPReceiver
     {
-        private const int listenPort = 2000;
+        private const int listenPort = 13370;
+        private static BlockingCollection<Byte[]> dataItems;
 
-        private static void StartListener()
+        public UDPReceiver() {
+            dataItems= new BlockingCollection<byte[]>(64);
+        }
+        public void StartListener()
         {
             bool done = false;
 
             UdpClient listener = new UdpClient(listenPort);
-            IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, listenPort);
+            IPEndPoint remoteIPEndPoint = new IPEndPoint(IPAddress.Broadcast, 0);
+            Thread processingThread = new Thread(ProcessData);
+            processingThread.Start();
+            
             try
             {
                 while (!done)
                 {
                     Console.WriteLine("Waiting for broadcast");
-                    byte[] bytes = listener.Receive(ref groupEP);
-                    string data = Encoding.Unicode.GetString(bytes);
-                    UserConfiguration user = JsonConvert.DeserializeObject<UserConfiguration>(data);
-                    Console.WriteLine("Received broadcast from {0} :\n {1}\n", groupEP.ToString(), Encoding.Unicode.GetString(bytes, 0, bytes.Length));
+                    Byte[] data = listener.Receive(ref remoteIPEndPoint);
+                    dataItems.Add(data);
                 }
             }
             catch (Exception e)
@@ -37,7 +44,28 @@ namespace ProgettoPDS
             finally
             {
                 listener.Close();
+                dataItems.CompleteAdding();
             }
         }
+
+        private static void ProcessData() {
+            while (!dataItems.IsCompleted) {
+                System.Windows.MessageBox.Show("Dato elaborato");
+                Byte[] receivedData = null;
+                try {
+                    receivedData = dataItems.Take();
+                }
+                catch (InvalidOperationException) { }  // IOE means that Take() was called on a completed collection.
+                if (receivedData != null)
+                {
+                    string data = Encoding.Unicode.GetString(receivedData);
+                    NetworkUser user = new NetworkUser(data); //TODO: Aggiungere il Network User alla lista degli utenti
+                    //Scartare i pacchetti generati dallo stesso PC
+
+                }
+            }
+        }
+
     }
 }
+

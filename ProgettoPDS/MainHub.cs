@@ -9,22 +9,24 @@ using System.Threading;
 
 namespace ProgettoPDS
 {
+
     class MainHub //TODO: gestire la responsività con gli eventi(tcp client, interfaccia grafica, cambio della flag della privacy
     {
-        public static List<NetworkUser> userlist;
+        public static List<NetworkUser> userlist = new List<NetworkUser>();
         public static UserConfiguration uc;
         private static UDPSender _udpsend;
+        private static UDPReceiver _udprec;
         private static Thread _udpsendThread;
         public MainHub()
         {
-            userlist = new List<NetworkUser>();
             uc = new UserConfiguration();
-            _udpsend = new UDPSender("224.0.0.25"); //TODO: Gestione indirizzo multicast
+            _udpsend = new UDPSender();
+            _udprec = new UDPReceiver();
             _udpsendThread = new Thread(_udpsend.Start);
         }
 
         public void Initialize()
-        { 
+        {
             /*Caricamento della configurazione utente, ed eventuale gestione della mancanza del file di configurazione
              Avvio del server TCP
              Avvio del listener UDP
@@ -43,17 +45,21 @@ namespace ProgettoPDS
                 if (!File.Exists(fullpath))
                 {
                     //TODO: Questo metodo deve essere eseguito se e solo se alla chiusura della mainwindow non sia stato generato il file di configurazione
-                    string msg = "Non sono stati inseriti i dati richiesti"; 
+                    string msg = "Non sono stati inseriti i dati richiesti";
                     System.Windows.MessageBox.Show(msg);
                     return;
                 }
-                if (uc.PrivacyFlag) {
-                    _udpsendThread.Start();
-                }
+            }
+
+            if (uc.PrivacyFlag) {
+                  _udpsendThread.Start();
+            }
+            _udprec.StartListener();
+
 
                 //TODO: creare un thread per UDPlistener
-                this.TCPServerStartup();
-            }
+   //             this.TCPServerStartup();
+    
         }
 
         private void TCPServerStartup()

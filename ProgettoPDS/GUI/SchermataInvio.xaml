@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProgettoPDS"
         mc:Ignorable="d"
-         Title="Condividi file con:" Height="664" Width="967.961" Icon="index.jpg" ResizeMode="CanMinimize">
+         Title="Condividi file con:" Height="664" Width="967.961" Icon="/ProgettoPDS;component/Media/index.jpg" ResizeMode="CanMinimize">
     <Window.Resources>
 
 
@@ -13,7 +13,6 @@
             <Setter Property="SnapsToDevicePixels" Value="true"/>
             <Setter Property="OverridesDefaultStyle" Value="true"/>
             <Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}"/>
-            <Setter Property="FocusVisualStyle" Value="{StaticResource CheckBoxFocusVisual}"/>
             <Setter Property="Foreground" Value="#66CCCC"/>
             <Setter Property="Background" Value="#66CCCC"/>
             <Setter Property="FontSize" Value="12"/>
@@ -100,8 +99,11 @@
     </Window.Resources>
 
     <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="/ProgettoPDS;component/Media/perfect-clouds-wallpapers.jpg"/>
+        </Grid.Background>
         <ScrollViewer x:Name="scroll" Margin="152,133,95,110" BorderBrush="Black" BorderThickness="2" Background="#FFF1E9E9"  >
-            <StackPanel x:Name="stack" Height="700" Background="#FFF9F6F6"/>
+            <StackPanel x:Name="stack" Height="700"/>
             <ScrollViewer.Resources>
                 <Style TargetType="{x:Type ScrollViewer}">
                     <Setter Property="VerticalScrollBarVisibility" Value="Visible" />
@@ -144,12 +146,12 @@
         </ScrollViewer>
         <Button x:Name="bottoneinvia" Content="" HorizontalAlignment="Left" Margin="846,552,0,0" VerticalAlignment="Top" Width="55" Height="45" RenderTransformOrigin="0.587,0.362" Style="{StaticResource MyButton}">
             <Button.Background>
-                <ImageBrush ImageSource="Media/arrow2.png"/>
+                <ImageBrush ImageSource="/ProgettoPDS;component/Media/arrow2.png"/>
             </Button.Background>
         </Button>
         <Button x:Name="bottonecanc" Content="" HorizontalAlignment="Left" Margin="745,552,0,0" VerticalAlignment="Top" Width="49" Height="45" Style="{StaticResource MyButton}" Click="bottonecanc_Click">
             <Button.Background>
-                <ImageBrush ImageSource="Media/Red_X.png"/>
+                <ImageBrush ImageSource="/ProgettoPDS;component/Media/Red_X.png"/>
             </Button.Background>
         </Button>
         <Label Content="Scegli con chi condividere i tuoi file:" HorizontalAlignment="Left" Margin="177,96,0,0" VerticalAlignment="Top" Width="674" Height="32" Background="#FFECE8E8" Style="{StaticResource LabelStyle}" FontSize="16" FontWeight="Bold"/>

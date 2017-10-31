@@ -17,12 +17,15 @@ namespace ProgettoPDS
         private static UDPSender _udpsend;
         private static UDPReceiver _udprec;
         private static Thread _udpsendThread;
+
+
         public MainHub()
         {
             uc = new UserConfiguration();
             _udpsend = new UDPSender();
             _udprec = new UDPReceiver();
             _udpsendThread = new Thread(_udpsend.Start);
+            _udpsendThread.Name = "UdpSenderThread";
         }
 
         public void Initialize()
@@ -44,7 +47,6 @@ namespace ProgettoPDS
                 string fullpath = folder + @"\config.json";
                 if (!File.Exists(fullpath))
                 {
-                    //TODO: Questo metodo deve essere eseguito se e solo se alla chiusura della mainwindow non sia stato generato il file di configurazione
                     string msg = "Non sono stati inseriti i dati richiesti";
                     System.Windows.MessageBox.Show(msg);
                     return;
@@ -56,8 +58,6 @@ namespace ProgettoPDS
             }
             _udprec.StartListener();
 
-
-                //TODO: creare un thread per UDPlistener
    //             this.TCPServerStartup();
     
         }
@@ -67,6 +67,15 @@ namespace ProgettoPDS
             throw new NotImplementedException();
 
         }
+
+        protected virtual void OnPrivacyChange(EventArgs e)  { }  //Questo evento deve riattivare/disattivare l'UDP Sender
+        protected virtual void OnSendRequest() { } //EventArgs contiene la lista di utenti a cui inviare i dati?  -->Integrare in SchermataInvio.cs
+        protected virtual void CancelTransfer() { } //Andrà identificata la singola connessione
+        protected virtual void OnReceiveRequest() { } //Richiesta di ricezione di fail da parte di altri utente
+
+
+
+
 
     }
 }

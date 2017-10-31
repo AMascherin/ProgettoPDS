@@ -26,6 +26,7 @@ namespace ProgettoPDS
             UdpClient listener = new UdpClient(listenPort);
             IPEndPoint remoteIPEndPoint = new IPEndPoint(IPAddress.Broadcast, 0);
             Thread processingThread = new Thread(ProcessData);
+            processingThread.Name = "ProcessingThread";
             processingThread.Start();
             
             try

@@ -102,19 +102,6 @@ namespace ProgettoPDS
             }
         }
 
-        private void checkboxstato_Checked(object sender, RoutedEventArgs e)
-        {
-
-            cfg.PrivacyFlag = true;
-            cfg.DumpConfiguration();
-        }
-
-        private void checkboxstato_Unchecked(object sender, RoutedEventArgs e)
-        {
-            cfg.PrivacyFlag = false;
-            cfg.DumpConfiguration();
-
-        }
         private void textboxutente_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (Keyboard.IsKeyDown(Key.Enter))
@@ -156,13 +143,13 @@ namespace ProgettoPDS
         private void PrivacyCheckBox_Checked(object sender, RoutedEventArgs e) //Passaggio alla modalità pubblica
         {
             cfg.PrivacyFlag = false;
-            cfg.DumpConfiguration();
+        //    cfg.DumpConfiguration(); TODO: Fare il dump solo alla chiusura
         }
 
         private void PrivacyCheckBox_Unchecked(object sender, RoutedEventArgs e) //Passaggio alla modalità privata
         {
             cfg.PrivacyFlag = true;
-            cfg.DumpConfiguration();
+        //    cfg.DumpConfiguration();
         }
     }
 }

@@ -101,6 +101,9 @@
     <Compile Include="GUI\SchermataInvio.xaml.cs">
       <DependentUpon>SchermataInvio.xaml</DependentUpon>
     </Compile>
+    <Compile Include="RightClickManager.cs" />
+    <Compile Include="TCPManagement\TCPReceiver.cs" />
+    <Compile Include="TCPManagement\TCPSender.cs" />
     <Compile Include="UDPManagement\UDPReceiver.cs" />
     <Compile Include="UDPManagement\UDPSender.cs" />
     <Compile Include="Configuration\UserConfiguration.cs" />
@@ -158,9 +161,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Media\index.jpg">
+    <Resource Include="Media\index.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
@@ -174,6 +177,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

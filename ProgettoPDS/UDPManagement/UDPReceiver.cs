@@ -15,6 +15,7 @@ namespace ProgettoPDS
     {
         private const int listenPort = 13370;
         private static BlockingCollection<Byte[]> dataItems;
+        
 
         public UDPReceiver() {
             dataItems= new BlockingCollection<byte[]>(64);
@@ -50,8 +51,10 @@ namespace ProgettoPDS
         }
 
         private static void ProcessData() {
+            UserConfiguration uc = new UserConfiguration();
+            NetworkUserManager manager = new NetworkUserManager();
             while (!dataItems.IsCompleted) {
-                System.Windows.MessageBox.Show("Dato elaborato");
+                
                 Byte[] receivedData = null;
                 try {
                     receivedData = dataItems.Take();
@@ -60,9 +63,11 @@ namespace ProgettoPDS
                 if (receivedData != null)
                 {
                     string data = Encoding.Unicode.GetString(receivedData);
-                    NetworkUser user = new NetworkUser(data); //TODO: Aggiungere il Network User alla lista degli utenti
-                    //Scartare i pacchetti generati dallo stesso PC
-
+                    System.Windows.MessageBox.Show(data);
+                    NetworkUser user = new NetworkUser(data); 
+                    string localMAC = uc.GetMACAddress();
+                    if (user.MACAddress != localMAC) //Scarta i pacchetti generati dallo stesso PC che li riceve
+                        manager.AddUser(user);
                 }
             }
         }

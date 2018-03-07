@@ -23,6 +23,7 @@ namespace ProgettoPDS
         public NetworkUser() { }
 
         public NetworkUser(string data)
+            //JSON CONSTRUCTOR
         {
             JObject o = JObject.Parse(data);
             Username = (string)o["Name"];

@@ -100,7 +100,7 @@ namespace ProgettoPDS
             }
         }
 
-        private string GetMACAddress()
+        public string GetMACAddress()
         {
             NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
             String sMacAddress = string.Empty;

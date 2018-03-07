@@ -16,28 +16,27 @@ namespace ProgettoPDS
     {
 
 
-        private int PORT_NO = 5000;
-        private string SERVER_IP = "127.0.0.1";
+        private int PORT_NO = 13370;
 
-        public void TcpSender(int port, string ip)
+        private TcpListener listener;
+
+        public TCPReceiver()
         {
-
-            PORT_NO = port;
-            SERVER_IP = ip;
+            IPAddress localAdd = IPAddress.Any;
+            listener = new TcpListener(localAdd, PORT_NO);
 
         }
 
 
-        public void Start()
+        public void Receive()
         {
             //---listen at the specified IP and port no.---
-            IPAddress localAdd = IPAddress.Parse(SERVER_IP);
-            TcpListener listener = new TcpListener(localAdd, PORT_NO);
             Console.WriteLine("Listening...");
             listener.Start();
 
             //---incoming client connected---
             TcpClient client = listener.AcceptTcpClient();
+            Console.WriteLine("Connection Accepted...");
 
             //---get the incoming data through a network stream---
             NetworkStream nwStream = client.GetStream();
@@ -46,21 +45,37 @@ namespace ProgettoPDS
             //---read incoming stream---
             int bytesRead = nwStream.Read(buffer, 0, client.ReceiveBufferSize);
 
+            Console.WriteLine("Bytes Received : " + bytesRead);
+
             //---convert the data received into a string---
-            string dataReceived = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+            string dataReceived = System.Text.Encoding.Default.GetString(buffer);
             Console.WriteLine("Received : " + dataReceived);
+            
 
             //---write back the text to the client---
             // Console.WriteLine("Sending back : " + dataReceived);
             // nwStream.Write(buffer, 0, bytesRead);
 
             client.Close();
-            listener.Stop();
             //Console.ReadLine();
 
         }
 
+        public void CloseConnection()
+        {
+            listener.Stop();
+        }
+
+        public void ReceiveData()
+        {
+
+            Thread t = new Thread(Receive);
+            t.Name = "TCPClient";
+            t.Start();
+            t.Join();
+
+
+        }
 
     }
 }
-

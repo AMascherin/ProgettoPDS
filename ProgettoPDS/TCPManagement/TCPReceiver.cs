@@ -46,6 +46,7 @@ namespace ProgettoPDS
             int bytesRead = nwStream.Read(buffer, 0, client.ReceiveBufferSize);
 
             Console.WriteLine("Bytes Received : " + bytesRead);
+            Console.WriteLine("Prova Sincro : " + bytesRead);
 
             //---convert the data received into a string---
             string dataReceived = System.Text.Encoding.Default.GetString(buffer);

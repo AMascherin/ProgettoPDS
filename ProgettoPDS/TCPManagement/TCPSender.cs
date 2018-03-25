@@ -30,6 +30,33 @@ namespace ProgettoPDS
             System.Windows.MessageBox.Show("TCP Sender create");
         }
 
+        public void SendData (string pathToObj)
+        {
+            try {
+                //---create a NetworkStream---
+                NetworkStream nwStream = client.GetStream();
+
+                byte[] bytesToSend = File.ReadAllBytes(pathToObj);
+
+                //Send data into stream
+                nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+                nwStream.Close();
+                CloseConnection();
+            }
+            catch (ArgumentNullException e)
+            {
+                Console.WriteLine("ArgumentNullException: {0}", e);
+            }
+            catch (SocketException e)
+            {
+                Console.WriteLine("SocketException: {0}", e);
+            }
+            catch (IOException e)
+            {
+                Console.WriteLine("IOException: {0}", e);
+            }
+        }
+
 
         public void SendMessage(Object obj)
         {

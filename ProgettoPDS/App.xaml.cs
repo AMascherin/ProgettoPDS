@@ -18,21 +18,44 @@ namespace ProgettoPDS
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-             //MainHub mainhub = new MainHub();
+            //MainHub mainhub = new MainHub();
             // mainhub.Initialize();
 
             /* string msg = "Hello World";
             TCPSender _sender = new TCPSender("192.168.1.105");
             _sender.SendData(msg);*/
 
+            //TCPReceiver test = new TCPReceiver();
+            //test.ReceiveData();
 
-                TCPReceiver test = new TCPReceiver();
-                test.ReceiveData();
+            /* string path = @"C:\Users\fabyf\Desktop\leaves.jpg";
+             TCPSender _sender = new TCPSender("192.168.1.105");
+             _sender.SendData(path);*/
+
+            //TCPReceiver test = new TCPReceiver();
+            //test.ReceiveData();
+
+          /*  string pathToObj = @"C:\Users\Alessandro\Desktop\image.jpg";
+            byte[] bytesToSend = File.ReadAllBytes(pathToObj);
+            string fileName = "Pippo.jpg";
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(fileName, true))
+                {
+                   
+                    writer.BaseStream.Write(bytesToSend,0,bytesToSend.Length);
+                }
+            }
+            catch (DirectoryNotFoundException ex)
+            {
+                Console.WriteLine("DirectoryNotFoundException: {0}", ex);
+            }
+
+    */
 
 
-
-            //          var mw = new OptionWindow();
-            //          mw.Show();
+                  //   var mw = new OptionWindow();
+                  //    mw.Show();
         }
     }
 }

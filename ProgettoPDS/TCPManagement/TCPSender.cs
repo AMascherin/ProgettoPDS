@@ -16,8 +16,8 @@ namespace ProgettoPDS
 
 
         private int PORT_NO = 13370;
-        private static IPAddress targetAddress;
-        private IPEndPoint targetEndPoint;
+       // private static IPAddress targetAddress;
+       // private IPEndPoint targetEndPoint;
       //  private string SERVER_IP = "127.0.0.1";
         private static TcpClient client;
 
@@ -31,45 +31,42 @@ namespace ProgettoPDS
         }
 
 
-        public void Send(Object obj)
+        public void SendMessage(Object obj)
         {
-            
 
-            //---create a TCPClient object at the IP and port no.---
-
-            NetworkStream nwStream = client.GetStream();
-            byte[] bytesToSend;
-
-
-            BinaryFormatter bf = new BinaryFormatter();
-            using (MemoryStream ms = new MemoryStream())
+            try
             {
-                bf.Serialize(ms, obj);
-                bytesToSend = ms.ToArray();
+                //---create a NetworkStream---
+                NetworkStream nwStream = client.GetStream();
+
+                //Convert message string into byte data
+                byte[] bytesToSend = System.Text.Encoding.UTF8.GetBytes((string)obj);
+
+                //Send data into stream
+                nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+                nwStream.Close();
+                CloseConnection();
             }
-
-            //---send data---
-
-            nwStream.Write(bytesToSend, 0, bytesToSend.Length);
-
-            //---read back the text---
-            //byte[] bytesToRead = new byte[client.ReceiveBufferSize];
-            //int bytesRead = nwStream.Read(bytesToRead, 0, client.ReceiveBufferSize);
-            //Console.WriteLine("Received : " + Encoding.ASCII.GetString(bytesToRead, 0, bytesRead));
-            //Console.ReadLine();
+            catch (ArgumentNullException e)
+            {
+                Console.WriteLine("ArgumentNullException: {0}", e);
+            }
+            catch (SocketException e)
+            {
+                Console.WriteLine("SocketException: {0}", e);
+            }
 
         }
 
         public void CloseConnection()
         {
-
             client.Close();
         }
 
         public void SendData(Object data)
          {
 
-             Thread t = new Thread(new ParameterizedThreadStart(Send));
+             Thread t = new Thread(new ParameterizedThreadStart(SendMessage));
              t.Start(data);
              //t.detach();
 

@@ -20,9 +20,10 @@ namespace ProgettoPDS
             base.OnStartup(e);
              //MainHub mainhub = new MainHub();
             // mainhub.Initialize();
-             string msg = "Hello World";
-            //TCPSender _sender = new TCPSender("192.168.1.105");
-            //_sender.SendData(msg);
+
+            /* string msg = "Hello World";
+            TCPSender _sender = new TCPSender("192.168.1.105");
+            _sender.SendData(msg);*/
 
 
                 TCPReceiver test = new TCPReceiver();

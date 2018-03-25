@@ -8,7 +8,7 @@ using System.Net;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
-
+using System.Runtime.Serialization;
 
 namespace ProgettoPDS
 {
@@ -28,7 +28,7 @@ namespace ProgettoPDS
         }
 
 
-        public void Receive()
+        public void ReceiveMessage()
         {
             //---listen at the specified IP and port no.---
             Console.WriteLine("Listening...");
@@ -46,16 +46,28 @@ namespace ProgettoPDS
             int bytesRead = nwStream.Read(buffer, 0, client.ReceiveBufferSize);
 
             Console.WriteLine("Bytes Received : " + bytesRead);
-            Console.WriteLine("Prova Sincro : " + bytesRead);
 
-            //---convert the data received into a string---
-            string dataReceived = System.Text.Encoding.Default.GetString(buffer);
-            Console.WriteLine("Received : " + dataReceived);
-            
+            try
+            {                
+                String dataReceived = String.Empty;
+                dataReceived = System.Text.Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                Console.WriteLine("Received : " + dataReceived);
+
+            }
+
+            catch (Exception e) {
+                throw;
+            }
+            finally
+            {
+                client.Close();
+            }
+
 
             //---write back the text to the client---
             // Console.WriteLine("Sending back : " + dataReceived);
             // nwStream.Write(buffer, 0, bytesRead);
+
 
             client.Close();
             //Console.ReadLine();
@@ -70,7 +82,7 @@ namespace ProgettoPDS
         public void ReceiveData()
         {
 
-            Thread t = new Thread(Receive);
+            Thread t = new Thread(ReceiveMessage);
             t.Name = "TCPClient";
             t.Start();
             t.Join();

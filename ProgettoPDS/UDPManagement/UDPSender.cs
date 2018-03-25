@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.Net;
 using System.Threading;
+using System.Windows.Forms;
+
 
 namespace ProgettoPDS
 {
@@ -31,9 +33,23 @@ namespace ProgettoPDS
             {                
                 if (user.PrivacyFlag)
                 {
-                    string data = user.GetJSONConfiguration();
-                    Byte[] data_b = Encoding.Unicode.GetBytes(data);
-                    udpclient.Send(data_b, data_b.Length, Clientdest);
+
+                    try
+                    {
+                        string data = user.GetJSONConfiguration();
+                        Byte[] data_b = Encoding.Unicode.GetBytes(data);
+                        udpclient.Send(data_b, data_b.Length, Clientdest);
+                    }
+                    catch (ArgumentNullException ex)
+                    {
+                        break;
+
+                    }
+                    catch (EncoderFallbackException ex)
+                    {
+                        break;
+
+                    }
                 }
                 else break;
                 Thread.Sleep(10000);
@@ -42,8 +58,47 @@ namespace ProgettoPDS
         }
 
         public void SingleStart() {
+
             string data = user.GetJSONConfiguration();
-            udpclient.Send(Encoding.Unicode.GetBytes(data), data.Length, Clientdest);
+            try
+            {
+                udpclient.Send(Encoding.Unicode.GetBytes(data), data.Length, Clientdest);
+            }
+            catch(ArgumentNullException ex)
+            {
+                Application.Exit();
+
+            }
+            catch (InvalidOperationException ex)
+            {
+
+                string message = "Invalid Operation. Please try again";
+                string caption = "Invalid operation";
+
+                DialogResult result;
+
+                // Displays the MessageBox.
+
+                result = MessageBox.Show(message, caption);
+
+
+            }
+            catch (SocketException ex)
+            {
+
+                string message = "Socket error. Please check network settings";
+                string caption = "Connection Error";
+                
+                DialogResult result;
+
+                // Displays the MessageBox.
+
+                result = MessageBox.Show(message, caption);
+                
+
+
+            }
+
         }
     }
 }

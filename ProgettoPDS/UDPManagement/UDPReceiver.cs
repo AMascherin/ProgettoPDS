@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System.Windows.Forms;
 
 namespace ProgettoPDS
 {
@@ -59,7 +60,19 @@ namespace ProgettoPDS
                 try {
                     receivedData = dataItems.Take();
                 }
-                catch (InvalidOperationException) { }  // IOE means that Take() was called on a completed collection.
+                catch (InvalidOperationException) {
+
+                    string message = "Invalid Operation. Please try again";
+                    string caption = "Invalid operation";
+
+                    DialogResult result;
+
+                    // Displays the MessageBox.
+
+                    result = MessageBox.Show(message, caption);
+
+
+                }  // IOE means that Take() was called on a completed collection.
                 if (receivedData != null)
                 {
                     string data = Encoding.Unicode.GetString(receivedData);

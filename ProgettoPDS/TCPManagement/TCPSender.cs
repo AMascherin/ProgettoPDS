@@ -8,6 +8,7 @@ using System.Net;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
+using Newtonsoft.Json.Linq;
 
 namespace ProgettoPDS
 {
@@ -40,8 +41,8 @@ namespace ProgettoPDS
 
                 //Send data into stream
                 nwStream.Write(bytesToSend, 0, bytesToSend.Length);
-                nwStream.Close();
-                CloseConnection();
+                //nwStream.Close();
+                //CloseConnection();
             }
             catch (ArgumentNullException e)
             {
@@ -72,7 +73,7 @@ namespace ProgettoPDS
                 //Send data into stream
                 nwStream.Write(bytesToSend, 0, bytesToSend.Length);
                 nwStream.Close();
-                CloseConnection();
+               // CloseConnection();
             }
             catch (ArgumentNullException e)
             {
@@ -90,15 +91,79 @@ namespace ProgettoPDS
             client.Close();
         }
 
-        public void SendData(Object data)
+        /*public void SendData(Object data)
          {
 
              Thread t = new Thread(new ParameterizedThreadStart(SendMessage));
              t.Start(data);
              //t.detach();
 
-          }
+          }*/
 
+        public void HandleFileSend(List<String> filesToSend)
+        {
+
+            List<FileInfo> filesinfo = new List<FileInfo>();
+
+            //---create a NetworkStream---
+            NetworkStream nwStream = client.GetStream();
+
+            foreach (String file in filesToSend)
+            {
+                filesinfo.Add(new FileInfo(file));
+                
+            }
+            /*
+ {
+	'files': [
+		'file1':{
+			'name': ...
+			'size': ...
+			'extension': ...			
+		}
+		
+		'file2':{		
+		
+		}	
+	}
+}       
+             */
+
+            String jsonString = "pippo";           
+
+
+            byte[] bytesToSend = System.Text.Encoding.UTF8.GetBytes((string)jsonString.ToString()); //TODO: serve davvero?
+            nwStream.Write(bytesToSend, 0, bytesToSend.Length); //Send to the server the file information data
+            nwStream.Flush();
+
+            byte[] inStream = new byte[10025]; //TODO: Check 
+            nwStream.Read(inStream, 0, (int)client.ReceiveBufferSize);
+            string returndata = System.Text.Encoding.UTF8.GetString(inStream);
+            Console.WriteLine("Data from Server : " + returndata);
+            nwStream.FlushAsync();
+
+            if (returndata.Equals("200 OK"))
+            {
+                foreach (String file in filesToSend) {
+                    SendData(file);
+                }
+                
+                nwStream.Read(inStream, 0, (int)client.ReceiveBufferSize);
+                string response = System.Text.Encoding.UTF8.GetString(inStream);
+                Console.WriteLine("Data from Server : " + response);
+                nwStream.Close();
+                CloseConnection();
+
+
+            }
+            else {
+                System.Windows.MessageBox.Show("Request rejected by the server, closing connection");
+                nwStream.Close();
+                CloseConnection();               
+            }
+            
+            throw new NotImplementedException();
+        }
     }
 }
 

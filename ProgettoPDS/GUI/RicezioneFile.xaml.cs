@@ -27,12 +27,20 @@ namespace ProgettoPDS.GUI
         public RicezioneFile()
         {
             InitializeComponent();
+       /*     generaGriglia(listalabel, "testo", "txt");
             generaGriglia(listalabel, "testo", "txt");
             generaGriglia(listalabel, "testo", "txt");
             generaGriglia(listalabel, "testo", "txt");
             generaGriglia(listalabel, "testo", "txt");
-            generaGriglia(listalabel, "testo", "txt");
-            generaGriglia(listalabel, "testo", "txt");
+            generaGriglia(listalabel, "testo", "txt");*/
+
+        }
+
+        public RicezioneFile(List<String> filetoreceive) { //TODO:finire
+            InitializeComponent();
+            foreach (String file in filetoreceive) {
+                generaGriglia(listalabel, file, file, file);
+            }
 
         }
 
@@ -48,7 +56,7 @@ namespace ProgettoPDS.GUI
 
 
 
-        void generaGriglia(List<Label> listalabel, string nomefile, string estensione)
+        void generaGriglia(List<Label> listalabel, string nomefile, string estensione, string size)
         // FUNZIONE CHE CREA LA GRIGLIA DI UTENTI CONNESSI
         {
 
@@ -58,7 +66,7 @@ namespace ProgettoPDS.GUI
             Label label = new Label();
             //System.Windows.Thickness thick2 = new Thickness(134, 20, 473, 10);
             //label.Margin = thick2;
-            label.Content = nomefile + "." + estensione;
+            label.Content = nomefile + "." + estensione + " " + size;
             label.Height = 30;
             label.Width = 750;
             label.Background = new SolidColorBrush(Colors.White);
@@ -66,6 +74,7 @@ namespace ProgettoPDS.GUI
             label.Style = style;
             griglia.Children.Add(label);
             stack.Children.Add(griglia);
+
 
         }
 

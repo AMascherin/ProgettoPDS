@@ -17,6 +17,7 @@ namespace ProgettoPDS
     {
 
         private static bool _PrivacyFlag; //TRUE: Pubblic, FALSE: Private
+        private static bool _AutomaticDownloadAcceptance;
         private static string _Username;
         private static string _ImgPath;
         private static string _multicastaddress;
@@ -31,6 +32,12 @@ namespace ProgettoPDS
                     return _multicastaddress;
                 }
             }
+        }
+
+        public bool AutomaticDownloadAcceptance
+        {
+            get { lock (_UserDatalocker) { return _AutomaticDownloadAcceptance; } }
+            set { lock (_UserDatalocker) { _AutomaticDownloadAcceptance = value; } }
         }
 
         public bool PrivacyFlag
@@ -128,7 +135,7 @@ namespace ProgettoPDS
             writer.WritePropertyName("Name");
             writer.WriteValue(Username);
             writer.WritePropertyName("MACAddress"); 
-            writer.WriteValue(GetMACAddress()); //TODO:Testare e implementare ricezione
+            writer.WriteValue(GetMACAddress()); 
             writer.WritePropertyName("DefaultImage");
             string currentfolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);            
             bool defimg = (ImgPath == (currentfolder + @"\Media\images.png")) ? true : false;

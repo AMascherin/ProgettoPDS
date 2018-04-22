@@ -11,23 +11,102 @@ using System.Threading;
 using System.Runtime.Serialization;
 using System.Diagnostics;
 using System.Windows.Forms;
+using ProgettoPDS.GUI;
 
+
+//Todo:integrare con il mainhub
 namespace ProgettoPDS
 {
-    class TCPReceiver
+    public class handleClient
+    {
+        TcpClient clientSocket;
+        private UserConfiguration uc = new UserConfiguration();
+        //string clNo;
+        public void startClient(TcpClient inClientSocket)
+        {
+            this.clientSocket = inClientSocket;
+            Thread ctThread = new Thread(receiveFileCommunication);
+            ctThread.Start();
+        }
+        private void receiveFileCommunication()
+        {
+            byte[] bytesFrom = new byte[10025]; //TODO:capire la dimensione
+            string dataFromClient = null;
+            Byte[] receivedData = null;
+           // string serverResponse = null;
+            //string rCount = null;
+
+            while ((true))
+            {
+                try
+                {
+                    NetworkStream networkStream = clientSocket.GetStream();
+                    networkStream.Read(bytesFrom, 0, (int)clientSocket.ReceiveBufferSize);
+                    dataFromClient = System.Text.Encoding.UTF8.GetString(bytesFrom);
+                    Console.WriteLine( "From client-" + dataFromClient);
+
+                    //Deconvertire il json
+                    //Far comparire 
+                    if (uc.AutomaticDownloadAcceptance == false)
+                    {
+                        RicezioneFile rcf = new RicezioneFile(new List<String>()); //La lista arriva dal file json decompresso
+                        rcf.Show();
+                        if (false) { //Risposta dall'interfaccia grafica
+                            byte[] bytesToSend = System.Text.Encoding.UTF8.GetBytes("418 I'm a teapot");
+                            networkStream.Write(bytesToSend, 0, bytesToSend.Length); //Send to the server the file information data
+                            networkStream.Flush();
+                            networkStream.Close();
+                            clientSocket.Close();
+                        }
+                    }
+                    
+                    //Ricezione dei dati e barra di avanzamento di download
+                    
+
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(" >> " + ex.ToString());
+                }
+
+            }
+        }
+    }
+
+        class TCPReceiver
     {
 
 
         private int PORT_NO = 13370;
 
-        private TcpListener listener;
+        private static TcpListener listener;
+        private static TcpClient clientSocket = default(TcpClient);
+
+        private static Boolean done;
 
         public TCPReceiver()
         {
             IPAddress localAdd = IPAddress.Any;
             listener = new TcpListener(localAdd, PORT_NO);
+            done = false;
 
         }
+
+        public void StartListener() {
+
+
+            listener.Start();
+            Console.WriteLine("Listener started");
+            while (!done) {
+                clientSocket = listener.AcceptTcpClient();
+                handleClient client = new handleClient();
+                client.startClient(clientSocket);
+            }
+
+        }
+
+
 
         //TODO: Inserire sistema per l'utente di rifiutare la ricezione del file
 

@@ -11,6 +11,7 @@ using System.Windows.Forms;
 
 namespace ProgettoPDS
 {
+    //TODO: Aumentare il TTL dei pacchetti UDP
     class UDPSender
     {
         private static UdpClient udpclient;

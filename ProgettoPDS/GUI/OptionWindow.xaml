@@ -357,7 +357,7 @@
                 <ImageBrush ImageSource="../Media/images.png"/>
             </Ellipse.Fill>
         </Ellipse>
-        <CheckBox x:Name="checkboxdownload" Content="Automatically accept all downloads" Grid.Column="1" HorizontalAlignment="Left" Margin="31,213,0,0" VerticalAlignment="Top" Style="{StaticResource CheckBoxStyle3}" FontSize="14" FontWeight="Bold"/>
+        <CheckBox x:Name="checkboxdownload" Content="Automatically accept all downloads" Grid.Column="1" HorizontalAlignment="Left" Margin="31,213,0,0" VerticalAlignment="Top" Style="{StaticResource CheckBoxStyle3}" FontSize="14" FontWeight="Bold" Checked="checkboxdownload_Checked" Unchecked="checkboxdownload_Unchecked"/>
 
 
     </Grid>

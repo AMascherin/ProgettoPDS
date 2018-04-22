@@ -162,5 +162,15 @@ namespace ProgettoPDS
             cfg.PrivacyFlag = true;
         //    cfg.DumpConfiguration();
         }
+
+        private void checkboxdownload_Checked(object sender, RoutedEventArgs e)
+        {
+            cfg.AutomaticDownloadAcceptance = false;
+        }
+
+        private void checkboxdownload_Unchecked(object sender, RoutedEventArgs e)
+        {
+            cfg.AutomaticDownloadAcceptance = true;
+        }
     }
 }

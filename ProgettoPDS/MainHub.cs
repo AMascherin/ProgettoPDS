@@ -69,18 +69,24 @@ namespace ProgettoPDS
         public static UserConfiguration uc;
         private static UDPSender _udpsend;
         private static UDPReceiver _udprec;
+        private static TCPReceiver _tcpRec;
         private static Thread _udpsendThread;
         private static Thread _udprecThread;
+        private static Thread _tcprecThread;
 
         public MainHub()
         {
             uc = new UserConfiguration();
             _udpsend = new UDPSender();
             _udprec = new UDPReceiver();
+            _tcpRec = new TCPReceiver();
+            
             _udprecThread = new Thread(_udprec.StartListener);
             _udprecThread.Name = "UdpReceiverThread";
             _udpsendThread = new Thread(_udpsend.Start);
             _udpsendThread.Name = "UdpSenderThread";
+            _tcprecThread = new Thread(_tcpRec.StartListener);
+            _tcprecThread.Name = "TCPServerThread";
             nuc = new NetworkUserManager();
         }
 
@@ -115,17 +121,15 @@ namespace ProgettoPDS
             }
             _udprecThread.Start();
 
-           // TCPReceiver test = new TCPReceiver();
-           // test.ReceiveData();
+            _tcprecThread.Start();
 
 
-
-            while (true)
+           /* while (true)
             {
                 Thread.Sleep(5000);
                 nuc.SendTest("MEssaggio di prova");
 
-            }
+            }*/
               //           this.TCPServerStartup();
 
         }

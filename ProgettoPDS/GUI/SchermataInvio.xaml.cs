@@ -26,9 +26,10 @@ namespace ProgettoPDS
 
         List<CheckBox> listacheck = new List<CheckBox>();
 
-        List<NetworkUser> listauserinvio = new List<NetworkUser>();
+        List<NetworkUser> listauserinvio = new List<NetworkUser>(); //Utenti selezionati a cui inviare i file
 
-        List<NetworkUser> listauser = new List<NetworkUser>();
+        //TODO:passarla come parametro a questa classe
+        List<NetworkUser> listauser = new List<NetworkUser>(); //Tutti gli utenti presenti in rete e con profilo pubblico
 
         ProgressBar prog = new ProgressBar();
 
@@ -124,41 +125,6 @@ namespace ProgettoPDS
 
         }
 
-        /*private void generaUltimaRiga() {
-
-
-    System.Windows.Thickness thick = new Thickness(550, 20, 30, 10);
-    Button btn = new Button();
-    //btn.Content = FindResource("arrow");
-    btn.Content = new Image
-    {
-        Source = new BitmapImage(new Uri("C:\\Users\\Federico\\Documents\\Visual Studio 2017\\Projects\\ProvaADO\\ProvaADO\\arrow.png")),
-        Stretch = Stretch.Fill
-
-    };
-
-    Grid griglia = new Grid();
-    griglia.Height = 60;
-    griglia.Width = 740;
-    btn.Margin = thick;                                                              //funzione che genera l'ultima riga della griglia, con bottone invia e prog bar
-    btn.BorderThickness = new Thickness(0);
-    btn.Focusable = false;
-    System.Windows.Thickness thickbar = new Thickness(30, 20, 350, 10);
-    prog.Width = 200;
-    prog.Height = 10;
-    prog.Margin = thickbar;
-    prog.Opacity = 0;
-    griglia.Children.Add(prog);
-    griglia.Children.Add(btn);
-    stack.Children.Add(griglia);
-    btn.Width = 60;
-    Style style = this.FindResource("MyButton") as Style;
-    btn.Style = style;
-    btn.Click += OnBtnClick;
-
-
-
-} */
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -178,6 +144,16 @@ namespace ProgettoPDS
             for (int i = 0; i < listacheck.Count; i++)
             {
                 if (listacheck[i].IsChecked == true) listacheck[i].IsChecked = false;
+            }
+        }
+
+        private void bottoneinvia_Click(object sender, RoutedEventArgs e)
+        {
+            List<String> filestosend = new List<string>();
+            filestosend.Add("path/to/file");
+            foreach (NetworkUser user in listauserinvio) {
+                TCPSender tcpsender = new TCPSender(user.Ipaddress);
+                tcpsender.HandleFileSend(filestosend);
             }
         }
     }

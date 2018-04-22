@@ -144,7 +144,7 @@
                 </Style>
             </ScrollViewer.Resources>
         </ScrollViewer>
-        <Button x:Name="bottoneinvia" Content="" HorizontalAlignment="Left" Margin="846,552,0,0" VerticalAlignment="Top" Width="55" Height="45" RenderTransformOrigin="0.587,0.362" Style="{StaticResource MyButton}">
+        <Button x:Name="bottoneinvia" Content="" HorizontalAlignment="Left" Margin="846,552,0,0" VerticalAlignment="Top" Width="55" Height="45" RenderTransformOrigin="0.587,0.362" Style="{StaticResource MyButton}" Click="bottoneinvia_Click">
             <Button.Background>
                 <ImageBrush ImageSource="/ProgettoPDS;component/Media/arrow2.png"/>
             </Button.Background>

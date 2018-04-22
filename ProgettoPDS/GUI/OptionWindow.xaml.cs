@@ -58,7 +58,13 @@ namespace ProgettoPDS
                 cfg.SetDefaultPath(); //TODO: Controllare che le immagini di default non vengano cancellate
             }
 
-            immagineprofilo2.Source = new BitmapImage(new Uri(cfg.ImgPath));
+            // immagineprofilo2. = new BitmapImage(new Uri(cfg.ImgPath));
+            
+
+            ImageBrush myBrush = new ImageBrush();
+            myBrush.ImageSource =
+                new BitmapImage(new Uri(cfg.ImgPath));
+            immagineprofilo2.Fill = myBrush;
             immagineprofilo2.Stretch = Stretch.Fill;
 
 
@@ -97,7 +103,12 @@ namespace ProgettoPDS
             {
                 cfg.ImgPath = fileDialog.FileName;
                 cfg.DumpConfiguration();
-                immagineprofilo2.Source = new BitmapImage(new Uri(fileDialog.FileName));
+                //immagineprofilo2.Source = new BitmapImage(new Uri(fileDialog.FileName));
+                ImageBrush myBrush = new ImageBrush();
+                myBrush.ImageSource =
+                    new BitmapImage(new Uri(cfg.ImgPath));
+                immagineprofilo2.Fill = myBrush;
+
                 immagineprofilo2.Stretch = Stretch.Fill;
             }
         }

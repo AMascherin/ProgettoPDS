@@ -10,6 +10,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Runtime.Serialization;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace ProgettoPDS
 {
@@ -160,6 +161,13 @@ namespace ProgettoPDS
             t.Start();
             t.Join();
 
+
+        }
+
+        void AskAcceptFiles() {
+
+            MessageBox.Show("Do you want to receive files?", "",
+            MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
         }
 

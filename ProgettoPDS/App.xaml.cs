@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Diagnostics;
 using System.IO;
+using ProgettoPDS.GUI;
 
 namespace ProgettoPDS
 {
@@ -35,27 +36,30 @@ namespace ProgettoPDS
             //TCPReceiver test = new TCPReceiver();
             //test.ReceiveData();
 
-          /*  string pathToObj = @"C:\Users\Alessandro\Desktop\image.jpg";
-            byte[] bytesToSend = File.ReadAllBytes(pathToObj);
-            string fileName = "Pippo.jpg";
-            try
-            {
-                using (StreamWriter writer = new StreamWriter(fileName, true))
-                {
-                   
-                    writer.BaseStream.Write(bytesToSend,0,bytesToSend.Length);
-                }
-            }
-            catch (DirectoryNotFoundException ex)
-            {
-                Console.WriteLine("DirectoryNotFoundException: {0}", ex);
-            }
+            /*  string pathToObj = @"C:\Users\Alessandro\Desktop\image.jpg";
+              byte[] bytesToSend = File.ReadAllBytes(pathToObj);
+              string fileName = "Pippo.jpg";
+              try
+              {
+                  using (StreamWriter writer = new StreamWriter(fileName, true))
+                  {
 
-    */
+                      writer.BaseStream.Write(bytesToSend,0,bytesToSend.Length);
+                  }
+              }
+              catch (DirectoryNotFoundException ex)
+              {
+                  Console.WriteLine("DirectoryNotFoundException: {0}", ex);
+              }
+
+      */
 
 
-                  //   var mw = new OptionWindow();
-                  //    mw.Show();
+            //   var mw = new OptionWindow();
+            //   mw.Show();
+            var rf = new RicezioneFile();
+              rf.Show();
+
         }
     }
 }

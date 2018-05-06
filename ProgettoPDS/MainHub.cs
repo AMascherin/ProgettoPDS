@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
 using System.Threading;
+using System.Net.Sockets;
+using System.Net;
 
 namespace ProgettoPDS
 {
@@ -43,7 +45,7 @@ namespace ProgettoPDS
             }
         }
 
-        public void SendTest(string msg)
+      /*  public void SendTest(string msg)
         {
             System.Windows.MessageBox.Show("SendTest activate");
             lock (_UserDatalocker)
@@ -54,11 +56,9 @@ namespace ProgettoPDS
 
                 _sender.SendData(msg);
             }
-        }
+        }*/
 
     }
-
-
 
 
     class MainHub //TODO: gestire la responsività con gli eventi(tcp client, interfaccia grafica, cambio della flag della privacy
@@ -69,7 +69,7 @@ namespace ProgettoPDS
         public static UserConfiguration uc;
         private static UDPSender _udpsend;
         private static UDPReceiver _udprec;
-        private static TCPReceiver _tcpRec;
+        private static TCPServer _tcpServer;
         private static Thread _udpsendThread;
         private static Thread _udprecThread;
         private static Thread _tcprecThread;
@@ -79,14 +79,14 @@ namespace ProgettoPDS
             uc = new UserConfiguration();
             _udpsend = new UDPSender();
             _udprec = new UDPReceiver();
-            _tcpRec = new TCPReceiver();
-            
+            _tcpServer = new TCPServer();
+
             _udprecThread = new Thread(_udprec.StartListener);
             _udprecThread.Name = "UdpReceiverThread";
             _udpsendThread = new Thread(_udpsend.Start);
             _udpsendThread.Name = "UdpSenderThread";
-            _tcprecThread = new Thread(_tcpRec.StartListener);
-            _tcprecThread.Name = "TCPServerThread";
+            //  _tcprecThread = new Thread(_tcpRec.StartListener);
+            //  _tcprecThread.Name = "TCPServerThread";
             nuc = new NetworkUserManager();
         }
 
@@ -103,6 +103,7 @@ namespace ProgettoPDS
             }
             catch (IOException)
             {
+                //Non esistono i dati inseriti dall'utente
                 OptionWindow mw1 = new OptionWindow(true);
                 mw1.ShowDialog();
                 string folder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
@@ -120,17 +121,8 @@ namespace ProgettoPDS
                 _udpsendThread.Start();
             }
             _udprecThread.Start();
+            _tcpServer.StartListener(); //Esegue su questo thread. 
 
-            _tcprecThread.Start();
-
-
-           /* while (true)
-            {
-                Thread.Sleep(5000);
-                nuc.SendTest("MEssaggio di prova");
-
-            }*/
-              //           this.TCPServerStartup();
 
         }
 
@@ -144,10 +136,6 @@ namespace ProgettoPDS
         protected virtual void OnSendRequest() { } //EventArgs contiene la lista di utenti a cui inviare i dati?  -->Integrare in SchermataInvio.cs
         protected virtual void CancelTransfer() { } //Andrà identificata la singola connessione
         protected virtual void OnReceiveRequest() { } //Richiesta di ricezione di fail da parte di altri utente
-
-
-
-
-
     }
 }
+

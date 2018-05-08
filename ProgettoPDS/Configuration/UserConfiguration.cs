@@ -144,6 +144,7 @@ namespace ProgettoPDS
             writer.WriteValue(getTimeStamp());
             JObject o = (JObject)writer.Token;
             return o.ToString();
+
         }
 
         public int LoadConfiguration()

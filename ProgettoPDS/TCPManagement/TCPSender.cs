@@ -9,6 +9,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace ProgettoPDS
 {
@@ -113,6 +114,19 @@ namespace ProgettoPDS
                 filesinfo.Add(new FileInfo(file));
                 
             }
+
+            JObject jsonfile = new JObject();
+
+            for (int i = 0; i < filesinfo.Count; i++)
+            {
+                jsonfile.Add(new JProperty("File" + i,
+                            new JObject(
+                                new JProperty("nome", filesinfo[i].Name),
+                                new JProperty("estensione", filesinfo[i].Extension),
+                                new JProperty("dimensione", filesinfo[i].Length))));
+            }
+
+
             /*
  {
 	'files': [

@@ -26,14 +26,14 @@ namespace ProgettoPDS
             TCPSender _sender = new TCPSender("192.168.1.105");
             _sender.SendData(msg);*/
 
-            //TCPReceiver test = new TCPReceiver();
+            //TCPServer test = new TCPServer();
             //test.ReceiveData();
 
             /* string path = @"C:\Users\fabyf\Desktop\leaves.jpg";
              TCPSender _sender = new TCPSender("192.168.1.105");
              _sender.SendData(path);*/
 
-            //TCPReceiver test = new TCPReceiver();
+            //TCPServer test = new TCPServer();
             //test.ReceiveData();
 
             /*  string pathToObj = @"C:\Users\Alessandro\Desktop\image.jpg";

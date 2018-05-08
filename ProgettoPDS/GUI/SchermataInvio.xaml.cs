@@ -153,7 +153,7 @@ namespace ProgettoPDS
             filestosend.Add("path/to/file");
             foreach (NetworkUser user in listauserinvio) {
                 TCPSender tcpsender = new TCPSender(user.Ipaddress);
-                tcpsender.HandleFileSend(filestosend);
+                tcpsender.handleFileSend(filestosend);
             }
         }
     }

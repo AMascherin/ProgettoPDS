@@ -57,7 +57,7 @@ namespace ProgettoPDS
 
             //   var mw = new OptionWindow();
             //   mw.Show();
-            var rf = new RicezioneFile();
+            var rf = new OptionWindow();
               rf.Show();
 
         }

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.IO;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ProgettoPDS
 {
@@ -61,30 +63,24 @@ namespace ProgettoPDS
                 filesinfo.Add(new FileInfo(file));
 
             }
-            /*
- {
-	'files': [
-		'file1':{
-			'name': ...
-			'size': ...
-			'extension': ...			
-		}
-		
-		'file2':{		
-		
-		}	
-	}
-}       
-             */
 
-            String jsonString = "pippo";
+            JObject jsonfile = new JObject();
+
+            for (int i = 0; i < filesinfo.Count; i++)
+            {
+                jsonfile.Add(new JProperty("File" + i,
+                new JObject(
+                    new JProperty("nome", filesinfo[i].Name),
+                    new JProperty("estensione", filesinfo[i].Extension),
+                    new JProperty("dimensione", filesinfo[i].Length))));
+            }
 
 
-            byte[] bytesToSend = System.Text.Encoding.UTF8.GetBytes((string)jsonString.ToString());
+            byte[] bytesToSend = System.Text.Encoding.UTF8.GetBytes((string)jsonfile.ToString());
             nwStream.Write(bytesToSend, 0, bytesToSend.Length); //Send to the server the file information data
             nwStream.Flush();
 
-            byte[] inStream = new byte[chunkSize]; //TODO: Check 
+            byte[] inStream = new byte[chunkSize]; //TODO: Check overflow
             nwStream.Read(inStream, 0, (int)client.ReceiveBufferSize);
             string returndata = System.Text.Encoding.UTF8.GetString(inStream);
             Console.WriteLine("Data from Server : " + returndata);
@@ -110,7 +106,7 @@ namespace ProgettoPDS
                 System.Windows.MessageBox.Show("Request rejected by the server, closing connection");
                 nwStream.Close();
                 CloseConnection();
-            }           
+            }
         }
 
         /*Remove in future update

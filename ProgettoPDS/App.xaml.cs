@@ -8,6 +8,7 @@ using System.Windows;
 using System.Diagnostics;
 using System.IO;
 using ProgettoPDS.GUI;
+using System.Threading;
 
 namespace ProgettoPDS
 {
@@ -19,8 +20,8 @@ namespace ProgettoPDS
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            //MainHub mainhub = new MainHub();
-            // mainhub.Initialize();
+            MainHub mainhub = new MainHub();
+            mainhub.Initialize();
 
             /* string msg = "Hello World";
             TCPSender _sender = new TCPSender("192.168.1.105");
@@ -28,14 +29,33 @@ namespace ProgettoPDS
 
             //TCPServer test = new TCPServer();
             //test.ReceiveData();
+            /*
+            string path = @"C:\Users\fabyf\Desktop\leaves.jpg";
+            try
+            {
+                TCPSender _sender = new TCPSender("192.168.43.86");
+                List<String> files = new List<string>();
+                files.Add(path);
+                _sender.handleFileSend(files);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.ToString());
+                return;
+            }
+            */
+            
+            /*TCPServer test = new TCPServer();
+            Thread _tcprecThread = new Thread(test.StartListener);
+            _tcprecThread.Start();*/
 
-            /* string path = @"C:\Users\fabyf\Desktop\leaves.jpg";
-             TCPSender _sender = new TCPSender("192.168.1.105");
-             _sender.SendData(path);*/
-
-            //TCPServer test = new TCPServer();
-            //test.ReceiveData();
-
+            //string path = @"C:\Users\fabyf\Desktop\leaves.jpg";
+         /*   string path = @"C:\Users\Alessandro Mascherin\Pictures\wnlYdQw.png";
+            TCPSender sender = new TCPSender("192.168.43.138");
+            List<String> files = new List<string>();
+            files.Add(path);
+            sender.handleFileSend(files);*/
+            
             /*  string pathToObj = @"C:\Users\Alessandro\Desktop\image.jpg";
               byte[] bytesToSend = File.ReadAllBytes(pathToObj);
               string fileName = "Pippo.jpg";
@@ -57,8 +77,8 @@ namespace ProgettoPDS
 
             //   var mw = new OptionWindow();
             //   mw.Show();
-            var rf = new OptionWindow();
-              rf.Show();
+            //var rf = new OptionWindow();
+            //rf.Show();
 
         }
     }

@@ -5,6 +5,8 @@ using System.Net;
 using System.Threading;
 using ProgettoPDS.GUI;
 using System.IO;
+using System.Windows;
+using System.Diagnostics;
 
 namespace ProgettoPDS
 {
@@ -18,8 +20,7 @@ namespace ProgettoPDS
 
         public TCPServer()
         {
-            IPAddress localAdd = IPAddress.Any;
-            listener = new TcpListener(localAdd, PORT_NO);
+            listener = new TcpListener(IPAddress.Any, PORT_NO);
             done = false;
 
         }
@@ -32,6 +33,7 @@ namespace ProgettoPDS
             while (!done)
             {
                 TcpClient clientSocket = listener.AcceptTcpClient();
+                Console.WriteLine("New connection accepted");
                 handleClient client = new handleClient(clientSocket); //Nuovo thread per gestire la comunicazione con lo specifico utente
             }
         }
@@ -65,12 +67,16 @@ namespace ProgettoPDS
                 int bytesmessageread = networkStream.Read(clientMessage, 0, clientMessage.Length); //Leggo il messaggio dell'utente
                 String clientRequest = System.Text.Encoding.UTF8.GetString(clientMessage);
 
+                System.Windows.MessageBox.Show(clientRequest);
                 //Deconversione JSON
-
+                /*
                 if (uc.AutomaticDownloadAcceptance == false) //Bisogna chiedere il permesso dall'utente
                 {
-                    RicezioneFile rcf = new RicezioneFile(new List<String>()); //La lista arriva dal file json decompresso
-                    rcf.Show();
+                    Application.Current.Dispatcher.Invoke((Action)delegate {
+                        RicezioneFile rcf = new RicezioneFile(new List<String>()); //La lista arriva dal file json decompresso
+                        rcf.Show();
+                    });
+                    
                     if (false) //Risposta dall'interfaccia grafica
                     { 
                         //Se l'utente rifiuta si avvisa il sender e si chiude la connessione
@@ -82,24 +88,37 @@ namespace ProgettoPDS
                         clientSocket.Close();
                         return;
                     }        
-                }
+                }*/
                 //Avvisiamo il client che accettiamo la ricezione dei file
                 byte[] bytesToSend = System.Text.Encoding.UTF8.GetBytes("200 OK");
                 networkStream.Write(bytesToSend, 0, bytesToSend.Length);
+                System.Windows.MessageBox.Show("200 Ok Send");
 
-                //Ora è possibile ricevere i file
-                string folderPath = @"c:\"; //TODO: inserire o far scegliere quella dell'utente
-                string fileName = "name"; //TODO: ottenerla e gestire conflitti                
+                try
+                {
+                    //Ora è possibile ricevere i file
+                    //string folderPath = @"C:\Users\Alessandro Mascherin\Downloads\"; //TODO: inserire o far scegliere quella dell'utente
+                    //string folderPath = @"C:\Users\fabyf\Downloads\";
+                    string currentfolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+                    string fullpath = currentfolder + @"\image.png";
+
+                    //string fileName = "name.png"; //TODO: ottenerla e gestire conflitti                
                 lock (this) {
-                    Stream fileStream = File.OpenWrite(folderPath + fileName);
+                    Stream fileStream = File.OpenWrite(fullpath);
                     byte[] clientData = new byte[chunkSize];
                     int bytesread = networkStream.Read(clientData, 0, clientData.Length); //Leggo il messaggio dell'utente
+                        System.Windows.MessageBox.Show("File data received, start save");
                     while (bytesread > 0)
                     {
                         fileStream.Write(clientData, 0, bytesread);
                         bytesread = networkStream.Read(clientData, 0, clientData.Length);
                     }
                     fileStream.Close();
+                }
+                }
+                catch (Exception e)
+                {
+                    System.Windows.MessageBox.Show(e.StackTrace.ToString());
                 }
                 networkStream.Flush();
                 networkStream.Close();

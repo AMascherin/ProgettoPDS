@@ -105,6 +105,7 @@
     <Compile Include="GUI\SchermataInvio.xaml.cs">
       <DependentUpon>SchermataInvio.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\DownloadItemModel.cs" />
     <Compile Include="RightClickManager.cs" />
     <Compile Include="TCPManagement\TCPReceiver.cs" />
     <Compile Include="TCPManagement\TCPSender.cs" />

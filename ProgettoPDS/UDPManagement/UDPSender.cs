@@ -53,7 +53,7 @@ namespace ProgettoPDS
                     if (address.Address.AddressFamily.Equals(AddressFamily.InterNetwork) && !address.Address.Equals(IPAddress.Loopback))
                     {
                         UdpClient client = new UdpClient();
-                        IPAddress multicastAddress = IPAddress.Parse("224.5.5.5");
+                        IPAddress multicastAddress = IPAddress.Parse(user.GetMulticastUDPAddress());
                         IPEndPoint localEndPoint = new IPEndPoint(address.Address, 0);
                         client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
 
@@ -73,8 +73,8 @@ namespace ProgettoPDS
         public void StartClient(Object obj)
         {
             UdpClient udpclient = (UdpClient)obj;
-            IPAddress multicastAddress = IPAddress.Parse("224.5.5.5");
-            IPEndPoint remoteEndPoint = new IPEndPoint(multicastAddress, 13370);
+            IPAddress multicastAddress = IPAddress.Parse(user.GetMulticastUDPAddress());
+            IPEndPoint remoteEndPoint = new IPEndPoint(multicastAddress, user.GetUDPPort());
             while (true)
             {
                 if (user.PrivacyFlag)

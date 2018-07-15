@@ -46,7 +46,7 @@ namespace ProgettoPDS
             lock (_UserDatalocker)
             {
                 System.Windows.MessageBox.Show("LockObtained");
-                TCPSender _sender = new TCPSender("192.168.1.103");
+                TCPSender _sender = new TCPSender("192.168.1.175");
 
 
                 _sender.SendData(msg);

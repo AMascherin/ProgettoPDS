@@ -15,9 +15,9 @@ namespace ProgettoPDS
 {
     class UDPReceiver
     {
-        private const int listenPort = 13370;
         //private static BlockingCollection<Byte[]> dataItems;
         private static BlockingCollection<ReceivedData> dataItems;
+        private UserConfiguration user;
 
         private struct ReceivedData {
             private byte[] data;
@@ -48,6 +48,7 @@ namespace ProgettoPDS
 
         public UDPReceiver() {
             dataItems= new BlockingCollection<ReceivedData>(64);
+            user = new UserConfiguration();
         }
         public void StartListener()
         {
@@ -90,8 +91,8 @@ namespace ProgettoPDS
 
 
                         UdpClient client = new UdpClient();
-                        IPAddress multicastAddress = IPAddress.Parse("224.5.5.5");
-                        IPEndPoint localEndPoint = new IPEndPoint(address.Address, listenPort);
+                        IPAddress multicastAddress = IPAddress.Parse(user.GetMulticastUDPAddress());
+                        IPEndPoint localEndPoint = new IPEndPoint(address.Address, user.GetUDPPort());
                         client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
                         client.MulticastLoopback = false;
                         client.ExclusiveAddressUse = false;
@@ -109,7 +110,8 @@ namespace ProgettoPDS
 
         private static void ReceiveData(Object obj) {
             UdpClient client = (UdpClient)obj;
-            IPEndPoint remoteIPEndPoint = new IPEndPoint(IPAddress.Any, listenPort);
+            UserConfiguration user = new UserConfiguration();
+            IPEndPoint remoteIPEndPoint = new IPEndPoint(IPAddress.Any, user.GetUDPPort());
             try
             {
                 bool done = false;

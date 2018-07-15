@@ -68,53 +68,81 @@ namespace ProgettoPDS
                 String clientRequest = System.Text.Encoding.UTF8.GetString(clientMessage);
 
                 System.Windows.MessageBox.Show(clientRequest);
-                //Deconversione JSON
-                /*
+                networkStream.Flush();
+               
+
+                string DownloadPath = null;
+                List<Models.DownloadItemModel> downloadItems = new List<Models.DownloadItemModel>(); //Deconversione JSON
+
                 if (uc.AutomaticDownloadAcceptance == false) //Bisogna chiedere il permesso dall'utente
                 {
-                    Application.Current.Dispatcher.Invoke((Action)delegate {
+                    Application.Current.Dispatcher.Invoke((Action)delegate
+                    {
                         RicezioneFile rcf = new RicezioneFile(new List<String>()); //La lista arriva dal file json decompresso
-                        rcf.Show();
+                        rcf.ShowDialog();
+
+                        if (!rcf.AcceptDownload) //Risposta dall'interfaccia grafica
+                        {
+                            //Se l'utente rifiuta si avvisa il sender e si chiude la connessione
+                            networkStream.Write(System.Text.Encoding.UTF8.GetBytes("418 I'm a teapot"),
+                                                0,
+                                                System.Text.Encoding.UTF8.GetBytes("418 I'm a teapot").Length); //Send to the server the file information data
+                            networkStream.Flush();
+                            networkStream.Close();
+                            clientSocket.Close();
+                            return;
+                        }
                     });
-                    
-                    if (false) //Risposta dall'interfaccia grafica
-                    { 
-                        //Se l'utente rifiuta si avvisa il sender e si chiude la connessione
-                        networkStream.Write(System.Text.Encoding.UTF8.GetBytes("418 I'm a teapot"), 
-                                            0, 
-                                            System.Text.Encoding.UTF8.GetBytes("418 I'm a teapot").Length); //Send to the server the file information data
-                        networkStream.Flush();
-                        networkStream.Close();
-                        clientSocket.Close();
-                        return;
-                    }        
-                }*/
+                }
+
+                else {
+                    if (!uc.DefaultDownloadPath)
+                    {
+                        //TODO: Mostare la schermata per scegliere il path di download (deafult windows)
+                    }
+                    else
+                        DownloadPath = uc.DefaultDownloadPathString;
+                }
                 //Avvisiamo il client che accettiamo la ricezione dei file
                 byte[] bytesToSend = System.Text.Encoding.UTF8.GetBytes("200 OK");
                 networkStream.Write(bytesToSend, 0, bytesToSend.Length);
                 System.Windows.MessageBox.Show("200 Ok Send");
-
+                networkStream.Flush();
                 try
                 {
-                    //Ora è possibile ricevere i file
-                    //string folderPath = @"C:\Users\Alessandro Mascherin\Downloads\"; //TODO: inserire o far scegliere quella dell'utente
-                    //string folderPath = @"C:\Users\fabyf\Downloads\";
-                    string currentfolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
-                    string fullpath = currentfolder + @"\image.png";
 
-                    //string fileName = "name.png"; //TODO: ottenerla e gestire conflitti                
-                lock (this) {
-                    Stream fileStream = File.OpenWrite(fullpath);
-                    byte[] clientData = new byte[chunkSize];
-                    int bytesread = networkStream.Read(clientData, 0, clientData.Length); //Leggo il messaggio dell'utente
-                        System.Windows.MessageBox.Show("File data received, start save");
-                    while (bytesread > 0)
+                    //Ora è possibile ricevere i file
+                    //string currentfolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+                    foreach (var downloadItem in downloadItems)
                     {
-                        fileStream.Write(clientData, 0, bytesread);
-                        bytesread = networkStream.Read(clientData, 0, clientData.Length);
+                        int count = 1;
+                        string fileNameOnly = Path.GetFileNameWithoutExtension(DownloadPath);
+                        string extension = Path.GetExtension(DownloadPath);
+                        string directory = Path.GetDirectoryName(DownloadPath);
+                        string newFullPath = DownloadPath;
+                        while (File.Exists(DownloadPath))
+                        {
+                            string tmpFileName = string.Format("{0}({1})", fileNameOnly, count++);
+                            newFullPath = Path.Combine(directory, tmpFileName + extension);
+                        }
+
+
+                        //string fileName = "name.png"; //TODO: ottenerla e gestire conflitti                
+                        lock (this)
+                        {
+                            Stream fileStream = File.OpenWrite(DownloadPath); //TODO: Check if not null
+                            byte[] clientData = new byte[chunkSize];
+                            int bytesread = networkStream.Read(clientData, 0, clientData.Length); //Leggo il messaggio dell'utente
+                            while (bytesread > 0)
+                            {
+                                fileStream.Write(clientData, 0, bytesread);
+                                bytesread = networkStream.Read(clientData, 0, clientData.Length);
+                            }
+                            fileStream.Close();
+                            System.Windows.MessageBox.Show("File data received, start save");  //TODO: Gestire la chiusura della connessione
+                        }
                     }
-                    fileStream.Close();
-                }
+
                 }
                 catch (Exception e)
                 {
@@ -131,124 +159,3 @@ namespace ProgettoPDS
         }
     }
 }
-
-
-//Da rimuovere in successivi update:
-
-//public void ReceiveData()
-//{
-//    //TODO: Gestire il path di ricezione secondo le scelte dell'utente
-//    //TODO: Gestione dei conflitti nel caso il file esista già
-
-
-//    string currentfolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
-//    //TODO: Sostituire questo campo con il path scelto dall'utente nel file di configurazione o tramite apposita UI
-
-//    /*********************************************************************/
-
-//    string fileName = currentfolder + @"\test\Pippo.jpg";
-//    //TODO: Scegliere il nome e l'estensione in base alla comunicazione TCP svolta in precedenza
-
-
-//    /*********************************************************************/
-
-//    int counter = 0;
-//    //---listen at the specified IP and port no.---
-//    Console.WriteLine("Listening...");
-//    listener.Start(); //TODO: Spostare il listener in un altro metodo
-
-//    //---incoming client connected---
-//    TcpClient client = listener.AcceptTcpClient();
-//    Console.WriteLine("Connection Accepted...");
-
-//    //---get the incoming data through a network stream---
-//    NetworkStream nwStream = client.GetStream();
-
-//    // Check to see if this NetworkStream is readable.
-//    if (nwStream.CanRead)
-//    {
-//        byte[] myReadBuffer = new byte[1024];
-
-//        int numberOfBytesRead = 0;
-
-//        // Incoming message may be larger than the buffer size.
-//        do
-//        {
-
-//            numberOfBytesRead = nwStream.Read(myReadBuffer, 0, myReadBuffer.Length);
-//            Console.WriteLine("Bytes Received : " + numberOfBytesRead);
-//            try
-//            {
-//                using (StreamWriter writer = new StreamWriter(fileName, true))
-//                {
-//                    writer.BaseStream.Write(myReadBuffer, 0, numberOfBytesRead);
-//                    counter++;
-//                }
-//            }
-//            catch (DirectoryNotFoundException e)
-//            {
-//                Console.WriteLine("DirectoryNotFoundException: {0}", e);
-//            }
-//            catch (ArgumentException e)
-//            {
-//                Console.WriteLine("ArgumentException: {0}", e);
-//            }
-
-//        }
-//        while (nwStream.DataAvailable);
-
-//    }
-//    else
-//    {
-//        Console.WriteLine("Sorry.  You cannot read from this NetworkStream.");
-//    }
-
-//    Console.WriteLine(counter);
-//}
-
-//public void ReceiveMessage()
-//{
-//    //---listen at the specified IP and port no.---
-//    Console.WriteLine("Listening...");
-//    listener.Start(); //TODO: Spostare il listener in un altro metodo
-
-//    //---incoming client connected---
-//    TcpClient client = listener.AcceptTcpClient();
-//    Console.WriteLine("Connection Accepted...");
-
-//    //---get the incoming data through a network stream---
-//    NetworkStream nwStream = client.GetStream();
-//    byte[] buffer = new byte[client.ReceiveBufferSize];
-
-//    //---read incoming stream---
-//    int bytesRead = nwStream.Read(buffer, 0, client.ReceiveBufferSize);
-
-//    Console.WriteLine("Bytes Received : " + bytesRead);
-
-//    try
-//    {
-//        String dataReceived = String.Empty;
-//        dataReceived = System.Text.Encoding.UTF8.GetString(buffer, 0, bytesRead);
-//        Console.WriteLine("Received : " + dataReceived);
-
-//    }
-
-//    catch (Exception e)
-//    {
-//        throw;
-//    }
-//    finally
-//    {
-//        client.Close();
-//    }
-
-
-//    //---write back the text to the client---
-//    // Console.WriteLine("Sending back : " + dataReceived);
-//    // nwStream.Write(buffer, 0, bytesRead);
-
-
-//    client.Close();
-//    //Console.ReadLine();
-
-//}

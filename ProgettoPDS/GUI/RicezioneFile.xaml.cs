@@ -22,7 +22,16 @@ namespace ProgettoPDS.GUI
     {
 
         List<Label> listalabel = new List<Label>();
-        
+
+        private bool _Accept;
+
+        public bool AcceptDownload
+        {
+            get
+            {
+                return _Accept;
+            }
+        }
 
         public RicezioneFile()
         {
@@ -33,6 +42,12 @@ namespace ProgettoPDS.GUI
                 generaGriglia(listalabel, "testo", "txt", "1200 bytes"+i);
                 generaGriglia(listalabel, "testo2", "txt2", "3200 bytes"+i);
             }
+        }
+
+        public RicezioneFile(String jsonString) {
+            //TODO: Deconvertire il file json ricevuto
+
+            //RicezioneFile(List < String > filetoreceive);
         }
 
         public RicezioneFile(List<String> filetoreceive) { //TODO:finire

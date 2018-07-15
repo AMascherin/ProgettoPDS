@@ -19,9 +19,19 @@ namespace ProgettoPDS
         private static bool _PrivacyFlag; //TRUE: Pubblic, FALSE: Private
         private static bool _AutomaticDownloadAcceptance;
         private static string _Username;
-        private static string _ImgPath;
+        private static string _ProfileImagePath;
+        private static bool _DefaultDownloadPath; //If true, the user has provided a default download path for all the files
+        private static string _DefaultDownloadPathString;
+
         private readonly object _UserDatalocker = new object();
 
+        public String GetMulticastUDPAddress () {
+            return "224.5.5.5";
+        }
+
+        public int GetUDPPort() {
+            return 13370;
+        }
 
         public bool AutomaticDownloadAcceptance
         {
@@ -42,10 +52,48 @@ namespace ProgettoPDS
 
         public string ImgPath
         {
-            get { lock (_UserDatalocker) {  return _ImgPath;     } }
-            set { lock (_UserDatalocker) {  _ImgPath = value;    } }
+            get { lock (_UserDatalocker) {  return _ProfileImagePath;     } }
+            set { lock (_UserDatalocker) {  _ProfileImagePath = value;    } }
         }
-        
+
+        public bool DefaultDownloadPath
+        {
+            get
+            {
+                lock (_UserDatalocker)
+                {
+                    return _DefaultDownloadPath;
+                }
+            }
+
+            set
+            {
+                lock (_UserDatalocker)
+                {
+                    _DefaultDownloadPath = value;
+                }
+            }
+        }
+
+        public string DefaultDownloadPathString
+        {
+            get
+            {
+                lock (_UserDatalocker)
+                {
+                    return _DefaultDownloadPathString;
+                }
+            }
+
+            set
+            {
+                lock (_UserDatalocker)
+                {
+                    _DefaultDownloadPathString = value;
+                }
+            }
+        }
+
         public UserConfiguration() //Costruttore
         {
             if (ImgPath == null)
@@ -62,7 +110,7 @@ namespace ProgettoPDS
             {
                 _PrivacyFlag = flag;
                 _Username = user;
-                _ImgPath = img;
+                _ProfileImagePath = img;
             }
         }
 

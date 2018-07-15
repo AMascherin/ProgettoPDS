@@ -172,5 +172,6 @@ namespace ProgettoPDS
         {
             cfg.AutomaticDownloadAcceptance = true;
         }
+
     }
 }

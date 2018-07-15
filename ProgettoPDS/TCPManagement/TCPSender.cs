@@ -18,7 +18,7 @@ namespace ProgettoPDS
         {
             IPAddress ipAd = IPAddress.Parse(ip);
 
-                client = new TcpClient(ipAd.ToString(), PORT_NO);
+            client = new TcpClient(ipAd.ToString(), PORT_NO);
 
             System.Windows.MessageBox.Show("TCP Sender created");
         }
@@ -82,18 +82,12 @@ namespace ProgettoPDS
             byte[] bytesToSend = System.Text.Encoding.UTF8.GetBytes((string)jsonfile.ToString());
             nwStream.Write(bytesToSend, 0, bytesToSend.Length); //Send to the server the file information data
             nwStream.Flush();
-            String returndata;
-            byte[] inStream = new byte[chunkSize]; //TODO: Check overflow
-            using (MemoryStream ms = new MemoryStream()) {
-                int bytesRead;
-                while ((bytesRead = nwStream.Read(inStream, 0, inStream.Length )) > 0) {
-                    ms.Write(inStream, 0, bytesRead);
-                }
-                returndata = System.Text.Encoding.UTF8.GetString(ms.ToArray(), 0, (int)ms.Length);
-            }
+            byte[] inStream = new byte[chunkSize];
+               
+            int clientMessage = nwStream.Read(inStream, 0, inStream.Length); //Leggo il messaggio dell'utente
+            String returndata = System.Text.Encoding.UTF8.GetString(inStream).TrimEnd('\0');
             
-            //string returndata = System.Text.Encoding.UTF8.GetString(inStream);
-            Console.WriteLine("Data from Server : " + returndata);
+            System.Windows.MessageBox.Show("Data from Server : " + returndata);
            // nwStream.FlushAsync();
 
             if (returndata.Equals("200 OK"))
@@ -101,12 +95,15 @@ namespace ProgettoPDS
                 foreach (String file in filesToSend)
                 {
                     //SendData(file, nwStream);
-                    byte[] bytesArrayToSend = File.ReadAllBytes(file);
+                    byte[] bytesArrayToSend = File.ReadAllBytes(file); //MAX 2 GB
 
                     //Send data into stream
-                    nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+                    nwStream.Write(bytesArrayToSend, 0, bytesArrayToSend.Length);
+
+                    //TODO: Send message to signal end of transmission (dati: file inviato, numero di file mancanti)
                 }
 
+                //TODO: gestire stato invio
                 /* nwStream.Read(inStream, 0, (int)client.ReceiveBufferSize);
                  string response = System.Text.Encoding.UTF8.GetString(inStream);
                  Console.WriteLine("Data from Server : " + response);*/
@@ -123,33 +120,6 @@ namespace ProgettoPDS
             }
         }
 
-        /*Remove in future update
-         * public void SendMessage(Object obj)
-        {
-
-            try
-            {
-                //---create a NetworkStream---
-                NetworkStream nwStream = client.GetStream();
-
-                //Convert message string into byte data
-                byte[] bytesToSend = System.Text.Encoding.UTF8.GetBytes((string)obj);
-
-                //Send data into stream
-                nwStream.Write(bytesToSend, 0, bytesToSend.Length);
-                nwStream.Close();
-                // CloseConnection();
-            }
-            catch (ArgumentNullException e)
-            {
-                Console.WriteLine("ArgumentNullException: {0}", e);
-            }
-            catch (SocketException e)
-            {
-                Console.WriteLine("SocketException: {0}", e);
-            }
-
-        }*/
-    }
+   }
 }
 

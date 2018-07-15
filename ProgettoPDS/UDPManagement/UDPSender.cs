@@ -7,31 +7,76 @@ using System.Net.Sockets;
 using System.Net;
 using System.Threading;
 using System.Windows.Forms;
+using System.Net.NetworkInformation;
 
 
 namespace ProgettoPDS
 {
-    //TODO: Aumentare il TTL dei pacchetti UDP
     class UDPSender
     {
-        private static UdpClient udpclient;
-        private static IPAddress groupAddress;
-        private IPEndPoint Clientdest;
         private UserConfiguration user;
 
-        public UDPSender() 
-
+        public UDPSender()
         {
             user = new UserConfiguration();
-            udpclient = new UdpClient();
-            groupAddress=IPAddress.Parse("255.255.255.255");  //IPv4 Broadcast
-            Clientdest = new IPEndPoint(groupAddress, 13370); //Hard-Coded Port Number. TODO: Check confirmation user authorization
         }
 
         public void Start()
         {
+            List<NetworkInterface> validNetwork = new List<NetworkInterface>();
+            foreach (NetworkInterface adapter in NetworkInterface.GetAllNetworkInterfaces())
+            {
+                if (!adapter.SupportsMulticast) //Multicast non supportato
+                    continue;
+
+                if (!adapter.GetIPProperties().MulticastAddresses.Any())
+                    continue;
+
+                if (!adapter.Supports(NetworkInterfaceComponent.IPv4))
+                    continue;
+
+                IPv4InterfaceProperties p = adapter.GetIPProperties().GetIPv4Properties();
+                if (null == p)
+                    continue; // IPv4 is not configured on this adapter
+
+                if (adapter.OperationalStatus == OperationalStatus.Up)
+                    validNetwork.Add(adapter);
+
+            }
+
+
+            foreach (NetworkInterface adapter in validNetwork)
+            {
+                IPInterfaceProperties p = adapter.GetIPProperties();
+                foreach (var address in p.UnicastAddresses)
+                {
+                    if (address.Address.AddressFamily.Equals(AddressFamily.InterNetwork) && !address.Address.Equals(IPAddress.Loopback))
+                    {
+                        UdpClient client = new UdpClient();
+                        IPAddress multicastAddress = IPAddress.Parse("224.5.5.5");
+                        IPEndPoint localEndPoint = new IPEndPoint(address.Address, 0);
+                        client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+
+                        client.MulticastLoopback = false;
+                        client.ExclusiveAddressUse = false;
+                        client.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(multicastAddress, address.Address));
+
+                        client.Client.Bind(localEndPoint);
+
+                        Thread receiverThread = new Thread(new ParameterizedThreadStart(StartClient));
+                        receiverThread.Start(client);
+                    }
+                }
+            }
+        }            
+
+        public void StartClient(Object obj)
+        {
+            UdpClient udpclient = (UdpClient)obj;
+            IPAddress multicastAddress = IPAddress.Parse("224.5.5.5");
+            IPEndPoint remoteEndPoint = new IPEndPoint(multicastAddress, 13370);
             while (true)
-            {                
+            {
                 if (user.PrivacyFlag)
                 {
 
@@ -39,7 +84,7 @@ namespace ProgettoPDS
                     {
                         string data = user.GetJSONConfiguration();
                         Byte[] data_b = Encoding.Unicode.GetBytes(data);
-                        udpclient.Send(data_b, data_b.Length, Clientdest);
+                        udpclient.Send(data_b, data_b.Length, remoteEndPoint);
                     }
                     catch (ArgumentNullException ex)
                     {
@@ -56,50 +101,6 @@ namespace ProgettoPDS
                 Thread.Sleep(10000);
 
             }
-        }
-
-        public void SingleStart() {
-
-            string data = user.GetJSONConfiguration();
-            try
-            {
-                udpclient.Send(Encoding.Unicode.GetBytes(data), data.Length, Clientdest);
-            }
-            catch(ArgumentNullException ex)
-            {
-                Application.Exit();
-
-            }
-            catch (InvalidOperationException ex)
-            {
-
-                string message = "Invalid Operation. Please try again";
-                string caption = "Invalid operation";
-
-                DialogResult result;
-
-                // Displays the MessageBox.
-
-                result = MessageBox.Show(message, caption);
-
-
-            }
-            catch (SocketException ex)
-            {
-
-                string message = "Socket error. Please check network settings";
-                string caption = "Connection Error";
-                
-                DialogResult result;
-
-                // Displays the MessageBox.
-
-                result = MessageBox.Show(message, caption);
-                
-
-
-            }
-
         }
     }
 }

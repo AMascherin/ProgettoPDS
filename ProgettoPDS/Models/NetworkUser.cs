@@ -18,7 +18,7 @@ namespace ProgettoPDS
         private static string _imagepath;
         private static string _mac;
         private DateTime _timestamp;
-        private string data;
+
 
         public NetworkUser() { }
 

@@ -20,19 +20,8 @@ namespace ProgettoPDS
         private static bool _AutomaticDownloadAcceptance;
         private static string _Username;
         private static string _ImgPath;
-        private static string _multicastaddress;
         private readonly object _UserDatalocker = new object();
 
-        public string multicastaddress
-        { //Sola lettura. La variabile viene settata solo dalla LoadConfiguration (TODO: Gestire parsing JSON)
-            get
-            {
-                lock (_UserDatalocker)
-                {
-                    return _multicastaddress;
-                }
-            }
-        }
 
         public bool AutomaticDownloadAcceptance
         {
@@ -67,14 +56,13 @@ namespace ProgettoPDS
         }
 
         [JsonConstructor]
-        public UserConfiguration(bool flag, string user, string img, string multicastaddress)
+        public UserConfiguration(bool flag, string user, string img)
         {
             lock (_UserDatalocker)
             {
                 _PrivacyFlag = flag;
                 _Username = user;
                 _ImgPath = img;
-                _multicastaddress = multicastaddress;
             }
         }
 
@@ -87,11 +75,6 @@ namespace ProgettoPDS
             if (ImgPath == null) {
                 ImgPath = currentfolder + @"\Media\images.png";
              }
-            if (multicastaddress == null) {
-                lock (_UserDatalocker) {
-                    _multicastaddress = "239.10.10.10";
-                }               
-            }
             string json = JsonConvert.SerializeObject(this);
             try
             {

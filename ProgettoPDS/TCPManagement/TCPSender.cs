@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.IO;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Net;
 
 namespace ProgettoPDS
 {
@@ -13,7 +16,10 @@ namespace ProgettoPDS
 
         public TCPSender(string ip)
         {
-            client = new TcpClient(ip, PORT_NO);
+            IPAddress ipAd = IPAddress.Parse(ip);
+
+                client = new TcpClient(ipAd.ToString(), PORT_NO);
+
             System.Windows.MessageBox.Show("TCP Sender created");
         }
 
@@ -21,7 +27,6 @@ namespace ProgettoPDS
         {
             try
             {
-                //---create a NetworkStream---
                 //NetworkStream nwStream = client.GetStream();
 
                 byte[] bytesToSend = File.ReadAllBytes(pathToObj);
@@ -61,40 +66,45 @@ namespace ProgettoPDS
                 filesinfo.Add(new FileInfo(file));
 
             }
-            /*
- {
-	'files': [
-		'file1':{
-			'name': ...
-			'size': ...
-			'extension': ...			
-		}
-		
-		'file2':{		
-		
-		}	
-	}
-}       
-             */
 
-            String jsonString = "pippo";
+            JObject jsonfile = new JObject();
+
+            for (int i = 0; i < filesinfo.Count; i++)
+            {
+                jsonfile.Add(new JProperty("File" + i,
+                new JObject(
+                    new JProperty("nome", filesinfo[i].Name),
+                    new JProperty("estensione", filesinfo[i].Extension),
+                    new JProperty("dimensione", filesinfo[i].Length))));
+            }
 
 
-            byte[] bytesToSend = System.Text.Encoding.UTF8.GetBytes((string)jsonString.ToString());
+            byte[] bytesToSend = System.Text.Encoding.UTF8.GetBytes((string)jsonfile.ToString());
             nwStream.Write(bytesToSend, 0, bytesToSend.Length); //Send to the server the file information data
             nwStream.Flush();
-
-            byte[] inStream = new byte[chunkSize]; //TODO: Check 
-            nwStream.Read(inStream, 0, (int)client.ReceiveBufferSize);
-            string returndata = System.Text.Encoding.UTF8.GetString(inStream);
+            String returndata;
+            byte[] inStream = new byte[chunkSize]; //TODO: Check overflow
+            using (MemoryStream ms = new MemoryStream()) {
+                int bytesRead;
+                while ((bytesRead = nwStream.Read(inStream, 0, inStream.Length )) > 0) {
+                    ms.Write(inStream, 0, bytesRead);
+                }
+                returndata = System.Text.Encoding.UTF8.GetString(ms.ToArray(), 0, (int)ms.Length);
+            }
+            
+            //string returndata = System.Text.Encoding.UTF8.GetString(inStream);
             Console.WriteLine("Data from Server : " + returndata);
-            nwStream.FlushAsync();
+           // nwStream.FlushAsync();
 
             if (returndata.Equals("200 OK"))
             {
                 foreach (String file in filesToSend)
                 {
-                    SendData(file, nwStream);
+                    //SendData(file, nwStream);
+                    byte[] bytesArrayToSend = File.ReadAllBytes(file);
+
+                    //Send data into stream
+                    nwStream.Write(bytesToSend, 0, bytesToSend.Length);
                 }
 
                 /* nwStream.Read(inStream, 0, (int)client.ReceiveBufferSize);
@@ -110,7 +120,7 @@ namespace ProgettoPDS
                 System.Windows.MessageBox.Show("Request rejected by the server, closing connection");
                 nwStream.Close();
                 CloseConnection();
-            }           
+            }
         }
 
         /*Remove in future update

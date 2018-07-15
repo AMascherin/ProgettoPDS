@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
 using System.Threading;
-using System.Net.Sockets;
-using System.Net;
 
 namespace ProgettoPDS
 {
@@ -27,7 +22,7 @@ namespace ProgettoPDS
             bool checknewuser = true;
             DateTime checktime = DateTime.UtcNow;
 
-            System.Windows.MessageBox.Show(newuser.Ipaddress);
+            //System.Windows.MessageBox.Show(newuser.Ipaddress);
 
             lock (_UserDatalocker)
             {
@@ -97,7 +92,7 @@ namespace ProgettoPDS
              Avvio del listener UDP
              Avvio del sender UDP, se la flag lo prevede          
              */
-            try
+            try //change to if(File(exist)
             {
                 uc.LoadConfiguration();
             }
@@ -121,10 +116,11 @@ namespace ProgettoPDS
                 _udpsendThread.Start();
             }
             _udprecThread.Start();
-            _tcpServer.StartListener(); //Esegue su questo thread. 
+           // _tcpServer.StartListener(); //Esegue su questo thread. 
 
 
         }
+
 
         private void TCPServerStartup()
         {

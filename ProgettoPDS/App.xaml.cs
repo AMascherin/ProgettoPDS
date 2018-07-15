@@ -55,10 +55,9 @@ namespace ProgettoPDS
       */
 
 
-            //   var mw = new OptionWindow();
-            //   mw.Show();
-            var rf = new OptionWindow();
-              rf.Show();
+               var mw = new OptionWindow();
+               mw.Show();
+           
 
         }
     }

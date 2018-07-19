@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading;
 using ProgettoPDS.GUI;
 using System.IO;
+using System.IO.Compression;
 using System.Windows;
 using System.Diagnostics;
 
@@ -141,8 +142,21 @@ namespace ProgettoPDS
                             fileStream.Close();
                             System.Windows.MessageBox.Show("File data received, start save");  //TODO: Gestire la chiusura della connessione
                         }
-                    }
 
+                        //To extract the zip in a new folder
+                        //ZipFile.ExtractToDirectory("zipname", "foldername");
+
+                        /* Extracts in a target path
+                        using (ZipFile zip = ZipFile.Read(file))
+                        {
+                            foreach (ZipEntry zipFiles in zip)
+                            {
+                                zipFiles.Extract(currentpath, true);
+                            }
+
+                        }*/
+
+                    }
                 }
                 catch (Exception e)
                 {

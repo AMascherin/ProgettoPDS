@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.IO;
+using System.IO.Compression;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net;
@@ -92,21 +93,42 @@ namespace ProgettoPDS
 
             if (returndata.Equals("200 OK"))
             {
-                foreach (String file in filesToSend)
+                //https://www.codeguru.com/csharp/.net/zip-and-unzip-files-programmatically-in-c.htm
+                string zipPath = "Test";
+                using (ZipArchive zip = ZipFile.Open(zipPath, ZipArchiveMode.Create))
                 {
-                    //SendData(file, nwStream);
-                    byte[] bytesArrayToSend = File.ReadAllBytes(file); //MAX 2 GB
+                    foreach (String file in filesToSend)
+                    {
+                        zip.CreateEntryFromFile(file, Path.GetFileName(file), CompressionLevel.Optimal);
+                        //SendData(file, nwStream);
+                        // byte[] bytesArrayToSend = File.ReadAllBytes(file); //MAX 2 GB
 
-                    //Send data into stream
-                    nwStream.Write(bytesArrayToSend, 0, bytesArrayToSend.Length);
+                        //Send data into stream
+                        //nwStream.Write(bytesArrayToSend, 0, bytesArrayToSend.Length);
 
-                    //TODO: Send message to signal end of transmission (dati: file inviato, numero di file mancanti)
-                }
+                        //https://stackoverflow.com/questions/21259703/how-to-receive-large-file-over-networkstream-c
+                        /*  var fileIO = File.OpenRead(file) ;
 
-                //TODO: gestire stato invio
-                /* nwStream.Read(inStream, 0, (int)client.ReceiveBufferSize);
-                 string response = System.Text.Encoding.UTF8.GetString(inStream);
-                 Console.WriteLine("Data from Server : " + response);*/
+                          var bytesArrayToSend = new byte[1024 * 8];
+                          int count;
+                          while ((count = fileIO.Read(bytesArrayToSend, 0, bytesArrayToSend.Length)) > 0)
+                              nwStream.Write(bytesArrayToSend, 0, count);*/
+
+                        //TODO: Send message to signal end of transmission (dati: file inviato, numero di file mancanti)
+                    }
+                    using (var fileIO = File.OpenRead(zipPath))
+                    {
+                        var bytesArrayToSend = new byte[1024 * 8];
+                        int count;
+                        while ((count = fileIO.Read(bytesArrayToSend, 0, bytesArrayToSend.Length)) > 0)
+                            nwStream.Write(bytesArrayToSend, 0, count);
+                    }
+
+                } //zip.Dispose();
+
+
+
+
                 nwStream.Close();
                 CloseConnection();
 

@@ -50,12 +50,14 @@ namespace ProgettoPDS.GUI
             //RicezioneFile(List < String > filetoreceive);
         }
 
-        public RicezioneFile(List<String> filetoreceive) { //TODO:finire
-            InitializeComponent();
-            foreach (String file in filetoreceive) {
-                generaGriglia(listalabel, file, file, file);
-            }
+        public RicezioneFile(List<String> filetoreceive, List<String> fileformats, List<String> filedimensions) { //TODO:finire
 
+            InitializeComponent();
+
+            for (int i = 0; i < filetoreceive.Count; i++) 
+                generaGriglia(listalabel, filetoreceive[i], fileformats[i], filedimensions[i]);
+                
+            
         }
 
         private void bottonesceglifile_Click(object sender, RoutedEventArgs e)
@@ -71,7 +73,7 @@ namespace ProgettoPDS.GUI
 
 
         void generaGriglia(List<Label> listalabel, string nomefile, string estensione, string size)
-        // FUNZIONE CHE CREA LA GRIGLIA DI UTENTI CONNESSI
+        // FUNZIONE CHE CREA LA GRIGLIA DI FILE DA RICEVERE
         {
 
             Grid griglianome = new Grid();

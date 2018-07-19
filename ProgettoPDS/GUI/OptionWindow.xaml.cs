@@ -147,6 +147,7 @@ namespace ProgettoPDS
         {
             textboxpercorso.Opacity = 50;
             textboxpercorso.IsEnabled = false;
+            textboxpercorso.Text = cfg.DefaultDownloadPathString;
             bottonesceglifile.Opacity = 50;
             bottonesceglifile.IsEnabled = false;
         }
@@ -173,5 +174,11 @@ namespace ProgettoPDS
             cfg.AutomaticDownloadAcceptance = true;
         }
 
+        private void textboxpercorso_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+            cfg.DefaultDownloadPathString = textboxpercorso.Text;
+
+        }
     }
 }

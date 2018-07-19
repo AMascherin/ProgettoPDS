@@ -8,6 +8,9 @@ using System.IO;
 using System.IO.Compression;
 using System.Windows;
 using System.Diagnostics;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Windows.Forms;
 
 namespace ProgettoPDS
 {
@@ -75,11 +78,43 @@ namespace ProgettoPDS
                 string DownloadPath = null;
                 List<Models.DownloadItemModel> downloadItems = new List<Models.DownloadItemModel>(); //Deconversione JSON
 
+                JObject json = JObject.Parse(clientRequest.ToString());
+
+                Console.WriteLine(json.ToString());
+
+                //DECONVERSIONE JSON
+                foreach (JProperty property in json.Properties())
+                {
+
+                    JObject jobj = (JObject)property.Value;
+                    Models.DownloadItemModel file = new Models.DownloadItemModel();
+                    file.OriginalFileName = jobj.GetValue("nome").ToString();
+                    file.Format = jobj.GetValue("estensione").ToString();
+                    file.Dimension = (long) jobj.GetValue("dimensione");
+                    Console.WriteLine(file.OriginalFileName + "+" + file.Format + "+" + file.Dimension.ToString());
+                    downloadItems.Add(file);
+
+                }
+
+                List<String> elenconomifile = new List<String>();
+                List<String> elencoformatifile = new List<String>();
+                List<String> elencodimensionifile = new List<String>();
+
+                foreach (Models.DownloadItemModel item in downloadItems) {
+
+                    elenconomifile.Add(item.OriginalFileName);
+                    elencodimensionifile.Add(item.Dimension.ToString());
+                    elencoformatifile.Add(item.Format);
+
+                }
+
+
+
                 if (uc.AutomaticDownloadAcceptance == false) //Bisogna chiedere il permesso dall'utente
                 {
-                    Application.Current.Dispatcher.Invoke((Action)delegate
+                    System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate
                     {
-                        RicezioneFile rcf = new RicezioneFile(new List<String>()); //La lista arriva dal file json decompresso
+                        RicezioneFile rcf = new RicezioneFile(elenconomifile, elencoformatifile, elencodimensionifile); //La lista arriva dal file json decompresso
                         rcf.ShowDialog();
 
                         if (!rcf.AcceptDownload) //Risposta dall'interfaccia grafica
@@ -100,6 +135,9 @@ namespace ProgettoPDS
                     if (!uc.DefaultDownloadPath)
                     {
                         //TODO: Mostare la schermata per scegliere il path di download (deafult windows)
+                        SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+                        saveFileDialog1.ShowDialog();
+
                     }
                     else
                         DownloadPath = uc.DefaultDownloadPathString;

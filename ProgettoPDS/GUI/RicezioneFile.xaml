@@ -131,12 +131,12 @@
         <TextBox x:Name="textboxpercorso" HorizontalAlignment="Left" Height="23" Margin="188,305,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="200" RenderTransformOrigin="0.526,0.126"/>
         <Button x:Name="bottonesceglifile" Content="..." HorizontalAlignment="Left" Margin="393,305,0,0" VerticalAlignment="Top" Width="23" RenderTransformOrigin="0.316,0.505" Height="23" Click="bottonesceglifile_Click"/>
         <Label x:Name="labelpath" Content="Choose download path" HorizontalAlignment="Left" Margin="10,305,0,0" VerticalAlignment="Top" Width="146" Height="23" Background="#FFECE8E8" Style="{StaticResource LabelStyle}" FontSize="10" FontWeight="Bold" RenderTransformOrigin="0.5,1.043"/>
-        <Button x:Name="button" Content="" HorizontalAlignment="Left" Margin="450,301,0,0" VerticalAlignment="Top" Width="34" Height="31"  Style="{StaticResource MyButton}">
+        <Button x:Name="button" Content="" HorizontalAlignment="Left" Margin="450,301,0,0" VerticalAlignment="Top" Width="34" Height="31"  Style="{StaticResource MyButton}" Click="button2_Click">
             <Button.Background>
                 <ImageBrush ImageSource="/ProgettoPDS;component/Media/Red_X.png"/>
             </Button.Background>
         </Button>
-        <Button x:Name="button1" Content="" HorizontalAlignment="Left" Margin="501,301,0,0" VerticalAlignment="Top" Width="33" Height="31"  Style="{StaticResource MyButton}">
+        <Button x:Name="button1" Content="" HorizontalAlignment="Left" Margin="501,301,0,0" VerticalAlignment="Top" Width="33" Height="31"  Style="{StaticResource MyButton}" Click="button1_Click">
             <Button.Background>
                 <ImageBrush ImageSource="/ProgettoPDS;component/Media/arrow2.png"/>
             </Button.Background>

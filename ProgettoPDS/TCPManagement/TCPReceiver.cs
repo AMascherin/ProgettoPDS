@@ -96,25 +96,14 @@ namespace ProgettoPDS
 
                 }
 
-                List<String> elenconomifile = new List<String>();
-                List<String> elencoformatifile = new List<String>();
-                List<String> elencodimensionifile = new List<String>();
-
-                foreach (Models.DownloadItemModel item in downloadItems) {
-
-                    elenconomifile.Add(item.OriginalFileName);
-                    elencodimensionifile.Add(item.Dimension.ToString());
-                    elencoformatifile.Add(item.Format);
-
-                }
-
 
 
                 if (uc.AutomaticDownloadAcceptance == false) //Bisogna chiedere il permesso dall'utente
                 {
                     System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate
                     {
-                        RicezioneFile rcf = new RicezioneFile(elenconomifile, elencoformatifile, elencodimensionifile); //La lista arriva dal file json decompresso
+                        RicezioneFile rcf = new RicezioneFile(downloadItems); //La lista arriva dal file json decompresso
+                        rcf.Reset();
                         rcf.ShowDialog();
 
                         if (!rcf.AcceptDownload) //Risposta dall'interfaccia grafica
@@ -128,15 +117,18 @@ namespace ProgettoPDS
                             clientSocket.Close();
                             return;
                         }
+                        else {
+                            DownloadPath = rcf.downloadPath;
+                        }
                     });
                 }
 
                 else {
                     if (!uc.DefaultDownloadPath)
-                    {
-                        //TODO: Mostare la schermata per scegliere il path di download (deafult windows)
+                    {                       
                         SaveFileDialog saveFileDialog1 = new SaveFileDialog();
                         saveFileDialog1.ShowDialog();
+                        DownloadPath = Path.GetFullPath(saveFileDialog1.FileName);
 
                     }
                     else
@@ -149,43 +141,63 @@ namespace ProgettoPDS
                 networkStream.Flush();
                 try
                 {
-
                     //Ora è possibile ricevere i file
-                    //string currentfolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
                     foreach (var downloadItem in downloadItems)
                     {
+                        string filePath = Path.Combine(DownloadPath, "tmp.zip");
                         int count = 1;
-                        string fileNameOnly = Path.GetFileNameWithoutExtension(DownloadPath);
-                        string extension = Path.GetExtension(DownloadPath);
-                        string directory = Path.GetDirectoryName(DownloadPath);
-                        string newFullPath = DownloadPath;
-                        while (File.Exists(DownloadPath))
+                        while (File.Exists(filePath))
                         {
-                            string tmpFileName = string.Format("{0}({1})", fileNameOnly, count++);
-                            newFullPath = Path.Combine(directory, tmpFileName + extension);
+                            string tmpFileName = string.Format("{0}({1})", "tmp", count++);
+                            filePath = Path.Combine(DownloadPath, tmpFileName+".zip");
                         }
 
-
-                        //string fileName = "name.png"; //TODO: ottenerla e gestire conflitti                
                         lock (this)
                         {
-                            Stream fileStream = File.OpenWrite(DownloadPath); //TODO: Check if not null
-                            byte[] clientData = new byte[chunkSize];
-                            int bytesread = networkStream.Read(clientData, 0, clientData.Length); //Leggo il messaggio dell'utente
-                            while (bytesread > 0)
+                            try
                             {
-                                fileStream.Write(clientData, 0, bytesread);
-                                bytesread = networkStream.Read(clientData, 0, clientData.Length);
+                                Stream fileStream = File.OpenWrite(filePath); //TODO: Check if not null
+                                byte[] clientData = new byte[chunkSize];
+                                int bytesread = networkStream.Read(clientData, 0, clientData.Length); //Leggo il messaggio dell'utente
+                                while (bytesread > 0)
+                                {
+                                    fileStream.Write(clientData, 0, bytesread);
+                                    bytesread = networkStream.Read(clientData, 0, clientData.Length);
+                                }
+                                fileStream.Close();
+                                System.Windows.MessageBox.Show("File data received, start save");  //TODO: Gestire la chiusura della connessione
                             }
-                            fileStream.Close();
-                            System.Windows.MessageBox.Show("File data received, start save");  //TODO: Gestire la chiusura della connessione
+                            catch (Exception e) {
+                                System.Windows.MessageBox.Show(e.Message);
+                                System.Windows.MessageBox.Show(e.StackTrace);
+                            }
                         }
 
                         //To extract the zip in a new folder
-                        //ZipFile.ExtractToDirectory("zipname", "foldername");
+                        //ZipFile.ExtractToDirectory(filePath, DownloadPath)
+                        ZipArchive archive = ZipFile.Open(filePath, ZipArchiveMode.Update);
+                        foreach (var entry in archive.Entries) {
+                            string path = Path.Combine(DownloadPath, entry.Name);
+                            if (File.Exists(path))
+                            { 
+                                int j = 1;
+                                while (File.Exists(path))
+                                {
+                                    string tmpFileName = string.Format("{0}({1})", Path.GetFileNameWithoutExtension(entry.Name), j++);
+                                    path = Path.Combine(DownloadPath, tmpFileName + Path.GetExtension(entry.Name));
+                                }
 
-                        /* Extracts in a target path
-                        using (ZipFile zip = ZipFile.Read(file))
+                            }
+                            entry.ExtractToFile(path);
+                        }
+                        archive.Dispose();
+
+
+                        if (File.Exists(filePath))
+                            File.Delete(filePath);
+
+                        /* Extracts in a target path*/
+                        /*using (ZipArchive zip = ZipFile.Open(filePath, ZipArchiveMode.Read))
                         {
                             foreach (ZipEntry zipFiles in zip)
                             {
@@ -194,11 +206,13 @@ namespace ProgettoPDS
 
                         }*/
 
+
                     }
                 }
                 catch (Exception e)
                 {
                     System.Windows.MessageBox.Show(e.StackTrace.ToString());
+                    System.Windows.MessageBox.Show(e.Message);
                 }
                 networkStream.Flush();
                 networkStream.Close();

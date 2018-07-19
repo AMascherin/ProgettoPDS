@@ -27,11 +27,14 @@ namespace ProgettoPDS
             TCPSender _sender = new TCPSender("192.168.1.175");
             _sender.SendData(msg);*/
 
-            string path = @"C:\Users\Alessandro Mascherin\Desktop\The Wizard\Video\The_Lizard_Movie.mp4";
-           //string path = @"C:\Users\fabyf\Desktop\leaves.jpg";
-            try
+            //         string path = @"C:\Users\Alessandro Mascherin\Desktop\The Wizard\Video\The_Lizard_Movie.mp4";
+            //  string path = @"C:\Users\fabyf\Desktop\leaves.jpg";
+            //  string path2 = @"C:\Users\fabyf\Desktop\caso.wav";
+            string path = @"C:\Users\fabyf\Desktop\INGLESE\";
+
+       /*     try
             {
-                TCPSender _sender = new TCPSender("192.168.1.174");
+                TCPSender _sender = new TCPSender("192.168.43.86");
                 List<String> files = new List<string>();
                 files.Add(path);
                 _sender.handleFileSend(files);
@@ -40,12 +43,12 @@ namespace ProgettoPDS
             {
                 System.Windows.MessageBox.Show(ex.ToString());
                 return;
-            }
+            }*/
             
-            
-           /* TCPServer test = new TCPServer();
+         
+           TCPServer test = new TCPServer();
             Thread _tcprecThread = new Thread(test.StartListener);
-            _tcprecThread.Start();*/
+            _tcprecThread.Start(); 
 
             //string path = @"C:\Users\fabyf\Desktop\leaves.jpg";
          /*   string path = @"C:\Users\Alessandro Mascherin\Pictures\wnlYdQw.png";

@@ -89,12 +89,13 @@ namespace ProgettoPDS
             String returndata = System.Text.Encoding.UTF8.GetString(inStream).TrimEnd('\0');
             
             System.Windows.MessageBox.Show("Data from Server : " + returndata);
-           // nwStream.FlushAsync();
 
             if (returndata.Equals("200 OK"))
             {
                 //https://www.codeguru.com/csharp/.net/zip-and-unzip-files-programmatically-in-c.htm
-                string zipPath = "Test";
+
+                string zipPath = "Test.zip"; //TODO
+
                 using (ZipArchive zip = ZipFile.Open(zipPath, ZipArchiveMode.Create))
                 {
                     foreach (String file in filesToSend)
@@ -116,6 +117,7 @@ namespace ProgettoPDS
 
                         //TODO: Send message to signal end of transmission (dati: file inviato, numero di file mancanti)
                     }
+                    zip.Dispose();
                     using (var fileIO = File.OpenRead(zipPath))
                     {
                         var bytesArrayToSend = new byte[1024 * 8];
@@ -123,15 +125,12 @@ namespace ProgettoPDS
                         while ((count = fileIO.Read(bytesArrayToSend, 0, bytesArrayToSend.Length)) > 0)
                             nwStream.Write(bytesArrayToSend, 0, count);
                     }
-
-                } //zip.Dispose();
-
-
-
-
+                } 
+                
                 nwStream.Close();
                 CloseConnection();
-
+                if(File.Exists(zipPath))
+                    File.Delete(zipPath);
 
             }
             else

@@ -23,13 +23,20 @@ namespace ProgettoPDS.GUI
 
         List<Label> listalabel = new List<Label>();
 
-        private bool _Accept;
+        public String downloadPath;
+
+        private bool _AcceptDownload;
+
+        public void Reset() {
+            downloadPath = null;
+            _AcceptDownload = false;
+        }
 
         public bool AcceptDownload
         {
             get
             {
-                return _Accept;
+                return _AcceptDownload;
             }
         }
 
@@ -49,15 +56,14 @@ namespace ProgettoPDS.GUI
 
             //RicezioneFile(List < String > filetoreceive);
         }
+        
 
-        public RicezioneFile(List<String> filetoreceive, List<String> fileformats, List<String> filedimensions) { //TODO:finire
-
+        public RicezioneFile(List<Models.DownloadItemModel> downloadItems) {
             InitializeComponent();
-
-            for (int i = 0; i < filetoreceive.Count; i++) 
-                generaGriglia(listalabel, filetoreceive[i], fileformats[i], filedimensions[i]);
-                
-            
+            foreach (var item in downloadItems)
+            {
+                generaGriglia(listalabel, item.OriginalFileName, item.Format, item.Dimension.ToString());
+            }
         }
 
         private void bottonesceglifile_Click(object sender, RoutedEventArgs e)
@@ -67,6 +73,7 @@ namespace ProgettoPDS.GUI
             dialog.IsFolderPicker = true;
             CommonFileDialogResult result = dialog.ShowDialog();
             if (result.ToString() == "Ok") textboxpercorso.Text = dialog.FileName;
+            downloadPath = textboxpercorso.Text;
 
         }
 
@@ -121,9 +128,20 @@ namespace ProgettoPDS.GUI
 
 
         }
+        
+
+        private void button1_Click(object sender, RoutedEventArgs e)
+        {
+            _AcceptDownload = true;
+            this.Close();
+
+        }
 
 
+        private void button2_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
 
-
+        }
     }
 }

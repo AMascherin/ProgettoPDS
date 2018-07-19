@@ -20,7 +20,7 @@ namespace ProgettoPDS
         private static bool _AutomaticDownloadAcceptance;
         private static string _Username;
         private static string _ProfileImagePath;
-        private static bool _DefaultDownloadPath; //If true, the user has provided a default download path for all the files
+        private static bool _DefaultDownloadPathFlag; //If true, the user has provided a default download path for all the files
         private static string _DefaultDownloadPathString;
 
         private readonly object _UserDatalocker = new object();
@@ -62,7 +62,7 @@ namespace ProgettoPDS
             {
                 lock (_UserDatalocker)
                 {
-                    return _DefaultDownloadPath;
+                    return _DefaultDownloadPathFlag;
                 }
             }
 
@@ -70,7 +70,7 @@ namespace ProgettoPDS
             {
                 lock (_UserDatalocker)
                 {
-                    _DefaultDownloadPath = value;
+                    _DefaultDownloadPathFlag = value;
                 }
             }
         }

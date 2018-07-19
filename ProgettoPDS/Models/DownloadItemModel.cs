@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProgettoPDS.Models
 {
-    class DownloadItemModel
+    public class DownloadItemModel
     {
         private String _originalFileName;
         private String _Format;

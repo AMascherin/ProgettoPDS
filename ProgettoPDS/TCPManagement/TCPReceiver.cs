@@ -11,6 +11,7 @@ using System.Diagnostics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Windows.Forms;
+using System.Windows.Threading;
 
 namespace ProgettoPDS
 {
@@ -66,6 +67,7 @@ namespace ProgettoPDS
             int chunkSize = 2048;
             try
             {
+                System.Windows.Application a = System.Windows.Application.Current; //THIS IS NULL AFTER CRASH
                 NetworkStream networkStream = clientSocket.GetStream(); //Apro un network stream con il client
                 byte[] clientMessage = new byte[chunkSize];                 
                 int bytesmessageread = networkStream.Read(clientMessage, 0, clientMessage.Length); //Leggo il messaggio dell'utente
@@ -100,6 +102,13 @@ namespace ProgettoPDS
 
                 if (uc.AutomaticDownloadAcceptance == false) //Bisogna chiedere il permesso dall'utente
                 {
+                    //if (System.Windows.Application.Current == null)
+                    //{
+                    //    new System.Windows.Application {
+                    //        ShutdownMode = ShutdownMode.OnExplicitShutdown
+                    //    };
+                    //}
+                    //Dispatcher.CurrentDispatcher.Invoke((Action)delegate
                     System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate
                     {
                         RicezioneFile rcf = new RicezioneFile(downloadItems); //La lista arriva dal file json decompresso
@@ -117,7 +126,8 @@ namespace ProgettoPDS
                             clientSocket.Close();
                             return;
                         }
-                        else {
+                        else
+                        {
                             DownloadPath = rcf.downloadPath;
                         }
                     });
@@ -149,7 +159,7 @@ namespace ProgettoPDS
                         while (File.Exists(filePath))
                         {
                             string tmpFileName = string.Format("{0}({1})", "tmp", count++);
-                            filePath = Path.Combine(DownloadPath, tmpFileName+".zip");
+                            filePath = Path.Combine(DownloadPath, tmpFileName + ".zip");
                         }
 
                         lock (this)
@@ -167,7 +177,8 @@ namespace ProgettoPDS
                                 fileStream.Close();
                                 System.Windows.MessageBox.Show("File data received, start save");  //TODO: Gestire la chiusura della connessione
                             }
-                            catch (Exception e) {
+                            catch (Exception e)
+                            {
                                 System.Windows.MessageBox.Show(e.Message);
                                 System.Windows.MessageBox.Show(e.StackTrace);
                             }
@@ -176,10 +187,11 @@ namespace ProgettoPDS
                         //To extract the zip in a new folder
                         //ZipFile.ExtractToDirectory(filePath, DownloadPath)
                         ZipArchive archive = ZipFile.Open(filePath, ZipArchiveMode.Update);
-                        foreach (var entry in archive.Entries) {
-                            string path = Path.Combine(DownloadPath, entry.Name);
+                        foreach (var entry in archive.Entries)
+                        {
+                            string path = PathCombine(DownloadPath, entry.FullName);
                             if (File.Exists(path))
-                            { 
+                            {
                                 int j = 1;
                                 while (File.Exists(path))
                                 {
@@ -188,24 +200,13 @@ namespace ProgettoPDS
                                 }
 
                             }
-                            entry.ExtractToFile(path);
+                            entry.ExtractToFile(path); //Error here
                         }
                         archive.Dispose();
 
 
                         if (File.Exists(filePath))
                             File.Delete(filePath);
-
-                        /* Extracts in a target path*/
-                        /*using (ZipArchive zip = ZipFile.Open(filePath, ZipArchiveMode.Read))
-                        {
-                            foreach (ZipEntry zipFiles in zip)
-                            {
-                                zipFiles.Extract(currentpath, true);
-                            }
-
-                        }*/
-
 
                     }
                 }
@@ -214,14 +215,27 @@ namespace ProgettoPDS
                     System.Windows.MessageBox.Show(e.StackTrace.ToString());
                     System.Windows.MessageBox.Show(e.Message);
                 }
-                networkStream.Flush();
-                networkStream.Close();
-                clientSocket.Close();
+                finally {
+                    networkStream.Flush();
+                    networkStream.Close();
+                    clientSocket.Close();
+                }
 
             }
             catch (Exception ex) {
-                Console.WriteLine(" >> " + ex.ToString());
+                Console.WriteLine(" >> " + ex.ToString());                
             }
+        }
+
+        private string PathCombine(string path1, string path2)
+        {
+            if (Path.IsPathRooted(path2))
+            {
+                path2 = path2.TrimStart(Path.DirectorySeparatorChar);
+                path2 = path2.TrimStart(Path.AltDirectorySeparatorChar);
+            }
+
+            return Path.Combine(path1, path2);
         }
     }
 }

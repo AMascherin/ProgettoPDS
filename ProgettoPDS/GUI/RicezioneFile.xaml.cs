@@ -132,6 +132,17 @@ namespace ProgettoPDS.GUI
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
+
+            /*
+             
+               SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+               saveFileDialog1.ShowDialog()
+               if(downloadPath != null) 
+                     downloadPath = Path.GetFullPath(saveFileDialog1.FileName);
+                else 
+                _AcceptDownload = false;
+             
+             */
             _AcceptDownload = true;
             this.Close();
 

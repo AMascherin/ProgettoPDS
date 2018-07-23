@@ -54,29 +54,45 @@ namespace ProgettoPDS
             client.Close();
         }
 
-        public void handleFileSend(List<String> filesToSend)
+        public void handleFileSend(List<String> filesPathToSend)
         {
             int chunkSize = 2048;
-            List<FileInfo> filesinfo = new List<FileInfo>();
 
             //---create a NetworkStream---
             NetworkStream nwStream = client.GetStream();
 
-            foreach (String file in filesToSend)
-            {
-                filesinfo.Add(new FileInfo(file));
-
-            }
-
             JObject jsonfile = new JObject();
-
-            for (int i = 0; i < filesinfo.Count; i++)
-            {
-                jsonfile.Add(new JProperty("File" + i,
-                new JObject(
-                    new JProperty("nome", filesinfo[i].Name),
-                    new JProperty("estensione", filesinfo[i].Extension),
-                    new JProperty("dimensione", filesinfo[i].Length))));
+            int i = 0;
+            foreach (String file in filesPathToSend)
+            {                
+                if (File.Exists(file))
+                {
+                   FileInfo fileInfo = new FileInfo(file);
+                   jsonfile.Add(
+                        new JProperty("File" + i,
+                            new JObject(
+                                new JProperty("nome", fileInfo.Name),
+                                new JProperty("estensione", fileInfo.Extension),
+                                new JProperty("dimensione", fileInfo.Length)
+                            )
+                        )
+                    );
+                    i++;
+                }
+                if (Directory.Exists(file)) {
+                    DirectoryInfo d = new DirectoryInfo(file);
+                    //Aggiungere al JSon una qualche informazione relativa alla cartella (nome, peso, contenuto)
+                    jsonfile.Add(
+                        new JProperty("File" + i,
+                            new JObject(
+                                new JProperty("nome", Path.GetDirectoryName(file)),
+                                new JProperty("estensione", "Folder"),
+                                new JProperty("dimensione", GetDirectorySize(file))
+                            )
+                        )
+                    );
+                    i++;
+                }
             }
 
 
@@ -98,24 +114,24 @@ namespace ProgettoPDS
 
                 using (ZipArchive zip = ZipFile.Open(zipPath, ZipArchiveMode.Create))
                 {
-                    foreach (String file in filesToSend)
+                    foreach (String inputPath in filesPathToSend)
                     {
-                        zip.CreateEntryFromFile(file, Path.GetFileName(file), CompressionLevel.Optimal);
-                        //SendData(file, nwStream);
-                        // byte[] bytesArrayToSend = File.ReadAllBytes(file); //MAX 2 GB
+                        if (File.Exists(inputPath))
+                            zip.CreateEntryFromFile(inputPath, Path.GetFileName(inputPath), CompressionLevel.Fastest);
+                        else if (Directory.Exists(inputPath)) {
+                            var directoryInfo = Directory.GetParent(inputPath);
 
-                        //Send data into stream
-                        //nwStream.Write(bytesArrayToSend, 0, bytesArrayToSend.Length);
+                            foreach (var filePath in System.IO.Directory.GetFiles(inputPath, "*.*", SearchOption.AllDirectories))
+                            {
+                                var relativePath = filePath.Replace(directoryInfo.Parent.FullName, string.Empty);
+                                using (Stream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                                using (Stream fileStreamInZip = zip.CreateEntry(relativePath).Open())
+                                    fileStream.CopyTo(fileStreamInZip);
+                            }
+
+                        }
 
                         //https://stackoverflow.com/questions/21259703/how-to-receive-large-file-over-networkstream-c
-                        /*  var fileIO = File.OpenRead(file) ;
-
-                          var bytesArrayToSend = new byte[1024 * 8];
-                          int count;
-                          while ((count = fileIO.Read(bytesArrayToSend, 0, bytesArrayToSend.Length)) > 0)
-                              nwStream.Write(bytesArrayToSend, 0, count);*/
-
-                        //TODO: Send message to signal end of transmission (dati: file inviato, numero di file mancanti)
                     }
                     zip.Dispose();
                     using (var fileIO = File.OpenRead(zipPath))
@@ -141,6 +157,27 @@ namespace ProgettoPDS
             }
         }
 
-   }
+
+        static long GetDirectorySize(string p)
+        {
+            // 1.
+            // Get array of all file names.
+            string[] a = Directory.GetFiles(p, "*.*");
+
+            // 2.
+            // Calculate total bytes of all files in a loop.
+            long b = 0;
+            foreach (string name in a)
+            {
+                // 3.
+                // Use FileInfo to get length of each file.
+                FileInfo info = new FileInfo(name);
+                b += info.Length;
+            }
+            // 4.
+            // Return total size
+            return b;
+        }
+    }
 }
 

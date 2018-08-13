@@ -78,7 +78,7 @@ namespace ProgettoPDS
 
             _udprecThread = new Thread(_udprec.StartListener);
             _udprecThread.Name = "UdpReceiverThread";
-            _udpsendThread = new Thread(_udpsend.Start);
+            _udpsendThread = new Thread(_udpsend.Start); 
             _udpsendThread.Name = "UdpSenderThread";
             //  _tcprecThread = new Thread(_tcpRec.StartListener);
             //  _tcprecThread.Name = "TCPServerThread";
@@ -131,7 +131,6 @@ namespace ProgettoPDS
         protected virtual void OnPrivacyChange(EventArgs e) { }  //Questo evento deve riattivare/disattivare l'UDP Sender
         protected virtual void OnSendRequest() { } //EventArgs contiene la lista di utenti a cui inviare i dati?  -->Integrare in SchermataInvio.cs
         protected virtual void CancelTransfer() { } //Andrà identificata la singola connessione
-        protected virtual void OnReceiveRequest() { } //Richiesta di ricezione di fail da parte di altri utente
     }
 }
 

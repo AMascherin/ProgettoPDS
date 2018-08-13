@@ -200,7 +200,13 @@ namespace ProgettoPDS
                                 }
 
                             }
-                            entry.ExtractToFile(path); //Error here
+
+                            //Se l'entry è inserita in una subfolder è necessario controllare l'esistenza della stessa e eventualmente crearla
+                            string subfolderPath = Path.GetDirectoryName(path);
+                            if (!Directory.Exists(subfolderPath))
+                                Directory.CreateDirectory(subfolderPath);
+
+                            entry.ExtractToFile(path); 
                         }
                         archive.Dispose();
 

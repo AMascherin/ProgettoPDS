@@ -23,10 +23,6 @@ namespace ProgettoPDS
             // MainHub mainhub = new MainHub();
             // mainhub.Initialize();
 
-            /* string msg = "Hello World";
-            TCPSender _sender = new TCPSender("192.168.1.175");
-            _sender.SendData(msg);*/
-
            // string path = @"C:\Users\Alessandro Mascherin\Desktop\The Wizard\Game\";
             ////string path1 = @"C:\Users\Alessandro Mascherin\Desktop\The Wizard\Documentazione\";
             //string path = @"C:\Users\fabyf\Desktop\leaves.jpg";

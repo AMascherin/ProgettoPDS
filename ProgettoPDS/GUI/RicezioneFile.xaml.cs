@@ -1,16 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace ProgettoPDS.GUI
@@ -49,17 +40,21 @@ namespace ProgettoPDS.GUI
                 generaGriglia(listalabel, "testo", "txt", "1200 bytes"+i);
                 generaGriglia(listalabel, "testo2", "txt2", "3200 bytes"+i);
             }
-        }
 
-        public RicezioneFile(String jsonString) {
-            //TODO: Deconvertire il file json ricevuto
-
-            //RicezioneFile(List < String > filetoreceive);
+            if (App.Current.MainWindow == this)
+            {
+                App.Current.MainWindow = null;
+            }
         }
         
 
         public RicezioneFile(List<Models.DownloadItemModel> downloadItems) {
             InitializeComponent();
+            if (App.Current.MainWindow == this)
+            {
+                App.Current.MainWindow = null;
+            }
+
             foreach (var item in downloadItems)
             {
                 generaGriglia(listalabel, item.OriginalFileName, item.Format, item.Dimension.ToString());
@@ -132,27 +127,14 @@ namespace ProgettoPDS.GUI
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
-
-            /*
-             
-               SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-               saveFileDialog1.ShowDialog()
-               if(downloadPath != null) 
-                     downloadPath = Path.GetFullPath(saveFileDialog1.FileName);
-                else 
-                _AcceptDownload = false;
-             
-             */
             _AcceptDownload = true;
             this.Close();
-
         }
 
 
         private void button2_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
-
         }
     }
 }

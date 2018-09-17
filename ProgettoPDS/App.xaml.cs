@@ -20,8 +20,11 @@ namespace ProgettoPDS
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            // MainHub mainhub = new MainHub();
-            // mainhub.Initialize();
+            Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            RightClickManager.Register("fileType", "shellKeyName", "menuText", "menuCommand");
+
+            MainHub mainhub = new MainHub();
+            mainhub.Initialize();
 
            // string path = @"C:\Users\Alessandro Mascherin\Desktop\The Wizard\Game\";
             ////string path1 = @"C:\Users\Alessandro Mascherin\Desktop\The Wizard\Documentazione\";
@@ -44,9 +47,9 @@ namespace ProgettoPDS
             //}
             
          
-           TCPServer test = new TCPServer();
-            Thread _tcprecThread = new Thread(test.StartListener);
-            _tcprecThread.Start(); 
+           //TCPServer test = new TCPServer();
+           // Thread _tcprecThread = new Thread(test.StartListener);
+           // _tcprecThread.Start(); 
             
             //string path = @"C:\Users\fabyf\Desktop\leaves.jpg";
          /*   string path = @"C:\Users\Alessandro Mascherin\Pictures\wnlYdQw.png";

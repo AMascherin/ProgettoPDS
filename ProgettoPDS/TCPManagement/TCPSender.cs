@@ -11,15 +11,17 @@ namespace ProgettoPDS
 {
     class TCPSender
     {
-        private int PORT_NO = 13370;
+       // private int PORT_NO = 13370;
 
         private TcpClient client;
+
+        UserConfiguration uc;
 
         public TCPSender(string ip)
         {
             IPAddress ipAd = IPAddress.Parse(ip);
 
-            client = new TcpClient(ipAd.ToString(), PORT_NO);
+            client = new TcpClient(ipAd.ToString(), uc.GetTCPPort());
 
             System.Windows.MessageBox.Show("TCP Sender created");
         }

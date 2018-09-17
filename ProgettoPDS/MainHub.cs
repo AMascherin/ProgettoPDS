@@ -64,27 +64,28 @@ namespace ProgettoPDS
         public static UserConfiguration uc;
         private static UDPSender _udpsend;
         private static UDPReceiver _udprec;
-        private static TCPServer _tcpServer;
+        private TcpReceiver _tcpReceiver;
         private static Thread _udpsendThread;
         private static Thread _udprecThread;
-        private static Thread _tcprecThread;
+        private Thread _tcprecThread;
 
         public MainHub()
         {
             uc = new UserConfiguration();
             _udpsend = new UDPSender();
             _udprec = new UDPReceiver();
-            _tcpServer = new TCPServer();
+            _tcpReceiver = new TcpReceiver();
 
             _udprecThread = new Thread(_udprec.StartListener);
             _udprecThread.Name = "UdpReceiverThread";
             _udpsendThread = new Thread(_udpsend.Start); 
             _udpsendThread.Name = "UdpSenderThread";
-            //  _tcprecThread = new Thread(_tcpRec.StartListener);
-            //  _tcprecThread.Name = "TCPServerThread";
+            _tcprecThread = new Thread(_tcpReceiver.StartListener);
+            _tcprecThread.Name = "TCPServerThread";
             nuc = new NetworkUserManager();
         }
 
+        [STAThread]
         public void Initialize()
         {
             /*Caricamento della configurazione utente, ed eventuale gestione della mancanza del file di configurazione
@@ -116,7 +117,7 @@ namespace ProgettoPDS
                 _udpsendThread.Start();
             }
             _udprecThread.Start();
-           // _tcpServer.StartListener(); //Esegue su questo thread. 
+            _tcprecThread.Start();
 
 
         }

@@ -15,17 +15,19 @@ using System.Windows.Threading;
 
 namespace ProgettoPDS
 {
-    class TCPServer
+    class TcpReceiver
     {
-        private int PORT_NO = 13370;
+        //private int PORT_NO = 13370;
 
         private static TcpListener listener;
 
         private static Boolean done;
 
-        public TCPServer()
+        private UserConfiguration uc;
+
+        public TcpReceiver()
         {
-            listener = new TcpListener(IPAddress.Any, PORT_NO);
+            listener = new TcpListener(IPAddress.Any, uc.GetTCPPort());
             done = false;
 
         }
@@ -35,10 +37,12 @@ namespace ProgettoPDS
 
             listener.Start();
             Console.WriteLine("Listener started");
+            System.Windows.MessageBox.Show("Listener started");
             while (!done)
             {
                 TcpClient clientSocket = listener.AcceptTcpClient();
                 Console.WriteLine("New connection accepted");
+                System.Windows.MessageBox.Show("New connection accepted");
                 handleClient client = new handleClient(clientSocket); //Nuovo thread per gestire la comunicazione con lo specifico utente
             }
         }
@@ -53,12 +57,13 @@ namespace ProgettoPDS
     {
         private TcpClient clientSocket;
         private UserConfiguration uc;
-
+        
         public handleClient(TcpClient inClientSocket)
         {
             uc = new UserConfiguration();
             this.clientSocket = inClientSocket;
             Thread ctThread = new Thread(handleFileTransfer);
+            ctThread.Name="Handle Thread";
             ctThread.Start();
         }
 
@@ -67,13 +72,12 @@ namespace ProgettoPDS
             int chunkSize = 2048;
             try
             {
-                System.Windows.Application a = System.Windows.Application.Current; //THIS IS NULL AFTER CRASH
                 NetworkStream networkStream = clientSocket.GetStream(); //Apro un network stream con il client
                 byte[] clientMessage = new byte[chunkSize];                 
                 int bytesmessageread = networkStream.Read(clientMessage, 0, clientMessage.Length); //Leggo il messaggio dell'utente
                 String clientRequest = System.Text.Encoding.UTF8.GetString(clientMessage);
 
-                System.Windows.MessageBox.Show(clientRequest);
+               // System.Windows.MessageBox.Show(clientRequest);
                 networkStream.Flush();
                
 
@@ -98,17 +102,9 @@ namespace ProgettoPDS
 
                 }
 
-
-
                 if (uc.AutomaticDownloadAcceptance == false) //Bisogna chiedere il permesso dall'utente
                 {
-                    //if (System.Windows.Application.Current == null)
-                    //{
-                    //    new System.Windows.Application {
-                    //        ShutdownMode = ShutdownMode.OnExplicitShutdown
-                    //    };
-                    //}
-                    //Dispatcher.CurrentDispatcher.Invoke((Action)delegate
+                    
                     System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate
                     {
                         RicezioneFile rcf = new RicezioneFile(downloadItems); //La lista arriva dal file json decompresso
@@ -131,9 +127,12 @@ namespace ProgettoPDS
                             DownloadPath = rcf.downloadPath;
                         }
                     });
+
+                   
                 }
 
-                else {
+                else
+                {
                     if (!uc.DefaultDownloadPath)
                     {                       
                         SaveFileDialog saveFileDialog1 = new SaveFileDialog();
@@ -144,10 +143,12 @@ namespace ProgettoPDS
                     else
                         DownloadPath = uc.DefaultDownloadPathString;
                 }
+
+                Dispatcher d = System.Windows.Application.Current.Dispatcher;
                 //Avvisiamo il client che accettiamo la ricezione dei file
                 byte[] bytesToSend = System.Text.Encoding.UTF8.GetBytes("200 OK");
                 networkStream.Write(bytesToSend, 0, bytesToSend.Length);
-                System.Windows.MessageBox.Show("200 Ok Send");
+                Console.WriteLine("200 Ok Send");
                 networkStream.Flush();
                 try
                 {
@@ -175,7 +176,7 @@ namespace ProgettoPDS
                                     bytesread = networkStream.Read(clientData, 0, clientData.Length);
                                 }
                                 fileStream.Close();
-                                System.Windows.MessageBox.Show("File data received, start save");  //TODO: Gestire la chiusura della connessione
+                                //System.Windows.MessageBox.Show("File data received, start save");  //TODO: Gestire la chiusura della connessione
                             }
                             catch (Exception e)
                             {
@@ -185,7 +186,6 @@ namespace ProgettoPDS
                         }
 
                         //To extract the zip in a new folder
-                        //ZipFile.ExtractToDirectory(filePath, DownloadPath)
                         ZipArchive archive = ZipFile.Open(filePath, ZipArchiveMode.Update);
                         foreach (var entry in archive.Entries)
                         {

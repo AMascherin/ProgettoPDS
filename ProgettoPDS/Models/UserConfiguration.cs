@@ -30,7 +30,11 @@ namespace ProgettoPDS
         }
 
         public int GetUDPPort() {
-            return 13370;
+            return 13300;
+        }
+
+        public int GetTCPPort() {
+            return 13301;
         }
 
         public bool AutomaticDownloadAcceptance

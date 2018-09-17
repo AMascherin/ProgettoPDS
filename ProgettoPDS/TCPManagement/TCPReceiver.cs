@@ -23,7 +23,7 @@ namespace ProgettoPDS
 
         private static Boolean done;
 
-        private UserConfiguration uc;
+        private UserConfiguration uc = new UserConfiguration();
 
         public TcpReceiver()
         {

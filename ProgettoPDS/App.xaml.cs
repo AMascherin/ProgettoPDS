@@ -19,9 +19,14 @@ namespace ProgettoPDS
     {
         protected override void OnStartup(StartupEventArgs e)
         {
+            if (Process.GetProcessesByName(Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly().Location)).Count() > 1) {
+                Process.GetCurrentProcess().Kill();
+            }
+
             base.OnStartup(e);
             Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-            RightClickManager.Register("fileType", "shellKeyName", "menuText", "menuCommand");
+            //RightClickManager.Register("fileType", "shellKeyName", "menuText", "menuCommand");
+            RightClickManager.Register("*", "ApplicazionePds", "Condividi (PDS)", @"C:\Users\Alessandro Mascherin\Source\Repos\ProgettoPDS\FileSenderApplication\bin\Debug\FileSenderApplication.exe");
 
             MainHub mainhub = new MainHub();
             mainhub.Initialize();
@@ -82,6 +87,12 @@ namespace ProgettoPDS
             //var rf = new OptionWindow();
             //rf.Show();
 
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            base.OnExit(e);
+            Console.WriteLine("Exit");
         }
     }
 }

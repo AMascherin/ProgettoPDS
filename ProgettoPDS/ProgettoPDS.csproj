@@ -109,8 +109,9 @@
     </Compile>
     <Compile Include="Models\DownloadItemModel.cs" />
     <Compile Include="RightClickManager.cs" />
-    <Compile Include="TCPManagement\TCPReceiver.cs" />
+    <Compile Include="TCPManagement\TCPFileReceiver.cs" />
     <Compile Include="TCPManagement\TCPSender.cs" />
+    <Compile Include="TCPManagement\TCP_LocalHostReceiver.cs" />
     <Compile Include="UDPManagement\UDPReceiver.cs" />
     <Compile Include="UDPManagement\UDPSender.cs" />
     <Compile Include="Models\UserConfiguration.cs" />

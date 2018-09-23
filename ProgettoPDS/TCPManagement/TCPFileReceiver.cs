@@ -143,8 +143,7 @@ namespace ProgettoPDS
                     else
                         DownloadPath = uc.DefaultDownloadPathString;
                 }
-
-                Dispatcher d = System.Windows.Application.Current.Dispatcher;
+                
                 //Avvisiamo il client che accettiamo la ricezione dei file
                 byte[] bytesToSend = System.Text.Encoding.UTF8.GetBytes("200 OK");
                 networkStream.Write(bytesToSend, 0, bytesToSend.Length);

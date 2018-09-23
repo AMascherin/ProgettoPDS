@@ -15,11 +15,15 @@ namespace ProgettoPDS
 {
     class UDPReceiver
     {
-        //private static BlockingCollection<Byte[]> dataItems;
         private static BlockingCollection<ReceivedData> dataItems;
         private UserConfiguration user;
 
-        private struct ReceivedData {
+#pragma warning disable CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
+#pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
+        private struct ReceivedData
+#pragma warning restore CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
+        {
+#pragma warning restore CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
             private byte[] data;
             public IPAddress senderIpAddr;
             public ReceivedData(byte[] data, IPAddress ipAddr) {
@@ -51,11 +55,8 @@ namespace ProgettoPDS
             user = new UserConfiguration();
         }
         public void StartListener()
-        {
+        {           
             
-
-            //UdpClient client = new UdpClient();
-
             List<NetworkInterface> validNetwork = new List<NetworkInterface>();
             foreach (NetworkInterface adapter in NetworkInterface.GetAllNetworkInterfaces()) {
                 if (!adapter.SupportsMulticast) //Multicast non supportato
@@ -162,7 +163,6 @@ namespace ProgettoPDS
                 
                 if (receivedData != null)
                 {
-                    //string data = Encoding.Unicode.GetString(receivedData);
                     string data = receivedData.dataToString();
                     System.Windows.MessageBox.Show(receivedData.ToString());
                     NetworkUser user = new NetworkUser(data);

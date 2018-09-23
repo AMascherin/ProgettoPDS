@@ -20,6 +20,8 @@ namespace ProgettoPDS
     /// </summary>
     public partial class SchermataInvio : Window
     {
+        string pathToFile;
+
         List<Label> listalabel = new List<Label>();
 
         List<Image> listaimmagini = new List<Image>();
@@ -33,10 +35,10 @@ namespace ProgettoPDS
 
         ProgressBar prog = new ProgressBar();
 
-        public SchermataInvio()
+        public SchermataInvio(string filepath)
         {
-//            DateTime time = new DateTime();
             InitializeComponent();
+            pathToFile = filepath;
         }
     
 
@@ -125,15 +127,6 @@ namespace ProgettoPDS
 
         }
 
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            RegistryKey key;
-            key = Registry.ClassesRoot.CreateSubKey(@"folder\\shell\\Condividi");
-            key = Registry.ClassesRoot.CreateSubKey(@"folder\\shell\\Condividi\\command");    //TENTATIVO PER USARE TASTO DESTRO
-            key.SetValue("", System.Reflection.Assembly.GetExecutingAssembly().Location);
-        }
-
         private void bottonecanc_Click(object sender, RoutedEventArgs e)
         {
             for (int i = 0; i < listauserinvio.Count; i++)
@@ -150,7 +143,7 @@ namespace ProgettoPDS
         private void bottoneinvia_Click(object sender, RoutedEventArgs e)
         {
             List<String> filestosend = new List<string>();
-            filestosend.Add("path/to/file");
+            filestosend.Add(pathToFile);
             foreach (NetworkUser user in listauserinvio) {
                 TCPSender tcpsender = new TCPSender(user.Ipaddress);
                 tcpsender.handleFileSend(filestosend);

@@ -19,80 +19,32 @@ namespace ProgettoPDS
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            if (Process.GetProcessesByName(Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly().Location)).Count() > 1) {
+            if (Process.GetProcessesByName(Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly().Location)).Count() > 1)
+            {
                 Process.GetCurrentProcess().Kill();
             }
 
             base.OnStartup(e);
+
+            //Non vogliamo che l'applicazione termini quando una finestra venga chiusa
             Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
+
             //RightClickManager.Register("fileType", "shellKeyName", "menuText", "menuCommand");
-            RightClickManager.Register("*", "ApplicazionePds", "Condividi (PDS)", @"C:\Users\Alessandro Mascherin\Source\Repos\ProgettoPDS\FileSenderApplication\bin\Debug\FileSenderApplication.exe");
+            string filepath = @"C:\Users\Alessandro Mascherin\Source\Repos\ProgettoPDS\RightClickHandlerApplication\bin\Debug\RightClickHandlerApplication.exe %0 %1";
+            RightClickManager.Register("*", "ApplicazionePds", "Condividi (PDS)", filepath);
+            RightClickManager.Register("Directory", "ApplicazionePds", "Condividi (PDS)", filepath);
 
-            MainHub mainhub = new MainHub();
-            mainhub.Initialize();
+            //SchermataInvio test = new SchermataInvio("test");
+            //OptionWindow test = new OptionWindow();
 
-           // string path = @"C:\Users\Alessandro Mascherin\Desktop\The Wizard\Game\";
-            ////string path1 = @"C:\Users\Alessandro Mascherin\Desktop\The Wizard\Documentazione\";
-            //string path = @"C:\Users\fabyf\Desktop\leaves.jpg";
-            ////  string path2 = @"C:\Users\fabyf\Desktop\caso.wav";
-            //string path1 = @"C:\Users\fabyf\Desktop\INGLESE\";
+            //test.Show();
 
-            //try
-            //{
-            //    TCPSender _sender = new TCPSender("192.168.137.1");
-            //    List<String> files = new List<string>();
-            //    files.Add(path);
-            //    files.Add(path1);
-            //    _sender.handleFileSend(files);
-            //}
-            //catch (Exception ex)
-            //{
-            //    System.Windows.MessageBox.Show(ex.ToString());
-            //    return;
-            //}
-            
-         
-           //TCPServer test = new TCPServer();
-           // Thread _tcprecThread = new Thread(test.StartListener);
-           // _tcprecThread.Start(); 
-            
-            //string path = @"C:\Users\fabyf\Desktop\leaves.jpg";
-         /*   string path = @"C:\Users\Alessandro Mascherin\Pictures\wnlYdQw.png";
-            TCPSender sender = new TCPSender("192.168.43.138");
-            List<String> files = new List<string>();
-            files.Add(path);
-            sender.handleFileSend(files);*/
-            
-            /*  string pathToObj = @"C:\Users\Alessandro\Desktop\image.jpg";
-              byte[] bytesToSend = File.ReadAllBytes(pathToObj);
-              string fileName = "Pippo.jpg";
-              try
-              {
-                  using (StreamWriter writer = new StreamWriter(fileName, true))
-                  {
-
-                      writer.BaseStream.Write(bytesToSend,0,bytesToSend.Length);
-                  }
-              }
-              catch (DirectoryNotFoundException ex)
-              {
-                  Console.WriteLine("DirectoryNotFoundException: {0}", ex);
-              }
-
-      */
-
-
-            //   var mw = new OptionWindow();
-            //   mw.Show();
-            //var rf = new OptionWindow();
-            //rf.Show();
-
+             MainHub mainhub = new MainHub();
+             mainhub.Initialize();
         }
 
-        protected override void OnExit(ExitEventArgs e)
-        {
-            base.OnExit(e);
-            Console.WriteLine("Exit");
-        }
+
+
     }
 }

@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
 using System.Threading;
+using System.IO.Pipes;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
 
 namespace ProgettoPDS
 {
@@ -22,8 +26,6 @@ namespace ProgettoPDS
             bool checknewuser = true;
             DateTime checktime = DateTime.UtcNow;
 
-            //System.Windows.MessageBox.Show(newuser.Ipaddress);
-
             lock (_UserDatalocker)
             {
                 for (int i = 0; i < _userlist.Count; i++)
@@ -37,22 +39,10 @@ namespace ProgettoPDS
                     if (diff.TotalSeconds > 15.0) _userlist.RemoveAt(i); //TODO: Controllare problemi con l'indice di iterazione i !!!!!!
                 }
                 if (checknewuser) _userlist.Add(newuser); //Aggiunge l'utente alla lista se non era presente
+
             }
         }
-
-      /*  public void SendTest(string msg)
-        {
-            System.Windows.MessageBox.Show("SendTest activate");
-            lock (_UserDatalocker)
-            {
-                System.Windows.MessageBox.Show("LockObtained");
-                TCPSender _sender = new TCPSender("192.168.1.175");
-
-
-                _sender.SendData(msg);
-            }
-        }*/
-
+        
     }
 
 
@@ -68,6 +58,7 @@ namespace ProgettoPDS
         private static Thread _udpsendThread;
         private static Thread _udprecThread;
         private Thread _tcprecThread;
+        private Thread _tcplocalhostthread;
 
         public MainHub()
         {
@@ -75,6 +66,7 @@ namespace ProgettoPDS
             _udpsend = new UDPSender();
             _udprec = new UDPReceiver();
             _tcpReceiver = new TcpReceiver();
+            var tcplocalhost = new TCP_LocalHostReceiver();
 
             _udprecThread = new Thread(_udprec.StartListener);
             _udprecThread.Name = "UdpReceiverThread";
@@ -82,6 +74,8 @@ namespace ProgettoPDS
             _udpsendThread.Name = "UdpSenderThread";
             _tcprecThread = new Thread(_tcpReceiver.StartListener);
             _tcprecThread.Name = "TCPServerThread";
+            _tcplocalhostthread = new Thread(tcplocalhost.StartListener);
+            _tcplocalhostthread.Name = "TCPLocalHost";
             nuc = new NetworkUserManager();
         }
 
@@ -118,17 +112,11 @@ namespace ProgettoPDS
             }
             _udprecThread.Start();
             _tcprecThread.Start();
-
-
-        }
-
-
-        private void TCPServerStartup()
-        {
-            throw new NotImplementedException();
+            _tcplocalhostthread.Start();
+            
 
         }
-
+        
         protected virtual void OnPrivacyChange(EventArgs e) { }  //Questo evento deve riattivare/disattivare l'UDP Sender
         protected virtual void OnSendRequest() { } //EventArgs contiene la lista di utenti a cui inviare i dati?  -->Integrare in SchermataInvio.cs
         protected virtual void CancelTransfer() { } //Andrà identificata la singola connessione

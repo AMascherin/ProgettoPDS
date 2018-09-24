@@ -32,6 +32,11 @@ namespace ProgettoPDS
                 {
                     if (newuser.MACAddress == _userlist[i].MACAddress) //Controlla se l'utente è già stato salvato, e ne aggiorna i dati se necessario
                     {
+                        int result = DateTime.Compare(newuser.ImageTimeStamp, _userlist[i].ImageTimeStamp);
+                        if (result < 0) {
+                            //TODO: Richiedere la nuova immagine via TCP
+                            Console.WriteLine("Image changed");
+                        }
                         _userlist[i] = newuser;
                         checknewuser = false;
                     }

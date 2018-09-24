@@ -18,7 +18,7 @@ namespace ProgettoPDS
         private static string _imagepath;
         private static string _mac;
         private DateTime _timestamp;
-
+        private DateTime _imagetimestamp;
 
         public NetworkUser() { }
 
@@ -29,8 +29,11 @@ namespace ProgettoPDS
             Username = (string)o["Name"];
             MACAddress = (string)o["MACAddress"];
             bool defimage = (bool)o["DefaultImage"];
-            string time= ((string)o["Timestamp"]);
+            string time= ((string)o["Packet Timestamp"]);
             TimeStamp = DateTime.Parse(time);
+
+            ImageTimeStamp = DateTime.Parse((string)o["Image change timestamp"]);
+
             //TODO: if(defimage)-->immagine default
             //          else richiesta nuova immagine
 
@@ -54,6 +57,7 @@ namespace ProgettoPDS
             set { lock (locker)  { _imagepath = value;  }  }
         }
 
+
         public string MACAddress
         {
             get { lock (locker)  { return _mac;         }  }
@@ -65,7 +69,11 @@ namespace ProgettoPDS
             get { lock (locker) { return _timestamp;    }  }
             set { lock (locker) { _timestamp = value;   }  }
         }
-
+        public DateTime ImageTimeStamp
+        {
+            get { lock (locker) { return _imagetimestamp; } }
+            set { lock (locker) { _imagetimestamp = value; } }
+        }
 
         ~NetworkUser()
         {

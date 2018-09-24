@@ -21,7 +21,7 @@ namespace ProgettoPDS
         private static bool _AutomaticDownloadAcceptance;
         private static string _Username;
         private static string _ProfileImagePath;
-        private static string _ImgHash;
+        private static string _ImgLastModified;
         private static bool _DefaultDownloadPathFlag; //If true, the user has provided a default download path for all the files
         private static string _DefaultDownloadPathString;
        
@@ -63,10 +63,7 @@ namespace ProgettoPDS
             set {
                 lock (_UserDatalocker) {
                     _ProfileImagePath = value;
-                    if (value != null)
-                    {
-                        ImgHash = GetHashFromPath(value);
-                    }
+                    ImgLastModified = getTimeStamp();
                 }
             }
         }
@@ -109,13 +106,13 @@ namespace ProgettoPDS
             }
         }
 
-        public string ImgHash
+        public string ImgLastModified
         {
             get
             {
                 lock (_UserDatalocker)
                 {
-                    return _ImgHash;
+                    return _ImgLastModified;
                 }
             }
 
@@ -123,7 +120,7 @@ namespace ProgettoPDS
             {
                 lock (_UserDatalocker)
                 {
-                    _ImgHash = value;
+                    _ImgLastModified = value;
                 }
             }
         }
@@ -134,12 +131,7 @@ namespace ProgettoPDS
             {
                 SetDefaultPath(); //Se non è definita un'immagine, viene utilizzata quella di deafult
             }
-
-            else
-            {
-                ImgHash = GetHashFromPath(ImgPath);
-            }
-
+            
         }
 
         [JsonConstructor]
@@ -210,9 +202,9 @@ namespace ProgettoPDS
             string currentfolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);            
             bool defimg = (ImgPath == (currentfolder + @"\Media\images.png")) ? true : false;
             writer.WriteValue(defimg);
-            writer.WritePropertyName("ImageHash");
-            writer.WriteValue(ImgHash);
-            writer.WritePropertyName("Timestamp");
+            writer.WritePropertyName("Image change timestamp");
+            writer.WriteValue(ImgLastModified);
+            writer.WritePropertyName("Packet Timestamp");
             writer.WriteValue(getTimeStamp());
             JObject o = (JObject)writer.Token;
             return o.ToString();
@@ -238,26 +230,8 @@ namespace ProgettoPDS
         public void SetDefaultPath() {
             string currentfolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
             ImgPath = currentfolder + @"\Media\images.png";
-            ImgHash = null;
+            ImgLastModified = getTimeStamp();
         }
-
-        private string GetHashFromPath(string path) {
-            string hash;
-            using (SHA1CryptoServiceProvider sha1 = new SHA1CryptoServiceProvider())
-            {
-                try
-                {   
-                    hash = Convert.ToBase64String(File.ReadAllBytes(path));
-                    return hash;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    SetDefaultPath();
-                    return null;
-                }
-            }
             
-        }
     }
 }

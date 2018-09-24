@@ -35,14 +35,24 @@ namespace ProgettoPDS
 
         ProgressBar prog = new ProgressBar();
 
-        public SchermataInvio(string filepath)
+        
+
+        public SchermataInvio(string filepath, List<NetworkUser> listauser)
         {
+            
+            this.listauser = listauser;
             InitializeComponent();
             pathToFile = filepath;
+            foreach (NetworkUser user in listauser) {
+
+                generaGriglia(user, listalabel, listaimmagini, listacheck);
+
+            }
+
         }
     
 
-        void generaGriglia(List<Label> listalabel, List<Image> listaimmagini, List<CheckBox> listacheck)
+        void generaGriglia(NetworkUser user, List<Label> listalabel, List<Image> listaimmagini, List<CheckBox> listacheck)
         // FUNZIONE CHE CREA LA GRIGLIA DI UTENTI CONNESSI
         {
             Grid griglia = new Grid();
@@ -57,7 +67,8 @@ namespace ProgettoPDS
             Label label = new Label();
             System.Windows.Thickness thick2 = new Thickness(134, 20, 473, 10);
             label.Margin = thick2;
-            label.Content = "PROVA";
+            label.Content = user.Username;
+            
             listalabel.Add(label);
             CheckBox cb = new CheckBox();
             cb.Opacity = 0;

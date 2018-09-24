@@ -114,12 +114,24 @@ namespace ProgettoPDS
             _udprecThread.Start();
             _tcprecThread.Start();
             _tcplocalhostthread.Start();
+
+            //NetworkUser utente = new NetworkUser();
+            //utente.Username = "Pippo";
+            //utente.Imagepath = "C:\\Users\\Federico\\Desktop\\windowsimage.jpg";
+
+            //nuc.AddUser(utente);
             
         }
         
+        
+
         protected virtual void OnPrivacyChange(EventArgs e) { }  //Questo evento deve riattivare/disattivare l'UDP Sender
         protected virtual void OnSendRequest() { } //EventArgs contiene la lista di utenti a cui inviare i dati?  -->Integrare in SchermataInvio.cs
         protected virtual void CancelTransfer() { } //Andrà identificata la singola connessione
+
+        
+       
+
     }
 }
 

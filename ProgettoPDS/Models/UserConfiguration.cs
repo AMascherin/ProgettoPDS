@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Security.Cryptography;
 
 namespace ProgettoPDS
 {
@@ -20,8 +21,10 @@ namespace ProgettoPDS
         private static bool _AutomaticDownloadAcceptance;
         private static string _Username;
         private static string _ProfileImagePath;
+        private static string _ImgHash;
         private static bool _DefaultDownloadPathFlag; //If true, the user has provided a default download path for all the files
         private static string _DefaultDownloadPathString;
+       
 
         private readonly object _UserDatalocker = new object();
 
@@ -57,7 +60,15 @@ namespace ProgettoPDS
         public string ImgPath
         {
             get { lock (_UserDatalocker) {  return _ProfileImagePath;     } }
-            set { lock (_UserDatalocker) {  _ProfileImagePath = value;    } }
+            set {
+                lock (_UserDatalocker) {
+                    _ProfileImagePath = value;
+                    if (value != null)
+                    {
+                        ImgHash = GetHashFromPath(value);
+                    }
+                }
+            }
         }
 
         public bool DefaultDownloadPath
@@ -98,11 +109,35 @@ namespace ProgettoPDS
             }
         }
 
+        public string ImgHash
+        {
+            get
+            {
+                lock (_UserDatalocker)
+                {
+                    return _ImgHash;
+                }
+            }
+
+            set
+            {
+                lock (_UserDatalocker)
+                {
+                    _ImgHash = value;
+                }
+            }
+        }
+
         public UserConfiguration() //Costruttore
         {
             if (ImgPath == null)
             {
                 SetDefaultPath(); //Se non è definita un'immagine, viene utilizzata quella di deafult
+            }
+
+            else
+            {
+                ImgHash = GetHashFromPath(ImgPath);
             }
 
         }
@@ -175,6 +210,8 @@ namespace ProgettoPDS
             string currentfolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);            
             bool defimg = (ImgPath == (currentfolder + @"\Media\images.png")) ? true : false;
             writer.WriteValue(defimg);
+            writer.WritePropertyName("ImageHash");
+            writer.WriteValue(ImgHash);
             writer.WritePropertyName("Timestamp");
             writer.WriteValue(getTimeStamp());
             JObject o = (JObject)writer.Token;
@@ -201,6 +238,26 @@ namespace ProgettoPDS
         public void SetDefaultPath() {
             string currentfolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
             ImgPath = currentfolder + @"\Media\images.png";
+            ImgHash = null;
+        }
+
+        private string GetHashFromPath(string path) {
+            string hash;
+            using (SHA1CryptoServiceProvider sha1 = new SHA1CryptoServiceProvider())
+            {
+                try
+                {   
+                    hash = Convert.ToBase64String(File.ReadAllBytes(path));
+                    return hash;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    SetDefaultPath();
+                    return null;
+                }
+            }
+            
         }
     }
 }

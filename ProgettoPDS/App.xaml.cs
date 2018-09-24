@@ -31,7 +31,9 @@ namespace ProgettoPDS
 
 
             //RightClickManager.Register("fileType", "shellKeyName", "menuText", "menuCommand");
-            string filepath = @"C:\Users\Alessandro Mascherin\Source\Repos\ProgettoPDS\RightClickHandlerApplication\bin\Debug\RightClickHandlerApplication.exe %0 %1";
+            string currentfolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+            string filepath = Path.GetFullPath(Path.Combine(currentfolder, @"..\..\..\RightClickHandlerApplication\bin\Debug\RightClickHandlerApplication.exe"));
+            filepath += " %0";
             RightClickManager.Register("*", "ApplicazionePds", "Condividi (PDS)", filepath);
             RightClickManager.Register("Directory", "ApplicazionePds", "Condividi (PDS)", filepath);
 

@@ -48,9 +48,10 @@ namespace ProgettoPDS
 
     class MainHub //TODO: gestire la responsività con gli eventi(tcp client, interfaccia grafica, cambio della flag della privacy
     {
-        //   public static List<NetworkUser> userlist = new List<NetworkUser>();
 
         private NetworkUserManager nuc;
+
+
         public static UserConfiguration uc;
         private static UDPSender _udpsend;
         private static UDPReceiver _udprec;
@@ -114,7 +115,6 @@ namespace ProgettoPDS
             _tcprecThread.Start();
             _tcplocalhostthread.Start();
             
-
         }
         
         protected virtual void OnPrivacyChange(EventArgs e) { }  //Questo evento deve riattivare/disattivare l'UDP Sender

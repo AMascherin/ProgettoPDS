@@ -43,7 +43,8 @@ namespace ProgettoPDS
 
                     System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate {
 
-                        SchermataInvio invio = new SchermataInvio(data);
+                        NetworkUserManager um = new NetworkUserManager();
+                        SchermataInvio invio = new SchermataInvio(data, um.userlist);
                         invio.Show();
 
                     });

@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ProgettoPDS
 {
-    class NetworkUser
+    public class NetworkUser
     {
         private readonly Object locker = new Object();
         private string _username;

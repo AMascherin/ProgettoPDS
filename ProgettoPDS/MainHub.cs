@@ -30,7 +30,7 @@ namespace ProgettoPDS
             {
                 for (int i = 0; i < _userlist.Count; i++)
                 {
-                    if (newuser.MACAddress == _userlist[i].MACAddress) //Controlla se l'utente è già stato salvato, e ne aggiorna i dati se necessario
+                    if (newuser.MACAddress.Equals(_userlist[i].MACAddress)) //Controlla se l'utente è già stato salvato, e ne aggiorna i dati se necessario
                     {
                         int result = DateTime.Compare(newuser.ImageTimeStamp, _userlist[i].ImageTimeStamp);
                         if (!newuser.DefaultImage && result < 0) {
@@ -50,8 +50,8 @@ namespace ProgettoPDS
                        
                         checknewuser = false;
                     }
-                    TimeSpan diff = checktime - _userlist[i].TimeStamp;
-                    if (diff.TotalSeconds > 15.0) _userlist.RemoveAt(i); //TODO: Controllare problemi con l'indice di iterazione i !!!!!!
+                    //TimeSpan diff = checktime - _userlist[i].TimeStamp;
+                    //if (diff.TotalSeconds > 15.0) _userlist.RemoveAt(i); //TODO: Controllare problemi con l'indice di iterazione i !!!!!!
                 }
                 if (checknewuser) _userlist.Add(newuser); //Aggiunge l'utente alla lista se non era presente
 
@@ -132,9 +132,15 @@ namespace ProgettoPDS
                         
         }
         
+        
+
         protected virtual void OnPrivacyChange(EventArgs e) { }  //Questo evento deve riattivare/disattivare l'UDP Sender
         protected virtual void OnSendRequest() { } //EventArgs contiene la lista di utenti a cui inviare i dati?  -->Integrare in SchermataInvio.cs
         protected virtual void CancelTransfer() { } //Andrà identificata la singola connessione
+
+        
+       
+
     }
 }
 

@@ -13,10 +13,10 @@ namespace ProgettoPDS
     public class NetworkUser
     {
         private readonly Object locker = new Object();
-        private static string _username;
-        private static string _ipaddress;
-        private static string _imagepath;
-        private static string _mac;
+        private string _username;
+        private string _ipaddress;
+        private string _imagepath;
+        private string _mac;
         private DateTime _timestamp;
         private DateTime _imagetimestamp;
 

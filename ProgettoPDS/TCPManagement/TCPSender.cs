@@ -15,7 +15,7 @@ namespace ProgettoPDS
 
         private TcpClient client;
 
-        UserConfiguration uc;
+        UserConfiguration uc = new UserConfiguration();
 
         public TCPSender(string ip)
         {

@@ -30,7 +30,7 @@ namespace ProgettoPDS
             {
                 for (int i = 0; i < _userlist.Count; i++)
                 {
-                    if (newuser.MACAddress == _userlist[i].MACAddress) //Controlla se l'utente è già stato salvato, e ne aggiorna i dati se necessario
+                    if (newuser.MACAddress.Equals(_userlist[i].MACAddress)) //Controlla se l'utente è già stato salvato, e ne aggiorna i dati se necessario
                     {
                         int result = DateTime.Compare(newuser.ImageTimeStamp, _userlist[i].ImageTimeStamp);
                         if (result < 0) {
@@ -40,8 +40,8 @@ namespace ProgettoPDS
                         _userlist[i] = newuser;
                         checknewuser = false;
                     }
-                    TimeSpan diff = checktime - _userlist[i].TimeStamp;
-                    if (diff.TotalSeconds > 15.0) _userlist.RemoveAt(i); //TODO: Controllare problemi con l'indice di iterazione i !!!!!!
+                    //TimeSpan diff = checktime - _userlist[i].TimeStamp;
+                    //if (diff.TotalSeconds > 15.0) _userlist.RemoveAt(i); //TODO: Controllare problemi con l'indice di iterazione i !!!!!!
                 }
                 if (checknewuser) _userlist.Add(newuser); //Aggiunge l'utente alla lista se non era presente
 
@@ -120,12 +120,21 @@ namespace ProgettoPDS
             _tcprecThread.Start();
             _tcplocalhostthread.Start();
 
-            //NetworkUser utente = new NetworkUser();
-            //utente.Username = "Pippo";
-            //utente.Imagepath = "C:\\Users\\Federico\\Desktop\\windowsimage.jpg";
-
-            //nuc.AddUser(utente);
+            NetworkUser utente = new NetworkUser();
+            utente.Username = "Pippo";
+            utente.MACAddress = "Mela";
             
+           // utente.Imagepath = "C:\\Users\\Federico\\Desktop\\windowsimage.jpg";
+
+            NetworkUser utente2 = new NetworkUser();
+            utente2.Username = "Pluto";
+            utente2.MACAddress = "Banana";
+            //utente2.Imagepath = "C:\\Users\\Federico\\Desktop\\windowsimage2.jpg";
+
+            nuc.AddUser(utente);
+            nuc.AddUser(utente2);
+            
+
         }
         
         

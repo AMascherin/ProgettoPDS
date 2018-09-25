@@ -43,19 +43,26 @@ namespace ProgettoPDS
             this.listauser = listauser;
             InitializeComponent();
             pathToFile = filepath;
-            foreach (NetworkUser user in listauser) {
+
+            NetworkUser utente = new NetworkUser();
+            utente.Username = "Pippo";
+            utente.Imagepath = "C:\\Users\\Federico\\Desktop\\windowsimage.jpg";
+            System.Windows.MessageBox.Show("Gli utenti sono: "+listauser.Count);
+            foreach (NetworkUser user in listauser)
+            {
 
                 generaGriglia(user, listalabel, listaimmagini, listacheck);
 
             }
 
         }
-    
+
 
         void generaGriglia(NetworkUser user, List<Label> listalabel, List<Image> listaimmagini, List<CheckBox> listacheck)
         // FUNZIONE CHE CREA LA GRIGLIA DI UTENTI CONNESSI
         {
             Grid griglia = new Grid();
+            griglia.Background = Brushes.White;
             griglia.Height = 60;
             griglia.Width = 740;
             Image image = new Image();
@@ -63,12 +70,15 @@ namespace ProgettoPDS
             image.Width = 47;
             System.Windows.Thickness thick = new Thickness(21, 10, 672, 10);
             image.Margin = thick;
+            BitmapImage imagebitmap = new BitmapImage(new Uri("C:\\Users\\Federico\\Desktop\\windowsimage.jpg", UriKind.Absolute));
+            image.Source = imagebitmap;
+            image.Stretch = Stretch.Fill;
             listaimmagini.Add(image);
             Label label = new Label();
             System.Windows.Thickness thick2 = new Thickness(134, 20, 473, 10);
             label.Margin = thick2;
             label.Content = user.Username;
-            
+            label.FontSize = 15;
             listalabel.Add(label);
             CheckBox cb = new CheckBox();
             cb.Opacity = 0;

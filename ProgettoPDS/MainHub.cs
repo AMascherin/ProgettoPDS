@@ -33,11 +33,21 @@ namespace ProgettoPDS
                     if (newuser.MACAddress == _userlist[i].MACAddress) //Controlla se l'utente è già stato salvato, e ne aggiorna i dati se necessario
                     {
                         int result = DateTime.Compare(newuser.ImageTimeStamp, _userlist[i].ImageTimeStamp);
-                        if (result < 0) {
-                            //TODO: Richiedere la nuova immagine via TCP
+                        if (!newuser.DefaultImage && result < 0) {
+                            // L'immagine non è di default ed è stata cambiata 
+                            TCPSender sender = new TCPSender(newuser.Ipaddress);
+                            string currentfolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+                            string filename = currentfolder + @"\Media\" + newuser.MACAddress.ToString() + DateTime.UtcNow + ".png";
+                            sender.SendImageRequest(filename);
                             Console.WriteLine("Image changed");
+                            _userlist[i] = newuser;
+                            _userlist[i].Imagepath = filename;
                         }
-                        _userlist[i] = newuser;
+                        else
+                        {
+                            _userlist[i] = newuser;
+                        }                       
+                       
                         checknewuser = false;
                     }
                     TimeSpan diff = checktime - _userlist[i].TimeStamp;
@@ -119,7 +129,7 @@ namespace ProgettoPDS
             _udprecThread.Start();
             _tcprecThread.Start();
             _tcplocalhostthread.Start();
-            
+                        
         }
         
         protected virtual void OnPrivacyChange(EventArgs e) { }  //Questo evento deve riattivare/disattivare l'UDP Sender

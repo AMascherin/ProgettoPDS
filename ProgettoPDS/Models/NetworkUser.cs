@@ -1,22 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Globalization;
 
 namespace ProgettoPDS
 {
     class NetworkUser
     {
         private readonly Object locker = new Object();
-        private static string _username;
-        private static string _ipaddress;
-        private static string _imagepath;
-        private static string _mac;
+        private string _username;
+        private string _ipaddress;
+        private string _imagepath;
+        private string _mac;
+        private bool _defaultImage;
         private DateTime _timestamp;
         private DateTime _imagetimestamp;
 
@@ -28,7 +23,7 @@ namespace ProgettoPDS
             JObject o = JObject.Parse(data);
             Username = (string)o["Name"];
             MACAddress = (string)o["MACAddress"];
-            bool defimage = (bool)o["DefaultImage"];
+            DefaultImage = (bool)o["DefaultImage"];
             string time= ((string)o["Packet Timestamp"]);
             TimeStamp = DateTime.Parse(time);
 
@@ -37,6 +32,11 @@ namespace ProgettoPDS
             //TODO: if(defimage)-->immagine default
             //          else richiesta nuova immagine
 
+        }
+
+        public bool DefaultImage {
+            get { lock (locker) { return _defaultImage; } }
+            set { lock (locker) { _defaultImage = value; } }
         }
 
         public string Username

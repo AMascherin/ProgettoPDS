@@ -6,8 +6,6 @@ using System.Text;
 using System.Threading;
 using System.Net.Sockets;
 using System.Net;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 using System.Windows.Forms;
 using System.Net.NetworkInformation;
 
@@ -121,7 +119,6 @@ namespace ProgettoPDS
                     Console.WriteLine("Waiting for broadcast");
                     byte[] data = new Byte[1024];
                     data = client.Receive(ref remoteIPEndPoint);
-                    System.Windows.MessageBox.Show(remoteIPEndPoint.ToString());
                     ReceivedData receivedData = new ReceivedData(data, remoteIPEndPoint.Address);
                     dataItems.Add(receivedData);
                 }
@@ -164,7 +161,6 @@ namespace ProgettoPDS
                 if (receivedData != null)
                 {
                     string data = receivedData.dataToString();
-                    System.Windows.MessageBox.Show(receivedData.ToString());
                     NetworkUser user = new NetworkUser(data);
                     user.Ipaddress = receivedData.senderIpAddr.ToString();
                     string localMAC = uc.GetMACAddress();

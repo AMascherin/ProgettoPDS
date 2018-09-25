@@ -6,6 +6,7 @@ using System.IO.Compression;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net;
+using System.Diagnostics;
 
 namespace ProgettoPDS
 {
@@ -159,12 +160,41 @@ namespace ProgettoPDS
             }
         }
 
+        public void SendImageRequest(string filename) {
+            NetworkStream nwStream = client.GetStream();
+            byte[] bytesToSend = System.Text.Encoding.UTF8.GetBytes("Send Image");
+            nwStream.Write(bytesToSend, 0, bytesToSend.Length); 
+            nwStream.Flush();
+
+            lock (this)
+            {
+                try
+                {                    
+                    Stream fileStream = File.OpenWrite(filename);
+                    byte[] clientData = new byte[2048];
+                    int bytesread = nwStream.Read(clientData, 0, clientData.Length); 
+                    while (bytesread > 0)
+                    {
+                        fileStream.Write(clientData, 0, bytesread);
+                        bytesread = nwStream.Read(clientData, 0, clientData.Length);
+                    }
+                    fileStream.Close();
+                }
+                catch (Exception e)
+                {
+                    System.Windows.MessageBox.Show(e.Message);
+                    System.Windows.MessageBox.Show(e.StackTrace);
+                }
+            }
+            nwStream.Close();
+            client.Close();
+        }
 
         static long GetDirectorySize(string p)
         {
             // 1.
             // Get array of all file names.
-            string[] a = Directory.GetFiles(p, "*.*");
+            string[] a = Directory.GetFiles(p, " *.*");
 
             // 2.
             // Calculate total bytes of all files in a loop.

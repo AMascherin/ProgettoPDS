@@ -14,7 +14,7 @@ namespace ProgettoPDS
     {
         private static List<NetworkUser> _userlist = new List<NetworkUser>();
         public NetworkUserManager() { }
-        private readonly object _UserDatalocker = new object();
+        private static readonly object _UserDatalocker = new object();
         public List<NetworkUser> userlist
         {
             get { lock (_UserDatalocker) { return _userlist; } }

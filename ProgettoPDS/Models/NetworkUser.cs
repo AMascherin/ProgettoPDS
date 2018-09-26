@@ -77,10 +77,10 @@ namespace ProgettoPDS
 
         ~NetworkUser()
         {
-            if (File.Exists(_imagepath))
-            {
-                File.Delete(_imagepath);
-            }
+        //    if (File.Exists(_imagepath))
+        //    {
+        //        File.Delete(_imagepath);
+        //    }
 
         }
     }

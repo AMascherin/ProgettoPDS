@@ -45,10 +45,7 @@ namespace ProgettoPDS
             this.listauser = listauser;
             InitializeComponent();
             pathToFile = filepath;
-
-            NetworkUser utente = new NetworkUser();
-            utente.Username = "Pippo";
-            utente.Imagepath = "C:\\Users\\Federico\\Desktop\\windowsimage.jpg";
+            
             System.Windows.MessageBox.Show("Gli utenti sono: "+listauser.Count);
             foreach (NetworkUser user in listauser)
             {

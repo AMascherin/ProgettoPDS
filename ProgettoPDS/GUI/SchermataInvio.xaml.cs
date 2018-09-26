@@ -36,7 +36,8 @@ namespace ProgettoPDS
 
         ProgressBar prog = new ProgressBar();
 
-        
+        UserConfiguration cfg = new UserConfiguration();
+
 
         public SchermataInvio(string filepath, List<NetworkUser> listauser)
         {
@@ -71,8 +72,27 @@ namespace ProgettoPDS
             image.Width = 47;
             System.Windows.Thickness thick = new Thickness(21, 10, 672, 10);
             image.Margin = thick;
-          //  BitmapImage imagebitmap = new BitmapImage(new Uri("C:\\Users\\Federico\\Desktop\\windowsimage.jpg", UriKind.Absolute));
-           // image.Source = imagebitmap;
+
+            
+
+            if(user.DefaultImage)
+            {
+                BitmapImage imagebitmap = new BitmapImage(new Uri(cfg.ImgPath));
+                image.Source = imagebitmap;
+                image.Stretch = Stretch.Fill;
+                listaimmagini.Add(image);
+
+            }
+            else
+            {
+                BitmapImage imagebitmap = new BitmapImage(new Uri(user.Imagepath, UriKind.Absolute));
+                image.Source = imagebitmap;
+                image.Stretch = Stretch.Fill;
+                listaimmagini.Add(image);
+            }
+            
+
+            
             image.Stretch = Stretch.Fill;
             listaimmagini.Add(image);
             Label label = new Label();

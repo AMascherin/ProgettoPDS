@@ -37,7 +37,7 @@ namespace ProgettoPDS
                             // L'immagine non è di default ed è stata cambiata 
                             TCPSender sender = new TCPSender(newuser.Ipaddress);
                             string currentfolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
-                            string filename = currentfolder + @"\Media\" + newuser.MACAddress.ToString() + DateTime.UtcNow + ".png";
+                            string filename = currentfolder + @"\Media\" + newuser.MACAddress.ToString() + DateTime.Now.ToString("yyyyMMddTHHmmss") + ".png";
                             sender.SendImageRequest(filename);
                             Console.WriteLine("Image changed");
                             _userlist[i] = newuser;
@@ -53,8 +53,18 @@ namespace ProgettoPDS
                     //TimeSpan diff = checktime - _userlist[i].TimeStamp;
                     //if (diff.TotalSeconds > 15.0) _userlist.RemoveAt(i); //TODO: Controllare problemi con l'indice di iterazione i !!!!!!
                 }
-                if (checknewuser) _userlist.Add(newuser); //Aggiunge l'utente alla lista se non era presente
-
+                if (checknewuser)
+                {
+                    _userlist.Add(newuser); //Aggiunge l'utente alla lista se non era presente
+                    if (!newuser.DefaultImage) {
+                        TCPSender sender = new TCPSender(newuser.Ipaddress);
+                        string currentfolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+                        string filename = currentfolder + @"\Media\" + newuser.MACAddress.ToString() + DateTime.Now.ToString("yyyyMMddTHHmmss") + ".png";
+                        sender.SendImageRequest(filename);
+                        _userlist[_userlist.Count - 1].Imagepath = filename;
+                    }
+                }
+                
             }
         }
         

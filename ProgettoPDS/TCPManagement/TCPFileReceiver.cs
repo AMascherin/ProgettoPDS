@@ -80,13 +80,15 @@ namespace ProgettoPDS
 
                // System.Windows.MessageBox.Show(clientRequest);
                 networkStream.Flush();
-
+                clientRequest = clientRequest.Replace("\0", string.Empty);
                 if (clientRequest.Equals("Send Image"))
                 {
                     byte[] imageByte = imageToByteArray(uc.ImgPath);
                     networkStream.Write(imageByte, 0, imageByte.Length);
                     Console.WriteLine("Image Sent");
                     networkStream.Flush();
+                    networkStream.Close();
+                    clientSocket.Close();
                 }
 
                 else

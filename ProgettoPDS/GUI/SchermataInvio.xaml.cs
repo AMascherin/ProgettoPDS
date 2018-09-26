@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.Win32;
+using System.Threading;
 
 namespace ProgettoPDS
 {
@@ -70,8 +71,8 @@ namespace ProgettoPDS
             image.Width = 47;
             System.Windows.Thickness thick = new Thickness(21, 10, 672, 10);
             image.Margin = thick;
-            BitmapImage imagebitmap = new BitmapImage(new Uri("C:\\Users\\Federico\\Desktop\\windowsimage.jpg", UriKind.Absolute));
-            image.Source = imagebitmap;
+          //  BitmapImage imagebitmap = new BitmapImage(new Uri("C:\\Users\\Federico\\Desktop\\windowsimage.jpg", UriKind.Absolute));
+           // image.Source = imagebitmap;
             image.Stretch = Stretch.Fill;
             listaimmagini.Add(image);
             Label label = new Label();
@@ -167,7 +168,9 @@ namespace ProgettoPDS
             filestosend.Add(pathToFile);
             foreach (NetworkUser user in listauserinvio) {
                 TCPSender tcpsender = new TCPSender(user.Ipaddress);
-                tcpsender.handleFileSend(filestosend);
+                Thread TCPSenderThread = new Thread(() => tcpsender.handleFileSend(filestosend));
+                TCPSenderThread.Start();
+             //   tcpsender.handleFileSend(filestosend);
             }
         }
     }

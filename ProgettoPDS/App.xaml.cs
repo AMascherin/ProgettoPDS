@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using System.Windows;
 using System.Diagnostics;
 using System.IO;
-using ProgettoPDS.GUI;
-using System.Threading;
+using Hardcodet.Wpf.TaskbarNotification;
 
 namespace ProgettoPDS
 {
@@ -17,6 +11,8 @@ namespace ProgettoPDS
     /// </summary>
     public partial class App : Application
     {
+        private TaskbarIcon notifyIcon;
+
         protected override void OnStartup(StartupEventArgs e)
         {
             if (Process.GetProcessesByName(Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly().Location)).Count() > 1)
@@ -34,19 +30,33 @@ namespace ProgettoPDS
             string currentfolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
             string filepath = Path.GetFullPath(Path.Combine(currentfolder, @"..\..\..\RightClickHandlerApplication\bin\Debug\RightClickHandlerApplication.exe"));
             filepath += " %0";
-            RightClickManager.Register("*", "ApplicazionePds", "Condividi (PDS)", filepath);
-            RightClickManager.Register("Directory", "ApplicazionePds", "Condividi (PDS)", filepath);
+
+            try
+            {
+                RightClickManager.Register("*", "ApplicazionePds", "Condividi (PDS)", filepath);
+                RightClickManager.Register("Directory", "ApplicazionePds", "Condividi (PDS)", filepath);
+            }
+            catch (System.UnauthorizedAccessException)
+            {
+                System.Windows.MessageBox.Show("Esegui il programma in modalità amministratore per assicurare un corretto funzionamento");
+            }
 
             //SchermataInvio test = new SchermataInvio("test");
             //OptionWindow test = new OptionWindow();
 
             //test.Show();
 
+            notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
+
              MainHub mainhub = new MainHub();
              mainhub.Initialize();
         }
 
-
+        protected override void OnExit(ExitEventArgs e)
+        {
+            notifyIcon.Dispose(); //the icon would clean up automatically, but this is cleaner
+            base.OnExit(e);
+        }
 
     }
 }

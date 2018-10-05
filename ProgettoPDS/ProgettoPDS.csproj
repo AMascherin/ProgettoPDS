@@ -53,6 +53,10 @@
     </StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Hardcodet.NotifyIcon.Wpf.1.0.8\lib\net451\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>packages\WindowsAPICodePack.1.1.0\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
       <Private>True</Private>
@@ -116,6 +120,7 @@
     <Compile Include="TCPManagement\TCPFileReceiver.cs" />
     <Compile Include="TCPManagement\TCPSender.cs" />
     <Compile Include="TCPManagement\TCP_LocalHostReceiver.cs" />
+    <Compile Include="TrayAreaIconViewModel.cs" />
     <Compile Include="UDPManagement\UDPReceiver.cs" />
     <Compile Include="UDPManagement\UDPSender.cs" />
     <Compile Include="Models\UserConfiguration.cs" />
@@ -140,6 +145,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GUI\SchermataInvio.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TrayAreaIconResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -173,6 +182,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Media\Red.ico" />
     <Resource Include="Media\perfect-clouds-wallpapers.jpg" />
     <Resource Include="Media\Red_X.png" />
     <Resource Include="Media\arrow2.png" />

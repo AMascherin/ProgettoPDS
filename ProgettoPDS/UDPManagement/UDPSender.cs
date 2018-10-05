@@ -86,12 +86,12 @@ namespace ProgettoPDS
                         Byte[] data_b = Encoding.Unicode.GetBytes(data);
                         udpclient.Send(data_b, data_b.Length, remoteEndPoint);
                     }
-                    catch (ArgumentNullException ex)
+                    catch (ArgumentNullException)
                     {
                         break;
 
                     }
-                    catch (EncoderFallbackException ex)
+                    catch (EncoderFallbackException)
                     {
                         break;
 

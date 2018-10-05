@@ -6,6 +6,14 @@
           <!--   StartupUri="MainWindow.xaml"-->
              
     <Application.Resources>
-         
+
+
+        <!-- merge NotifyIcon and related stuff into the application -->
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="TrayAreaIconResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+
     </Application.Resources>
 </Application>

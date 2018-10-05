@@ -101,6 +101,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="GUI\ProgressoInvio.xaml.cs">
+      <DependentUpon>ProgressoInvio.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\RicezioneFile.xaml.cs">
       <DependentUpon>RicezioneFile.xaml</DependentUpon>
     </Compile>
@@ -128,6 +131,10 @@
       <DependentUpon>OptionWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="GUI\ProgressoInvio.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\RicezioneFile.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -170,6 +177,8 @@
     <Resource Include="Media\Red_X.png" />
     <Resource Include="Media\arrow2.png" />
     <Resource Include="Media\camera.png" />
+    <Resource Include="Media\cestino_icona.png" />
+    <Resource Include="Media\folder-icon.png" />
     <Content Include="Media\images.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

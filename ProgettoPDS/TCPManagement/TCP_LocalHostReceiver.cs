@@ -7,6 +7,7 @@ using System.IO.Pipes;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using ProgettoPDS.GUI;
 
 namespace ProgettoPDS
 {
@@ -42,8 +43,11 @@ namespace ProgettoPDS
                     handler.Close();
 
                     System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate {
-                        
-                        SchermataInvio invio = new SchermataInvio(data, NetworkUserManager.userlist);
+
+                        //SchermataInvio invio = new SchermataInvio(data, NetworkUserManager.userlist);
+                        ProgressoInvio invio = new ProgressoInvio();
+                        //RicezioneFile invio = new RicezioneFile();
+
                         invio.Show();
 
                     });

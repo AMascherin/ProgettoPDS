@@ -142,6 +142,11 @@ namespace ProgettoPDS
             _udprecThread.Start();
             _tcprecThread.Start();
             _tcplocalhostthread.Start();
+
+            NetworkUser userProva = new NetworkUser();
+            userProva.DefaultImage = true;
+
+            NetworkUserManager.AddUser(userProva);
                         
         }
 

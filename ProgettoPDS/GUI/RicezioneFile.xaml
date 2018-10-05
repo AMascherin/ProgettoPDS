@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProgettoPDS.GUI"
         mc:Ignorable="d"
-        Title="RicezioneFile" Height="374.945" Width="562.795" ResizeMode="CanMinimize">
+        Title="RicezioneFile" Height="574.945" Width="762.795" ResizeMode="CanMinimize">
 
     <Window.Resources>
 
@@ -116,27 +116,31 @@
 
 
 
-              <!--  <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Grid.Row="0" Grid.Column="1" Margin="3" Padding="3" CornerRadius="10">
+                <!--  <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Grid.Row="0" Grid.Column="1" Margin="3" Padding="3" CornerRadius="10">
 
                     <ScrollContentPresenter Content="{TemplateBinding ScrollViewer.Content}"/>
 
                 </Border> -->
 
-              
+
             </Grid>
 
 
         </ScrollViewer>
 
-        <TextBox x:Name="textboxpercorso" HorizontalAlignment="Left" Height="23" Margin="188,305,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="200" RenderTransformOrigin="0.526,0.126"/>
-        <Button x:Name="bottonesceglifile" Content="..." HorizontalAlignment="Left" Margin="393,305,0,0" VerticalAlignment="Top" Width="23" RenderTransformOrigin="0.316,0.505" Height="23" Click="bottonesceglifile_Click"/>
-        <Label x:Name="labelpath" Content="Choose download path" HorizontalAlignment="Left" Margin="10,305,0,0" VerticalAlignment="Top" Width="146" Height="23" Background="#FFECE8E8" Style="{StaticResource LabelStyle}" FontSize="10" FontWeight="Bold" RenderTransformOrigin="0.5,1.043"/>
-        <Button x:Name="button" Content="" HorizontalAlignment="Left" Margin="450,301,0,0" VerticalAlignment="Top" Width="34" Height="31"  Style="{StaticResource MyButton}" Click="button2_Click">
+        <TextBox x:Name="textboxpercorso" HorizontalAlignment="Left" Height="23" Margin="337,501,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="200" RenderTransformOrigin="0.526,0.126"/>
+        <Button x:Name="bottonesceglifile" Content="" HorizontalAlignment="Left" Margin="554,497,0,0" VerticalAlignment="Top" Width="40" RenderTransformOrigin="0.316,0.505" Height="36" Click="bottonesceglifile_Click" Style="{StaticResource MyButton}">
+            <Button.Background>
+                <ImageBrush ImageSource="/ProgettoPDS;component/Media/folder-icon.png"/>
+            </Button.Background>
+        </Button>
+        <Label x:Name="labelpath" Content="Choose download path" HorizontalAlignment="Left" Margin="186,502,0,0" VerticalAlignment="Top" Width="146" Height="23" Background="#FFECE8E8" Style="{StaticResource LabelStyle}" FontSize="10" FontWeight="Bold" RenderTransformOrigin="0.5,1.043"/>
+        <Button x:Name="button" Content="" HorizontalAlignment="Left" Margin="621,501,0,0" VerticalAlignment="Top" Width="34" Height="31"  Style="{StaticResource MyButton}" Click="button2_Click">
             <Button.Background>
                 <ImageBrush ImageSource="/ProgettoPDS;component/Media/Red_X.png"/>
             </Button.Background>
         </Button>
-        <Button x:Name="button1" Content="" HorizontalAlignment="Left" Margin="501,301,0,0" VerticalAlignment="Top" Width="33" Height="31"  Style="{StaticResource MyButton}" Click="button1_Click">
+        <Button x:Name="button1" Content="" HorizontalAlignment="Left" Margin="677,502,0,0" VerticalAlignment="Top" Width="33" Height="31"  Style="{StaticResource MyButton}" Click="button1_Click">
             <Button.Background>
                 <ImageBrush ImageSource="/ProgettoPDS;component/Media/arrow2.png"/>
             </Button.Background>

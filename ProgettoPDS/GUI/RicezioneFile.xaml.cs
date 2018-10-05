@@ -127,7 +127,8 @@ namespace ProgettoPDS.GUI
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
-            _AcceptDownload = true;
+            if (textboxpercorso.Text.Equals("")) System.Windows.MessageBox.Show("Choose a path for the download");
+            else _AcceptDownload = true;
             this.Close();
         }
 

@@ -116,7 +116,7 @@ namespace ProgettoPDS
                 bool done = false;
                 while (!done)
                 {
-                    Console.WriteLine("Waiting for broadcast");
+                //    Console.WriteLine("Waiting for broadcast");
                     byte[] data = new Byte[1024];
                     data = client.Receive(ref remoteIPEndPoint);
                     ReceivedData receivedData = new ReceivedData(data, remoteIPEndPoint.Address);
@@ -136,7 +136,6 @@ namespace ProgettoPDS
 
         private static void ProcessData() {
             UserConfiguration uc = new UserConfiguration();
-            NetworkUserManager manager = new NetworkUserManager();
             while (!dataItems.IsCompleted) {
 
                 //Byte[] receivedData = null;
@@ -165,7 +164,7 @@ namespace ProgettoPDS
                     user.Ipaddress = receivedData.senderIpAddr.ToString();
                     string localMAC = uc.GetMACAddress();
                     if (user.MACAddress != localMAC) //Scarta i pacchetti generati dallo stesso PC che li riceve
-                        manager.AddUser(user);
+                        NetworkUserManager.AddUser(user);
                 }
             }
         }

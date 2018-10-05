@@ -10,18 +10,17 @@ using System.Text;
 
 namespace ProgettoPDS
 {
-    class NetworkUserManager //TODO: sincronizzazione
+    static class NetworkUserManager //TODO: sincronizzazione
     {
         private static List<NetworkUser> _userlist = new List<NetworkUser>();
-        public NetworkUserManager() { }
         private static readonly object _UserDatalocker = new object();
-        public List<NetworkUser> userlist
+        public static List<NetworkUser> userlist
         {
             get { lock (_UserDatalocker) { return _userlist; } }
         }
 
 
-        public void AddUser(NetworkUser newuser)
+        public static void AddUser(NetworkUser newuser)
         {
             bool checknewuser = true;
             DateTime checktime = DateTime.UtcNow;
@@ -31,18 +30,26 @@ namespace ProgettoPDS
                 for (int i = 0; i < _userlist.Count; i++)
                 {
                     if (newuser.MACAddress.Equals(_userlist[i].MACAddress)) //Controlla se l'utente è già stato salvato, e ne aggiorna i dati se necessario
-                    {
-                        int result = DateTime.Compare(newuser.ImageTimeStamp, _userlist[i].ImageTimeStamp);
-                        if (!newuser.DefaultImage && result < 0) {
-                            // L'immagine non è di default ed è stata cambiata 
-                            TCPSender sender = new TCPSender(newuser.Ipaddress);
-                            string currentfolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
-                            string filename = currentfolder + @"\Media\" + newuser.MACAddress.ToString() + DateTime.Now.ToString("yyyyMMddTHHmmss") + ".png";
-                            sender.SendImageRequest(filename);
-                            Console.WriteLine("Image changed");
+                    {                        
+                        if (!newuser.DefaultImage) {
+                            int result = DateTime.Compare(newuser.ImageTimeStamp, _userlist[i].ImageTimeStamp);
+                            string filename;
+                            if(result < 0) {
+                                // L'immagine non è di default ed è stata cambiata 
+                                TCPSender sender = new TCPSender(newuser.Ipaddress);
+                                string currentfolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+                                filename = currentfolder + @"\Media\" + newuser.MACAddress.ToString() + DateTime.Now.ToString("yyyyMMddTHHmmss") + ".png";
+                                sender.SendImageRequest(filename);
+                                Console.WriteLine("Image changed");
+                            }
+                            else {
+                                filename = _userlist[i].Imagepath;
+                            }
+                            
                             _userlist[i] = newuser;
                             _userlist[i].Imagepath = filename;
                         }
+
                         else
                         {
                             _userlist[i] = newuser;
@@ -66,17 +73,14 @@ namespace ProgettoPDS
                 }
                 
             }
-        }
-        
+        }        
+
+
     }
 
 
     class MainHub //TODO: gestire la responsività con gli eventi(tcp client, interfaccia grafica, cambio della flag della privacy
     {
-
-        private NetworkUserManager nuc;
-
-
         public static UserConfiguration uc;
         private static UDPSender _udpsend;
         private static UDPReceiver _udprec;
@@ -102,7 +106,6 @@ namespace ProgettoPDS
             _tcprecThread.Name = "TCPServerThread";
             _tcplocalhostthread = new Thread(tcplocalhost.StartListener);
             _tcplocalhostthread.Name = "TCPLocalHost";
-            nuc = new NetworkUserManager();
         }
 
         [STAThread]
@@ -141,8 +144,6 @@ namespace ProgettoPDS
             _tcplocalhostthread.Start();
                         
         }
-        
-        
 
         protected virtual void OnPrivacyChange(EventArgs e) { }  //Questo evento deve riattivare/disattivare l'UDP Sender
         protected virtual void OnSendRequest() { } //EventArgs contiene la lista di utenti a cui inviare i dati?  -->Integrare in SchermataInvio.cs

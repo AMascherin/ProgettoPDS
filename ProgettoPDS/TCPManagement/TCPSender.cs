@@ -67,19 +67,19 @@ namespace ProgettoPDS
             JObject jsonfile = new JObject();
             int i = 0;
             foreach (String file in filesPathToSend)
-            {                
+            {
                 if (File.Exists(file))
                 {
-                   FileInfo fileInfo = new FileInfo(file);
-                   jsonfile.Add(
-                        new JProperty("File" + i,
-                            new JObject(
-                                new JProperty("nome", fileInfo.Name),
-                                new JProperty("estensione", fileInfo.Extension),
-                                new JProperty("dimensione", fileInfo.Length)
-                            )
-                        )
-                    );
+                    FileInfo fileInfo = new FileInfo(file);
+                    jsonfile.Add(
+                         new JProperty("File" + i,
+                             new JObject(
+                                 new JProperty("nome", fileInfo.Name),
+                                 new JProperty("estensione", fileInfo.Extension),
+                                 new JProperty("dimensione", fileInfo.Length)
+                             )
+                         )
+                     );
                     i++;
                 }
                 if (Directory.Exists(file)) {
@@ -103,60 +103,69 @@ namespace ProgettoPDS
             nwStream.Write(bytesToSend, 0, bytesToSend.Length); //Send to the server the file information data
             nwStream.Flush();
             byte[] inStream = new byte[chunkSize];
-               
-            int clientMessage = nwStream.Read(inStream, 0, inStream.Length); //Leggo il messaggio dell'utente
-            String returndata = System.Text.Encoding.UTF8.GetString(inStream).TrimEnd('\0');
-            
-            System.Windows.MessageBox.Show("Data from Server : " + returndata);
 
-            if (returndata.Equals("200 OK"))
+            try
             {
-                //https://www.codeguru.com/csharp/.net/zip-and-unzip-files-programmatically-in-c.htm
+                int clientMessage = nwStream.Read(inStream, 0, inStream.Length); //Leggo il messaggio dell'utente
+                String returndata = System.Text.Encoding.UTF8.GetString(inStream).TrimEnd('\0');
 
-                string zipPath = "Test.zip"; //TODO
+                System.Windows.MessageBox.Show("Data from Server : " + returndata);
 
-                using (ZipArchive zip = ZipFile.Open(zipPath, ZipArchiveMode.Create))
+                if (returndata.Equals("200 OK"))
                 {
-                    foreach (String inputPath in filesPathToSend)
-                    {
-                        if (File.Exists(inputPath))
-                            zip.CreateEntryFromFile(inputPath, Path.GetFileName(inputPath), CompressionLevel.Fastest);
-                        else if (Directory.Exists(inputPath)) {
-                            var directoryInfo = Directory.GetParent(inputPath);
+                    //https://www.codeguru.com/csharp/.net/zip-and-unzip-files-programmatically-in-c.htm
 
-                            foreach (var filePath in System.IO.Directory.GetFiles(inputPath, "*.*", SearchOption.AllDirectories))
+                    string zipPath = "Test.zip"; //TODO
+
+                    using (ZipArchive zip = ZipFile.Open(zipPath, ZipArchiveMode.Create))
+                    {
+                        foreach (String inputPath in filesPathToSend)
+                        {
+                            if (File.Exists(inputPath))
+                                zip.CreateEntryFromFile(inputPath, Path.GetFileName(inputPath), CompressionLevel.Fastest);
+                            else if (Directory.Exists(inputPath))
                             {
-                                var relativePath = filePath.Replace(directoryInfo.Parent.FullName, string.Empty);
-                                using (Stream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-                                using (Stream fileStreamInZip = zip.CreateEntry(relativePath).Open())
-                                    fileStream.CopyTo(fileStreamInZip);
+                                var directoryInfo = Directory.GetParent(inputPath);
+
+                                foreach (var filePath in System.IO.Directory.GetFiles(inputPath, "*.*", SearchOption.AllDirectories))
+                                {
+                                    var relativePath = filePath.Replace(directoryInfo.Parent.FullName, string.Empty);
+                                    using (Stream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                                    using (Stream fileStreamInZip = zip.CreateEntry(relativePath).Open())
+                                        fileStream.CopyTo(fileStreamInZip);
+                                }
+
                             }
 
+                            //https://stackoverflow.com/questions/21259703/how-to-receive-large-file-over-networkstream-c
                         }
-
-                        //https://stackoverflow.com/questions/21259703/how-to-receive-large-file-over-networkstream-c
+                        zip.Dispose();
+                        using (var fileIO = File.OpenRead(zipPath))
+                        {
+                            var bytesArrayToSend = new byte[1024 * 8];
+                            int count;
+                            while ((count = fileIO.Read(bytesArrayToSend, 0, bytesArrayToSend.Length)) > 0)
+                                nwStream.Write(bytesArrayToSend, 0, count);
+                        }
                     }
-                    zip.Dispose();
-                    using (var fileIO = File.OpenRead(zipPath))
-                    {
-                        var bytesArrayToSend = new byte[1024 * 8];
-                        int count;
-                        while ((count = fileIO.Read(bytesArrayToSend, 0, bytesArrayToSend.Length)) > 0)
-                            nwStream.Write(bytesArrayToSend, 0, count);
-                    }
-                } 
-                
-                nwStream.Close();
-                CloseConnection();
-                if(File.Exists(zipPath))
-                    File.Delete(zipPath);
 
+                    nwStream.Close();
+                    CloseConnection();
+                    if (File.Exists(zipPath))
+                        File.Delete(zipPath);
+
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show("Request rejected by the server, closing connection");
+                    nwStream.Close();
+                    CloseConnection();
+                }
             }
-            else
-            {
-                System.Windows.MessageBox.Show("Request rejected by the server, closing connection");
+            catch (System.IO.IOException) {
+                Console.WriteLine("Connection interrupted or IO error");
                 nwStream.Close();
-                CloseConnection();
+                client.Close();
             }
         }
 

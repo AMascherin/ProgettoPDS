@@ -44,10 +44,7 @@ namespace ProgettoPDS
 
                     System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate {
 
-                        //SchermataInvio invio = new SchermataInvio(data, NetworkUserManager.userlist);
-                        ProgressoInvio invio = new ProgressoInvio();
-                        //RicezioneFile invio = new RicezioneFile();
-
+                        SchermataInvio invio = new SchermataInvio(data, NetworkUserManager.userlist);
                         invio.Show();
 
                     });

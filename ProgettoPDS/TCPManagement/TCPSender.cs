@@ -18,11 +18,74 @@ namespace ProgettoPDS
 
         UserConfiguration uc = new UserConfiguration();
 
-        public TCPSender(string ip)
+        private readonly object _UserDatalocker = new object();
+
+        private bool _suspend;
+        private int _progress;
+        private NetworkUser nu;
+
+
+        public bool Suspend
         {
-            IPAddress ipAd = IPAddress.Parse(ip);
+            get
+            {
+                lock (_UserDatalocker)
+                {
+                    return _suspend;
+                }
+            }
+
+            set
+            {
+                lock (_UserDatalocker)
+                {
+                    _suspend = value;
+                }
+            }
+        }
+
+        public int Progress
+        {
+            get
+            {
+                lock (_UserDatalocker)
+                {
+                    return _progress;
+                }
+            }
+
+            set
+            {
+                lock (_UserDatalocker)
+                {
+                    _progress = value;
+                }
+            }
+        }
+
+        public NetworkUser Nu
+        {
+            get
+            {
+                return nu;
+            }
+
+            set
+            {
+                nu = value;
+            }
+        }
+
+        public TCPSender(NetworkUser user)
+        {
+            Nu = user;
+
+            IPAddress ipAd = IPAddress.Parse(Nu.Ipaddress);
 
             client = new TcpClient(ipAd.ToString(), uc.GetTCPPort());
+
+            Suspend = false;
+            Progress = 0;
 
             System.Windows.MessageBox.Show("TCP Sender created");
         }
@@ -54,8 +117,11 @@ namespace ProgettoPDS
 
         private void CloseConnection()
         {
+            var ns = client.GetStream();
+            ns.Close();         
             client.Close();
         }
+      
 
         public void handleFileSend(List<String> filesPathToSend)
         {
@@ -121,8 +187,17 @@ namespace ProgettoPDS
                     {
                         foreach (String inputPath in filesPathToSend)
                         {
+                            if (Suspend) {
+                                if (File.Exists(zipPath))
+                                    File.Delete(zipPath);
+                                CloseConnection();
+                                return; //TODO test
+                            }
+
                             if (File.Exists(inputPath))
+                            {
                                 zip.CreateEntryFromFile(inputPath, Path.GetFileName(inputPath), CompressionLevel.Fastest);
+                            }
                             else if (Directory.Exists(inputPath))
                             {
                                 var directoryInfo = Directory.GetParent(inputPath);
@@ -139,17 +214,30 @@ namespace ProgettoPDS
 
                             //https://stackoverflow.com/questions/21259703/how-to-receive-large-file-over-networkstream-c
                         }
+
                         zip.Dispose();
+
                         using (var fileIO = File.OpenRead(zipPath))
                         {
                             var bytesArrayToSend = new byte[1024 * 8];
+                            long totalSize = new System.IO.FileInfo(zipPath).Length;
+                            long byteSent = 0;
+
                             int count;
                             while ((count = fileIO.Read(bytesArrayToSend, 0, bytesArrayToSend.Length)) > 0)
-                                nwStream.Write(bytesArrayToSend, 0, count);
+                            {
+                                if (!Suspend)
+                                {
+                                    nwStream.Write(bytesArrayToSend, 0, count);
+                                    byteSent += count;
+                                    Progress = (int)Math.Floor((double)(byteSent * 100 / totalSize));
+                                }
+                                else
+                                    break;
+                            }
                         }
                     }
-
-                    nwStream.Close();
+                    
                     CloseConnection();
                     if (File.Exists(zipPath))
                         File.Delete(zipPath);
@@ -158,17 +246,15 @@ namespace ProgettoPDS
                 else
                 {
                     System.Windows.MessageBox.Show("Request rejected by the server, closing connection");
-                    nwStream.Close();
                     CloseConnection();
                 }
             }
             catch (System.IO.IOException) {
                 Console.WriteLine("Connection interrupted or IO error");
-                nwStream.Close();
-                client.Close();
+                CloseConnection();
             }
         }
-
+                
         public void SendImageRequest(string filename) {
             NetworkStream nwStream = client.GetStream();
             byte[] bytesToSend = System.Text.Encoding.UTF8.GetBytes("Send Image");

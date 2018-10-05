@@ -184,7 +184,7 @@ namespace ProgettoPDS
             List<String> filestosend = new List<string>();
             filestosend.Add(pathToFile);
             foreach (NetworkUser user in listauserinvio) {
-                TCPSender tcpsender = new TCPSender(user.Ipaddress);
+                TCPSender tcpsender = new TCPSender(user);
                 Thread TCPSenderThread = new Thread(() => tcpsender.handleFileSend(filestosend));
                 TCPSenderThread.Start();
              //   tcpsender.handleFileSend(filestosend);

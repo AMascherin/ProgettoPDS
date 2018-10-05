@@ -36,7 +36,7 @@ namespace ProgettoPDS
                             string filename;
                             if(result < 0) {
                                 // L'immagine non è di default ed è stata cambiata 
-                                TCPSender sender = new TCPSender(newuser.Ipaddress);
+                                TCPSender sender = new TCPSender(newuser);
                                 string currentfolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
                                 filename = currentfolder + @"\Media\" + newuser.MACAddress.ToString() + DateTime.Now.ToString("yyyyMMddTHHmmss") + ".png";
                                 sender.SendImageRequest(filename);
@@ -64,7 +64,7 @@ namespace ProgettoPDS
                 {
                     _userlist.Add(newuser); //Aggiunge l'utente alla lista se non era presente
                     if (!newuser.DefaultImage) {
-                        TCPSender sender = new TCPSender(newuser.Ipaddress);
+                        TCPSender sender = new TCPSender(newuser);
                         string currentfolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
                         string filename = currentfolder + @"\Media\" + newuser.MACAddress.ToString() + DateTime.Now.ToString("yyyyMMddTHHmmss") + ".png";
                         sender.SendImageRequest(filename);
@@ -143,10 +143,9 @@ namespace ProgettoPDS
             _tcprecThread.Start();
             _tcplocalhostthread.Start();
 
-            NetworkUser userProva = new NetworkUser();
-            userProva.DefaultImage = true;
-
-            NetworkUserManager.AddUser(userProva);
+            //NetworkUser userProva = new NetworkUser();
+            //userProva.DefaultImage = true;
+            //NetworkUserManager.AddUser(userProva);
                         
         }
 

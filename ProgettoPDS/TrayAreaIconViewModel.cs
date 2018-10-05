@@ -7,9 +7,9 @@ namespace ProgettoPDS
     public class TrayAreaIconViewModel
     {
         /// <summary>
-        /// Shows a window, if none is already open.
+        /// Shows the option window, if none is already open.
         /// </summary>
-        public ICommand ShowWindowCommand
+        public ICommand ShowOptionWindowCommand
         {
             get
             {
@@ -19,6 +19,25 @@ namespace ProgettoPDS
                     CommandAction = () =>
                     {
                         Application.Current.MainWindow = new OptionWindow();
+                        Application.Current.MainWindow.Show();
+                    }
+                };
+            }
+        }
+
+        /// <summary>
+        /// Shows a window, if none is already open.
+        /// </summary>
+        public ICommand ShowUploadWindowCommand
+        {
+            get
+            {
+                return new DelegateCommand
+                {
+                    CanExecuteFunc = () => Application.Current.MainWindow == null,
+                    CommandAction = () =>
+                    {
+                        Application.Current.MainWindow = new GUI.ProgressoInvio();
                         Application.Current.MainWindow.Show();
                     }
                 };

@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 using System.Threading;
+using ProgettoPDS.GUI;
 
 namespace ProgettoPDS
 {
@@ -26,6 +27,8 @@ namespace ProgettoPDS
         List<Label> listalabel = new List<Label>();
 
         List<Image> listaimmagini = new List<Image>();
+
+        List<TCPSender> listaSender = new List<TCPSender>();
 
         List<CheckBox> listacheck = new List<CheckBox>();
 
@@ -185,8 +188,15 @@ namespace ProgettoPDS
             filestosend.Add(pathToFile);
             foreach (NetworkUser user in listauserinvio) {
                 TCPSender tcpsender = new TCPSender(user);
+                listaSender.Add(tcpsender);
                 Thread TCPSenderThread = new Thread(() => tcpsender.handleFileSend(filestosend));
                 TCPSenderThread.Start();
+                //                Models.ActiveTCPSenderManager.AddActiveSender(tcpsender);
+                Models.ActiveTCPSenderManager.TcpSenderCollection.Add((TCPSender)tcpsender);
+                StatusInvio status = new StatusInvio();
+  //              StatusInvio status = new StatusInvio(listaSender);
+                status.Show();
+                
              //   tcpsender.handleFileSend(filestosend);
             }
         }

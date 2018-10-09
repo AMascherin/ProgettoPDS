@@ -37,7 +37,7 @@ namespace ProgettoPDS
                     CanExecuteFunc = () => Application.Current.MainWindow == null,
                     CommandAction = () =>
                     {
-                        Application.Current.MainWindow = new GUI.ProgressoInvio();
+                        Application.Current.MainWindow = new GUI.StatusInvio();
                         Application.Current.MainWindow.Show();
                     }
                 };

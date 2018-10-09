@@ -191,14 +191,23 @@ namespace ProgettoPDS
                 listaSender.Add(tcpsender);
                 Thread TCPSenderThread = new Thread(() => tcpsender.handleFileSend(filestosend));
                 TCPSenderThread.Start();
-                //                Models.ActiveTCPSenderManager.AddActiveSender(tcpsender);
+              //Models.ActiveTCPSenderManager.AddActiveSender(tcpsender);
                 Models.ActiveTCPSenderManager.TcpSenderCollection.Add((TCPSender)tcpsender);
-                StatusInvio status = new StatusInvio();
-  //              StatusInvio status = new StatusInvio(listaSender);
-                status.Show();
+
+               // if (Application.Current.MainWindow == null) {
+                    StatusInvio status = new StatusInvio();
+                    //Application.Current.MainWindow = new StatusInvio();
+                    //Application.Current.MainWindow.Show();
+                    status.Show();
+
+               // }
                 
              //   tcpsender.handleFileSend(filestosend);
             }
+
+           
+
+            this.Close();
         }
     }
 }

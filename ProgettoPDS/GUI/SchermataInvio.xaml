@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProgettoPDS"
         mc:Ignorable="d"
-         Title="Condividi file con:" Height="664" Width="967.961" Icon="/ProgettoPDS;component/Media/index.jpg" ResizeMode="CanMinimize">
+         Title="Condividi file con:" Height="664" Width="967.961" Icon="/ProgettoPDS;component/Media/index.jpg">
     <Window.Resources>
 
 
@@ -98,11 +98,24 @@
         </Style>
     </Window.Resources>
 
-    <Grid>
+    <Grid HorizontalAlignment="Stretch">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MinWidth="50" Width="0.2*"/>
+            <ColumnDefinition MinWidth="50" Width="0.6*" />
+            <ColumnDefinition MinWidth="50" Width="0.2*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.2*"/>
+            <RowDefinition Height="0.6*"/>
+            <RowDefinition Height="0.2*"/>
+        </Grid.RowDefinitions>
+
+
         <Grid.Background>
             <ImageBrush ImageSource="/ProgettoPDS;component/Media/perfect-clouds-wallpapers.jpg"/>
         </Grid.Background>
-        <ScrollViewer x:Name="scroll" Margin="152,133,95,110" BorderBrush="Black" BorderThickness="2" Background="#FFF1E9E9"  >
+        <ScrollViewer x:Name="scroll" Margin="12,13,5,10" BorderBrush="Black" BorderThickness="2" Background="#FFF1E9E9" Grid.Column="1" Grid.Row="1">
             <StackPanel x:Name="stack" Height="700"/>
             <ScrollViewer.Resources>
                 <Style TargetType="{x:Type ScrollViewer}">
@@ -118,9 +131,9 @@
                                         <ColumnDefinition Width="*"/>
 
                                     </Grid.ColumnDefinitions>
-                                    
+
                                     <Grid.RowDefinitions>
-                                        
+
                                         <RowDefinition Height="*"/>
 
                                         <RowDefinition Height="Auto"/>
@@ -144,17 +157,21 @@
                 </Style>
             </ScrollViewer.Resources>
         </ScrollViewer>
-        <Button x:Name="bottoneinvia" Content="" HorizontalAlignment="Left" Margin="846,552,0,0" VerticalAlignment="Top" Width="55" Height="45" RenderTransformOrigin="0.587,0.362" Style="{StaticResource MyButton}" Click="bottoneinvia_Click">
-            <Button.Background>
-                <ImageBrush ImageSource="/ProgettoPDS;component/Media/arrow2.png"/>
-            </Button.Background>
-        </Button>
-        <Button x:Name="bottonecanc" Content="" HorizontalAlignment="Left" Margin="745,552,0,0" VerticalAlignment="Top" Width="49" Height="45" Style="{StaticResource MyButton}" Click="bottonecanc_Click">
-            <Button.Background>
-                <ImageBrush ImageSource="/ProgettoPDS;component/Media/Red_X.png"/>
-            </Button.Background>
-        </Button>
-        <Label Content="Scegli con chi condividere i tuoi file:" HorizontalAlignment="Left" Margin="177,96,0,0" VerticalAlignment="Top" Width="674" Height="32" Background="#FFECE8E8" Style="{StaticResource LabelStyle}" FontSize="16" FontWeight="Bold"/>
+
+        <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="2" Height="90" Width="160" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Button x:Name="bottonecanc" Content="" Width="50" Height="60" Style="{StaticResource MyButton}" Click="bottonecanc_Click" Grid.Column="2" Grid.Row="2" Margin="10,10,10,10">
+                <Button.Background>
+                    <ImageBrush ImageSource="/ProgettoPDS;component/Media/Red_X.png"/>
+                </Button.Background>
+            </Button>
+            <Button x:Name="bottoneinvia" Width="50" Height="60" RenderTransformOrigin="0.183,0.079" Style="{StaticResource MyButton}" Click="bottoneinvia_Click" Margin="30,10,10,5">
+                <Button.Background>
+                    <ImageBrush ImageSource="/ProgettoPDS;component/Media/arrow2.png"/>
+                </Button.Background>
+            </Button>
+
+        </StackPanel>
+        <Label Content="Scegli con chi condividere i tuoi file:" Margin="27,86,10,5" Width="Auto" Height="Auto" Background="#FFECE8E8" Style="{StaticResource LabelStyle}" FontSize="16" FontWeight="Bold" Grid.Column="1" Grid.Row="0"/>
 
     </Grid>
 </Window>

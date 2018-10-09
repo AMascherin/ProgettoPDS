@@ -181,7 +181,7 @@ namespace ProgettoPDS
                 {
                     //https://www.codeguru.com/csharp/.net/zip-and-unzip-files-programmatically-in-c.htm
 
-                    string zipPath = "Test.zip"; //TODO
+                    string zipPath = DateTime.Now.ToString("yyyyMMddTHHmmss") + "_zip"+".zip";
 
                     using (ZipArchive zip = ZipFile.Open(zipPath, ZipArchiveMode.Create))
                     {

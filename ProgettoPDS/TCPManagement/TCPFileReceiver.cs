@@ -48,7 +48,7 @@ namespace ProgettoPDS
             }
         }
 
-        public void CloseConnection()
+        public void StopListener()
         {
             listener.Stop();
         }
@@ -70,25 +70,23 @@ namespace ProgettoPDS
 
         private void handleFileTransfer()
         {
-            int chunkSize = 2048;
             try
             {
+                int chunkSize = 2048;
                 NetworkStream networkStream = clientSocket.GetStream(); //Apro un network stream con il client
-                byte[] clientMessage = new byte[chunkSize];                 
+                byte[] clientMessage = new byte[chunkSize];
                 int bytesmessageread = networkStream.Read(clientMessage, 0, clientMessage.Length); //Leggo il messaggio dell'utente
                 String clientRequest = System.Text.Encoding.UTF8.GetString(clientMessage);
 
-               // System.Windows.MessageBox.Show(clientRequest);
                 networkStream.Flush();
                 clientRequest = clientRequest.Replace("\0", string.Empty);
+
                 if (clientRequest.Equals("Send Image"))
                 {
                     byte[] imageByte = imageToByteArray(uc.ImgPath);
                     networkStream.Write(imageByte, 0, imageByte.Length);
                     Console.WriteLine("Image Sent");
-                    networkStream.Flush();
-                    networkStream.Close();
-                    clientSocket.Close();
+                    CloseConnection();
                 }
 
                 else
@@ -97,8 +95,6 @@ namespace ProgettoPDS
                     List<Models.DownloadItemModel> downloadItems = new List<Models.DownloadItemModel>(); //Deconversione JSON
 
                     JObject json = JObject.Parse(clientRequest.ToString());
-
-                    Console.WriteLine(json.ToString());
 
                     //DECONVERSIONE JSON
                     foreach (JProperty property in json.Properties())
@@ -109,7 +105,9 @@ namespace ProgettoPDS
                         file.OriginalFileName = jobj.GetValue("nome").ToString();
                         file.Format = jobj.GetValue("estensione").ToString();
                         file.Dimension = (long)jobj.GetValue("dimensione");
+
                         Console.WriteLine(file.OriginalFileName + "+" + file.Format + "+" + file.Dimension.ToString());
+
                         downloadItems.Add(file);
 
                     }
@@ -126,12 +124,12 @@ namespace ProgettoPDS
                             if (!rcf.AcceptDownload) //Risposta dall'interfaccia grafica
                         {
                             //Se l'utente rifiuta si avvisa il sender e si chiude la connessione
+                            //Send to the server the file information data
                             networkStream.Write(System.Text.Encoding.UTF8.GetBytes("418 I'm a teapot"),
-                                                    0,
-                                                    System.Text.Encoding.UTF8.GetBytes("418 I'm a teapot").Length); //Send to the server the file information data
-                            networkStream.Flush();
-                                networkStream.Close();
-                                clientSocket.Close();
+                                                        0,
+                                                        System.Text.Encoding.UTF8.GetBytes("418 I'm a teapot").Length);
+
+                                CloseConnection();
                                 return;
                             }
                             else
@@ -139,8 +137,6 @@ namespace ProgettoPDS
                                 DownloadPath = rcf.downloadPath;
                             }
                         });
-
-
                     }
 
                     else
@@ -161,41 +157,35 @@ namespace ProgettoPDS
                     networkStream.Write(bytesToSend, 0, bytesToSend.Length);
                     Console.WriteLine("200 Ok Send");
                     networkStream.Flush();
-                    try
+
+                    //Ora è possibile ricevere i file
+                    foreach (var downloadItem in downloadItems)
                     {
-                        //Ora è possibile ricevere i file
-                        foreach (var downloadItem in downloadItems)
+                        string filePath = Path.Combine(DownloadPath, "tmp.zip");
+                        int count = 1;
+                        while (File.Exists(filePath))
                         {
-                            string filePath = Path.Combine(DownloadPath, "tmp.zip");
-                            int count = 1;
-                            while (File.Exists(filePath))
-                            {
-                                string tmpFileName = string.Format("{0}({1})", "tmp", count++);
-                                filePath = Path.Combine(DownloadPath, tmpFileName + ".zip");
-                            }
+                            string tmpFileName = string.Format("{0}({1})", "tmp", count++);
+                            filePath = Path.Combine(DownloadPath, tmpFileName + ".zip");
+                        }
 
-                            lock (this)
+                        lock (this)
+                        {
+                            Stream fileStream = File.OpenWrite(filePath); //TODO: Check if not null
+                            byte[] clientData = new byte[chunkSize];
+                            int bytesread = networkStream.Read(clientData, 0, clientData.Length); //Leggo il messaggio dell'utente
+                            while (bytesread > 0)
                             {
-                                try
-                                {
-                                    Stream fileStream = File.OpenWrite(filePath); //TODO: Check if not null
-                                    byte[] clientData = new byte[chunkSize];
-                                    int bytesread = networkStream.Read(clientData, 0, clientData.Length); //Leggo il messaggio dell'utente
-                                    while (bytesread > 0)
-                                    {
-                                        fileStream.Write(clientData, 0, bytesread);
-                                        bytesread = networkStream.Read(clientData, 0, clientData.Length);
-                                    }
-                                    fileStream.Close();
-                                    //System.Windows.MessageBox.Show("File data received, start save");  //TODO: Gestire la chiusura della connessione
-                                }
-                                catch (Exception e)
-                                {
-                                    System.Windows.MessageBox.Show(e.Message);
-                                    System.Windows.MessageBox.Show(e.StackTrace);
-                                }
+                                fileStream.Write(clientData, 0, bytesread);
+                                bytesread = networkStream.Read(clientData, 0, clientData.Length);
                             }
+                            fileStream.Close();
+                            //System.Windows.MessageBox.Show("File data received, start save");  //TODO: Gestire la chiusura della connessione
 
+                        }
+
+                        try
+                        {
                             //To extract the zip in a new folder
                             ZipArchive archive = ZipFile.Open(filePath, ZipArchiveMode.Update);
                             foreach (var entry in archive.Entries)
@@ -220,33 +210,49 @@ namespace ProgettoPDS
                                 entry.ExtractToFile(path);
                             }
                             archive.Dispose();
-
+                        }
+                        catch ( Exception ex)
+                        when (ex is InvalidDataException ||
+                              ex is ArgumentException)
+                        {
+                            Console.WriteLine(ex.Message);
+                            Console.WriteLine(ex.StackTrace);
 
                             if (File.Exists(filePath))
                                 File.Delete(filePath);
-
-
-                            networkStream.Flush();
-                            networkStream.Close();
-                            clientSocket.Close();
                         }
-                    }
-                    catch (Exception e)
-                    {
-                        System.Windows.MessageBox.Show(e.StackTrace.ToString());
-                        System.Windows.MessageBox.Show(e.Message);
-                    }
-                    finally
-                    {
-                        networkStream.Flush();
-                        networkStream.Close();
-                        clientSocket.Close();
+
+                        if (File.Exists(filePath))
+                            File.Delete(filePath);
+
+                        CloseConnection();
                     }
                 }
             }
-            catch (Exception ex) {
-                Console.WriteLine(" >> " + ex.ToString());                
+            catch (Exception e)
+            {
+                System.Windows.MessageBox.Show(e.StackTrace.ToString());
+                System.Windows.MessageBox.Show(e.Message);
             }
+            finally
+            {
+                CloseConnection();
+            }
+        }
+
+        private void CloseConnection() {
+            try
+            {
+                var networkStream = clientSocket.GetStream();
+                networkStream.Flush();
+                networkStream.Close();
+            }
+            catch (ObjectDisposedException) 
+            {
+                Console.WriteLine("The network stream was already disposed");
+            }
+            clientSocket.Close();
+
         }
 
         private string PathCombine(string path1, string path2)

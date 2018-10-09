@@ -111,11 +111,16 @@
     <Compile Include="GUI\RicezioneFile.xaml.cs">
       <DependentUpon>RicezioneFile.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GUI\StatusInvio.xaml.cs">
+      <DependentUpon>StatusInvio.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainHub.cs" />
     <Compile Include="GUI\SchermataInvio.xaml.cs">
       <DependentUpon>SchermataInvio.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\ActiveTCPSenderManager.cs" />
     <Compile Include="Models\DownloadItemModel.cs" />
+    <Compile Include="RelayCommand.cs" />
     <Compile Include="RightClickManager.cs" />
     <Compile Include="TCPManagement\TCPFileReceiver.cs" />
     <Compile Include="TCPManagement\TCPSender.cs" />
@@ -145,6 +150,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GUI\SchermataInvio.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\StatusInvio.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

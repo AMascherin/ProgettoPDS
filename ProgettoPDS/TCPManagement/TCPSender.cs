@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.IO;
 using System.IO.Compression;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net;
-using System.Diagnostics;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Input;
+using System.ComponentModel;
 
 namespace ProgettoPDS
 {
-    class TCPSender
+    public class TCPSender : INotifyPropertyChanged
     {
        // private int PORT_NO = 13370;
 
@@ -21,9 +23,10 @@ namespace ProgettoPDS
         private readonly object _UserDatalocker = new object();
 
         private bool _suspend;
-        private int _progress;
-        private NetworkUser nu;
-
+        private double _progress;
+        private ImageSource _userImage;
+        private string _userName;
+        private ICommand _stopCommand;
 
         public bool Suspend
         {
@@ -44,13 +47,37 @@ namespace ProgettoPDS
             }
         }
 
-        public int Progress
+        public double Progress
+        {
+            get
+            {
+                return _progress;
+            }
+
+            set
+            {
+                _progress = value;
+                OnPropertyChanged("Progress");
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+
+        public ImageSource UserImage
         {
             get
             {
                 lock (_UserDatalocker)
                 {
-                    return _progress;
+                    BitmapImage imagebitmap = new BitmapImage(new Uri(Nu.Imagepath, UriKind.Absolute));
+                    return imagebitmap;
                 }
             }
 
@@ -58,22 +85,60 @@ namespace ProgettoPDS
             {
                 lock (_UserDatalocker)
                 {
-                    _progress = value;
+                    _userImage = value;
                 }
             }
         }
 
-        public NetworkUser Nu
+        public string UserName
         {
             get
             {
-                return nu;
+                lock (_UserDatalocker)
+                {
+                    
+                    return Nu.Username;
+                }
             }
 
             set
             {
-                nu = value;
+                lock (_UserDatalocker)
+                {
+                    _userName = value;
+                }
             }
+        }
+
+
+        public NetworkUser Nu { get; set; }
+
+        public ICommand StopCommand
+        {
+            get
+            {
+                if (_stopCommand == null) {
+
+                    _stopCommand = new RelayCommand(
+
+                        param => {
+                            this.SetSuspended();
+                            Console.WriteLine("Annullato");
+                        }
+
+                        );
+                }
+
+                return _stopCommand;
+            }
+
+        }
+
+        public void SetSuspended() {
+
+            Suspend = true;
+            //Models.ActiveTCPSenderManager.RemoveSender(this);
+            Models.ActiveTCPSenderManager.TcpSenderCollection.Remove((TCPSender)this);
         }
 
         public TCPSender(NetworkUser user)
@@ -249,8 +314,10 @@ namespace ProgettoPDS
                     CloseConnection();
                 }
             }
-            catch (System.IO.IOException) {
+            catch (System.IO.IOException e) {
                 Console.WriteLine("Connection interrupted or IO error");
+                Console.WriteLine(e.StackTrace);
+                Console.WriteLine(e.Message);
                 CloseConnection();
             }
         }

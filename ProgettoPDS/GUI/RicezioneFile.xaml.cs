@@ -18,6 +18,8 @@ namespace ProgettoPDS.GUI
 
         private bool _AcceptDownload;
 
+        private UserConfiguration cfg;
+
         public void Reset() {
             downloadPath = null;
             _AcceptDownload = false;
@@ -31,6 +33,7 @@ namespace ProgettoPDS.GUI
             }
         }
 
+        //test constructor
         public RicezioneFile()
         {
             InitializeComponent();
@@ -50,6 +53,13 @@ namespace ProgettoPDS.GUI
 
         public RicezioneFile(List<Models.DownloadItemModel> downloadItems) {
             InitializeComponent();
+            cfg = new UserConfiguration();
+            if (cfg.DefaultDownloadPath)
+            {
+                textboxpercorso.Text = cfg.DefaultDownloadPathString;
+                downloadPath = cfg.DefaultDownloadPathString;
+            }
+
             if (App.Current.MainWindow == this)
             {
                 App.Current.MainWindow = null;

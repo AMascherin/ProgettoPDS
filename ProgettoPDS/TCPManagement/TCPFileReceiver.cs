@@ -13,6 +13,7 @@ using Newtonsoft.Json.Linq;
 using System.Windows.Forms;
 using System.Windows.Threading;
 using System.Drawing;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace ProgettoPDS
 {
@@ -117,17 +118,17 @@ namespace ProgettoPDS
 
                         System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate
                         {
-                            RicezioneFile rcf = new RicezioneFile(downloadItems); //La lista arriva dal file json decompresso
-                        rcf.Reset();
+                            RicezioneFile rcf = new RicezioneFile(downloadItems); //La lista arriva dal file json decompresso                            
                             rcf.ShowDialog();
 
                             if (!rcf.AcceptDownload) //Risposta dall'interfaccia grafica
-                        {
-                            //Se l'utente rifiuta si avvisa il sender e si chiude la connessione
-                            //Send to the server the file information data
-                            networkStream.Write(System.Text.Encoding.UTF8.GetBytes("418 I'm a teapot"),
-                                                        0,
-                                                        System.Text.Encoding.UTF8.GetBytes("418 I'm a teapot").Length);
+                            {
+                                //Se l'utente rifiuta si avvisa il sender e si chiude la connessione
+                                //Send to the server the file information data
+                                rcf.Reset();
+                                networkStream.Write(System.Text.Encoding.UTF8.GetBytes("418 I'm a teapot"),
+                                                            0,
+                                                            System.Text.Encoding.UTF8.GetBytes("418 I'm a teapot").Length);
 
                                 CloseConnection();
                                 return;
@@ -135,6 +136,7 @@ namespace ProgettoPDS
                             else
                             {
                                 DownloadPath = rcf.downloadPath;
+                                rcf.Reset();
                             }
                         });
                     }
@@ -143,9 +145,15 @@ namespace ProgettoPDS
                     {
                         if (!uc.DefaultDownloadPath)
                         {
-                            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-                            saveFileDialog1.ShowDialog();
-                            DownloadPath = Path.GetFullPath(saveFileDialog1.FileName);
+                            System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate
+                            {
+                                var dialog = new CommonOpenFileDialog();
+                                dialog.IsFolderPicker = true;
+                                CommonFileDialogResult result = dialog.ShowDialog();
+                                if (result.ToString() == "Ok") {
+                                    DownloadPath = Path.GetFullPath(dialog.FileName);
+                                }
+                            });
 
                         }
                         else

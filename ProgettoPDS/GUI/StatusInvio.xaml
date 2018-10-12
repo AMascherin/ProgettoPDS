@@ -92,13 +92,13 @@
                        <!-- <TextBlock Text="Name: " /> -->
                         <Ellipse HorizontalAlignment="Left" Height="40" Width="40" Margin="10,10,10,10">
                         <Ellipse.Fill>
-                                <ImageBrush ImageSource="{Binding UserImage}"></ImageBrush>
+                                <ImageBrush ImageSource="{Binding UserImage,UpdateSourceTrigger=PropertyChanged}"></ImageBrush>
                         </Ellipse.Fill>
                         </Ellipse>
                        <!-- <Image Source="{Binding UserImage}" HorizontalAlignment="Left" Height="40" Width="40" Margin="10,10,10,10"/> -->
                        <!-- <TextBlock Text=", " /> -->
                        <!-- <TextBlock Text="Age: " /> -->
-                        <TextBlock Text="{Binding UserName}" FontWeight="Bold" Margin="50,20,10,10"/>
+                        <TextBlock Text="{Binding UserName, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" Margin="50,20,10,10"/>
                        <!-- <TextBlock Text=" (" /> -->
                         <ProgressBar Value="{Binding Progress, UpdateSourceTrigger=PropertyChanged}" Maximum="100.0" Minimum="0.0" Width="100" Height="10" Margin="100,10,10,10" Style="{StaticResource myProgress}"/>
                        <!-- <TextBlock Text=")" /> -->

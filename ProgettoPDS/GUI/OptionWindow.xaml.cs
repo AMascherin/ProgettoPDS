@@ -87,7 +87,7 @@ namespace ProgettoPDS
             if (username != null && username != "") cfg.Username = username;
             cfg.AutomaticDownloadAcceptance = automaticDownloadAcceptance;
             cfg.DefaultDownloadPath = defaultDownloadPath;
-            cfg.DefaultDownloadPathString = downloadPath;
+            cfg.DefaultDownloadPathString = (cfg.DefaultDownloadPath)? downloadPath : null;            
             cfg.PrivacyFlag = privacyFlag;
             if (!imgpath.Equals(cfg.ImgPath)) cfg.ImgPath = imgpath;
             cfg.DumpConfiguration();
@@ -185,7 +185,8 @@ namespace ProgettoPDS
             bottonesceglifile.IsEnabled = false;
 
 
-            textboxpercorso.Text = downloadPath;
+            textboxpercorso.Text = null;
+            downloadPath = null;
             defaultDownloadPath = false;
         }
 

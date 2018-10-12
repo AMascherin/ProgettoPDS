@@ -86,6 +86,7 @@ namespace ProgettoPDS
                 lock (_UserDatalocker)
                 {
                     _userImage = value;
+                    OnPropertyChanged("UserImage");
                 }
             }
         }
@@ -106,6 +107,7 @@ namespace ProgettoPDS
                 lock (_UserDatalocker)
                 {
                     _userName = value;
+                    OnPropertyChanged("UserName");
                 }
             }
         }

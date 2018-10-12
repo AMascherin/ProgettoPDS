@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
 using System.Threading;
-using System.IO.Pipes;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
 
 namespace ProgettoPDS
 {
@@ -123,7 +119,7 @@ namespace ProgettoPDS
             catch (IOException)
             {
                 //Non esistono i dati inseriti dall'utente
-                OptionWindow mw1 = new OptionWindow(true);
+                OptionWindow mw1 = new OptionWindow();
                 mw1.ShowDialog();
                 string folder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
                 string fullpath = folder + @"\config.json";
@@ -142,21 +138,11 @@ namespace ProgettoPDS
             _udprecThread.Start();
             _tcprecThread.Start();
             _tcplocalhostthread.Start();
-
-           // NetworkUser userProva = new NetworkUser();
-           //userProva.DefaultImage = true;
-           //userProva.Username = "ProvaUsername";
-           //NetworkUserManager.AddUser(userProva);
-                        
+                                    
         }
 
         protected virtual void OnPrivacyChange(EventArgs e) { }  //Questo evento deve riattivare/disattivare l'UDP Sender
-        protected virtual void OnSendRequest() { } //EventArgs contiene la lista di utenti a cui inviare i dati?  -->Integrare in SchermataInvio.cs
-        protected virtual void CancelTransfer() { } //Andrà identificata la singola connessione
-
-        
-       
-
+     
     }
 }
 

@@ -171,7 +171,7 @@
             </Button>
 
         </StackPanel>
-        <Label Content="Scegli con chi condividere i tuoi file:" Margin="27,86,10,5" Width="Auto" Height="Auto" Background="#FFECE8E8" Style="{StaticResource LabelStyle}" FontSize="16" FontWeight="Bold" Grid.Column="1" Grid.Row="0"/>
+        <Label Content="Choose who you are going to send your files" Margin="27,86,10,5" Width="Auto" Height="Auto" Background="#FFECE8E8" Style="{StaticResource LabelStyle}" FontSize="16" FontWeight="Bold" Grid.Column="1" Grid.Row="0"/>
 
     </Grid>
 </Window>

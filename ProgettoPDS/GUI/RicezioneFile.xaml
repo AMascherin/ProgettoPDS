@@ -64,7 +64,7 @@
             <ImageBrush ImageSource="/ProgettoPDS;component/Media/perfect-clouds-wallpapers.jpg"/>
         </Grid.Background>
 
-        <Label x:Name="labelfile" Content="Vuoi ricevere i seguenti file?" HorizontalAlignment="Left" Margin="18,10,0,0" VerticalAlignment="Top" Width="146" Height="23" Background="#FFECE8E8" Style="{StaticResource LabelStyle}" FontSize="10
+        <Label x:Name="labelfile" Content="Do you want to receive these files?" HorizontalAlignment="Left" Margin="18,10,0,0" VerticalAlignment="Top" Width="178" Height="23" Background="#FFECE8E8" Style="{StaticResource LabelStyle}" FontSize="10
                " FontWeight="Bold"/>
 
         <ScrollViewer x:Name="scroll" Margin="10,40,10,50" BorderThickness="2" Background="#FFF1E9E9" >
@@ -100,17 +100,17 @@
                 <!-- <StackPanel Grid.Row="0" Grid.Column="2"  Height="700" Width="160"/> -->
                 <StackPanel x:Name="stackdimensione" Grid.Row="0" Grid.Column="1" Width="Auto" Height="700" Margin="0,0,0,-440" Grid.RowSpan="2">
 
-                    <Label Width="130" Height="30" Background="#FFECE8E8" Style="{StaticResource LabelStyle}" Content="Dimensione" FontWeight="Bold"></Label>
+                    <Label Width="130" Height="30" Background="#FFECE8E8" Style="{StaticResource LabelStyle}" Content="Size" FontWeight="Bold"></Label>
 
                 </StackPanel>
                 <StackPanel x:Name="stackestensione" Grid.Row="0" Grid.Column="2" Width="Auto" Height="700" Margin="0,0,0,-440" Grid.RowSpan="2">
 
-                    <Label x:Name="labelcaso" Width="150" Height="30" Background="#FFECE8E8" Style="{StaticResource LabelStyle}" Content="Estensione" FontWeight="Bold"></Label>
+                    <Label x:Name="labelcaso" Width="150" Height="30" Background="#FFECE8E8" Style="{StaticResource LabelStyle}" Content="Type" FontWeight="Bold"></Label>
 
                 </StackPanel>
                 <StackPanel x:Name="stackname" Grid.Row="0" Grid.Column="3" Width="Auto" Height="700" Grid.ColumnSpan="2" Margin="0,0,0,-440" Grid.RowSpan="2">
 
-                    <Label Width="250" Height="30" Background="#FFECE8E8" Style="{StaticResource LabelStyle}" Content="Nome" FontWeight="Bold"></Label>
+                    <Label Width="250" Height="30" Background="#FFECE8E8" Style="{StaticResource LabelStyle}" Content="Name" FontWeight="Bold"></Label>
 
                 </StackPanel>
 
@@ -128,13 +128,13 @@
 
         </ScrollViewer>
 
-        <TextBox x:Name="textboxpercorso" HorizontalAlignment="Left" Height="23" Margin="337,501,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="200" RenderTransformOrigin="0.526,0.126"/>
+        <TextBox x:Name="textboxpercorso" HorizontalAlignment="Left" Height="23" Margin="229,501,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="308" RenderTransformOrigin="0.526,0.126"/>
         <Button x:Name="bottonesceglifile" Content="" HorizontalAlignment="Left" Margin="554,497,0,0" VerticalAlignment="Top" Width="40" RenderTransformOrigin="0.316,0.505" Height="36" Click="bottonesceglifile_Click" Style="{StaticResource MyButton}">
             <Button.Background>
                 <ImageBrush ImageSource="/ProgettoPDS;component/Media/folder-icon.png"/>
             </Button.Background>
         </Button>
-        <Label x:Name="labelpath" Content="Choose download path" HorizontalAlignment="Left" Margin="186,502,0,0" VerticalAlignment="Top" Width="146" Height="23" Background="#FFECE8E8" Style="{StaticResource LabelStyle}" FontSize="10" FontWeight="Bold" RenderTransformOrigin="0.5,1.043"/>
+        <Label x:Name="labelpath" Content="Choose download path" HorizontalAlignment="Left" Margin="18,502,0,0" VerticalAlignment="Top" Width="146" Height="23" Background="#FFECE8E8" Style="{StaticResource LabelStyle}" FontSize="10" FontWeight="Bold" RenderTransformOrigin="0.5,1.043"/>
         <Button x:Name="button" Content="" HorizontalAlignment="Left" Margin="621,501,0,0" VerticalAlignment="Top" Width="34" Height="31"  Style="{StaticResource MyButton}" Click="button2_Click">
             <Button.Background>
                 <ImageBrush ImageSource="/ProgettoPDS;component/Media/Red_X.png"/>

@@ -1,90 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
 using System.Threading;
 
 namespace ProgettoPDS
 {
-    static class NetworkUserManager //TODO: sincronizzazione
-    {
-        private static List<NetworkUser> _userlist = new List<NetworkUser>();
-        private static readonly object _UserDatalocker = new object();
-        public static List<NetworkUser> userlist
-        {
-            get { lock (_UserDatalocker) { return _userlist; } }
-        }
 
-
-        public static void AddUser(NetworkUser newuser)
-        {
-            bool checknewuser = true;
-            DateTime checktime = DateTime.UtcNow;
-
-            lock (_UserDatalocker)
-            {
-                for (int i = 0; i < _userlist.Count; i++)
-                {
-                    if (newuser.MACAddress.Equals(_userlist[i].MACAddress)) //Controlla se l'utente è già stato salvato, e ne aggiorna i dati se necessario
-                    {                        
-                        if (!newuser.DefaultImage) {
-                            int result = DateTime.Compare(newuser.ImageTimeStamp, _userlist[i].ImageTimeStamp);
-                            string filename;
-                            if(result < 0) {
-                                // L'immagine non è di default ed è stata cambiata 
-                                TCPSender sender = new TCPSender(newuser);
-                                string currentfolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
-                                filename = currentfolder + @"\Media\Icons\" + newuser.MACAddress.ToString() + DateTime.Now.ToString("yyyyMMddTHHmmss") + ".png";
-                                sender.SendImageRequest(filename);
-                                Console.WriteLine("Image changed");
-                            }
-                            else {
-                                filename = _userlist[i].Imagepath;
-                            }
-                            
-                            _userlist[i] = newuser;
-                            _userlist[i].Imagepath = filename;
-                        }
-
-                        else
-                        {
-                            _userlist[i] = newuser;
-                        }                       
-                       
-                        checknewuser = false;
-                    }
-                    //TimeSpan diff = checktime - _userlist[i].TimeStamp;
-                    //if (diff.TotalSeconds > 15.0) _userlist.RemoveAt(i); //TODO: Controllare problemi con l'indice di iterazione i !!!!!!
-                }
-                if (checknewuser)
-                {
-                    _userlist.Add(newuser); //Aggiunge l'utente alla lista se non era presente
-                    if (!newuser.DefaultImage) {
-                        TCPSender sender = new TCPSender(newuser);
-                        string currentfolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
-                        string filename = currentfolder + @"\Media\Icons\" + newuser.MACAddress.ToString() + DateTime.Now.ToString("yyyyMMddTHHmmss") + ".png";
-                        sender.SendImageRequest(filename);
-                        _userlist[_userlist.Count - 1].Imagepath = filename;
-                    }
-                }
-                
-            }
-        }        
-
-
-    }
-
-
-    class MainHub //TODO: gestire la responsività con gli eventi(tcp client, interfaccia grafica, cambio della flag della privacy
+    class MainHub 
     {
         public static UserConfiguration uc;
         private static UDPSenderManager _udpsend;
         private static UDPReceiver _udprec;
         private TcpReceiver _tcpReceiver;
+        private NetworkUserListCleaner listCleaner;
+
         private static Thread _udpsenderManagerThread;
         private static Thread _udprecThread;
         private Thread _tcprecThread;
         private Thread _tcplocalhostthread;
+        private Thread _listCleanerThread;
 
         public MainHub()
         {
@@ -99,9 +33,8 @@ namespace ProgettoPDS
             _udprecThread = new Thread(_udprec.StartListener);
             _udprecThread.Name = "UdpReceiverThread";
 
-            _udpsenderManagerThread = new Thread(_udpsend.Start); 
-            // _udpsendThread.Name = "UdpSenderThread";
-            //_udpsend.Start();
+            _udpsenderManagerThread = new Thread(_udpsend.Start);
+            _udpsenderManagerThread.Name = "UdpSenderManagerThread";
 
             _tcprecThread = new Thread(_tcpReceiver.StartListener);
             _tcprecThread.Name = "TCPServerThread";
@@ -118,7 +51,7 @@ namespace ProgettoPDS
              Avvio del listener UDP
              Avvio del sender UDP, se la flag lo prevede          
              */
-            try //change to if(File(exist)
+            try 
             {
                 uc.LoadConfiguration();
             }
@@ -136,19 +69,24 @@ namespace ProgettoPDS
                     return;
                 }
             }
-
-            /*if (uc.PrivacyFlag)
-            {
-                _udpsend.Start();
-            }*/
+            
             _udpsenderManagerThread.Start();
             _udprecThread.Start();
             _tcprecThread.Start();
             _tcplocalhostthread.Start();
+
+            listCleaner = new NetworkUserListCleaner();
+            _listCleanerThread = new Thread(listCleaner.StartCleaner);
+            _listCleanerThread.Start();
                                     
         }
 
-        //protected virtual void OnPrivacyChange(EventArgs e) { }  //Questo evento deve riattivare/disattivare l'UDP Sender
+        public void CleanUp()
+        {
+            listCleaner.TerminateThread = true;
+            _listCleanerThread.Join();
+
+        }
 
         static void uc_PrivacyChanged(object sender, PrivacyChangedEventArgs e) {
             if (e.flag)

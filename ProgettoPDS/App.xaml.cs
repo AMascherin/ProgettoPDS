@@ -12,6 +12,7 @@ namespace ProgettoPDS
     public partial class App : Application
     {
         private TaskbarIcon notifyIcon;
+        private MainHub mainHub;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -38,24 +39,28 @@ namespace ProgettoPDS
             }
             catch (System.UnauthorizedAccessException)
             {
-                System.Windows.MessageBox.Show("Esegui il programma in modalità amministratore per assicurare un corretto funzionamento");
+                MessageBox.Show("Esegui il programma in modalità amministratore per assicurare un corretto funzionamento");
             }
             
             notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
 
-             MainHub mainhub = new MainHub();
-             mainhub.Initialize();
+             mainHub = new MainHub();
+             mainHub.Initialize();
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
             notifyIcon.Dispose(); //the icon would clean up automatically, but this is cleaner
+            mainHub.CleanUp();
+
             base.OnExit(e);
         }
 
         private void CleanupIcons() {
             string currentfolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
             currentfolder += @"\Media\Icons\";
+
+            Directory.CreateDirectory(currentfolder); //Crea la cartella se non già esistente
 
             DirectoryInfo di = new DirectoryInfo(currentfolder);
 

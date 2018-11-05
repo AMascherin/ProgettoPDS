@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Windows;
+using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -29,9 +29,9 @@ namespace RightClickHandlerApplication
                 client.Shutdown(SocketShutdown.Both);
                 client.Close();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine(ex.ToString());
+                MessageBox.Show("To share your file, first open the file sharing application","Application is closed");
             }
         }
     }

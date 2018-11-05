@@ -54,6 +54,7 @@ namespace ProgettoPDS
     {
         private TcpClient clientSocket;
         private UserConfiguration uc;
+        private bool closeConnection = false;
         
         public handleClient(TcpClient inClientSocket)
         {
@@ -122,11 +123,10 @@ namespace ProgettoPDS
                                 //Send to the server the file information data
                                 rcf.Reset();
                                 networkStream.Write(System.Text.Encoding.UTF8.GetBytes("418 I'm a teapot"),
-                                                            0,
-                                                            System.Text.Encoding.UTF8.GetBytes("418 I'm a teapot").Length);
+                                                     0,
+                                                     System.Text.Encoding.UTF8.GetBytes("418 I'm a teapot").Length);
 
                                 CloseConnection();
-                                return;
                             }
                             else
                             {
@@ -155,6 +155,7 @@ namespace ProgettoPDS
                             DownloadPath = uc.DefaultDownloadPathString;
                     }
 
+                    if (closeConnection) return;
                     //Avvisiamo il client che accettiamo la ricezione dei file
                     byte[] bytesToSend = System.Text.Encoding.UTF8.GetBytes("200 OK");
                     networkStream.Write(bytesToSend, 0, bytesToSend.Length);
@@ -246,9 +247,10 @@ namespace ProgettoPDS
         private void CloseConnection() {
             try
             {
+                closeConnection = true;
                 var networkStream = clientSocket.GetStream();
                 networkStream.Flush();
-                networkStream.Close();
+                networkStream.Close();                
             }
             catch (ObjectDisposedException) 
             {

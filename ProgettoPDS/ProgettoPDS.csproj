@@ -192,6 +192,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Media\index.ico" />
     <Resource Include="Media\Red.ico" />
     <Resource Include="Media\perfect-clouds-wallpapers.jpg" />
     <Resource Include="Media\Red_X.png" />

@@ -34,7 +34,7 @@ namespace ProgettoPDS
                                 // L'immagine non è di default ed è stata cambiata 
                                 TCPSender sender = new TCPSender(newuser);
                                 string currentfolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
-                                filename = currentfolder + @"\Media\" + newuser.MACAddress.ToString() + DateTime.Now.ToString("yyyyMMddTHHmmss") + ".png";
+                                filename = currentfolder + @"\Media\Icons\" + newuser.MACAddress.ToString() + DateTime.Now.ToString("yyyyMMddTHHmmss") + ".png";
                                 sender.SendImageRequest(filename);
                                 Console.WriteLine("Image changed");
                             }
@@ -62,7 +62,7 @@ namespace ProgettoPDS
                     if (!newuser.DefaultImage) {
                         TCPSender sender = new TCPSender(newuser);
                         string currentfolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
-                        string filename = currentfolder + @"\Media\" + newuser.MACAddress.ToString() + DateTime.Now.ToString("yyyyMMddTHHmmss") + ".png";
+                        string filename = currentfolder + @"\Media\Icons\" + newuser.MACAddress.ToString() + DateTime.Now.ToString("yyyyMMddTHHmmss") + ".png";
                         sender.SendImageRequest(filename);
                         _userlist[_userlist.Count - 1].Imagepath = filename;
                     }
@@ -78,10 +78,10 @@ namespace ProgettoPDS
     class MainHub //TODO: gestire la responsività con gli eventi(tcp client, interfaccia grafica, cambio della flag della privacy
     {
         public static UserConfiguration uc;
-        private static UDPSender _udpsend;
+        private static UDPSenderManager _udpsend;
         private static UDPReceiver _udprec;
         private TcpReceiver _tcpReceiver;
-        private static Thread _udpsendThread;
+        private static Thread _udpsenderManagerThread;
         private static Thread _udprecThread;
         private Thread _tcprecThread;
         private Thread _tcplocalhostthread;
@@ -89,19 +89,25 @@ namespace ProgettoPDS
         public MainHub()
         {
             uc = new UserConfiguration();
-            _udpsend = new UDPSender();
+            UserConfiguration.PrivacyFlagChanged += uc_PrivacyChanged;
+            
+            _udpsend = new UDPSenderManager();
             _udprec = new UDPReceiver();
             _tcpReceiver = new TcpReceiver();
             var tcplocalhost = new TCP_LocalHostReceiver();
 
             _udprecThread = new Thread(_udprec.StartListener);
             _udprecThread.Name = "UdpReceiverThread";
-            _udpsendThread = new Thread(_udpsend.Start); 
-            _udpsendThread.Name = "UdpSenderThread";
+
+            _udpsenderManagerThread = new Thread(_udpsend.Start); 
+            // _udpsendThread.Name = "UdpSenderThread";
+            //_udpsend.Start();
+
             _tcprecThread = new Thread(_tcpReceiver.StartListener);
             _tcprecThread.Name = "TCPServerThread";
             _tcplocalhostthread = new Thread(tcplocalhost.StartListener);
             _tcplocalhostthread.Name = "TCPLocalHost";
+
         }
 
         [STAThread]
@@ -131,18 +137,30 @@ namespace ProgettoPDS
                 }
             }
 
-            if (uc.PrivacyFlag)
+            /*if (uc.PrivacyFlag)
             {
-                _udpsendThread.Start();
-            }
+                _udpsend.Start();
+            }*/
+            _udpsenderManagerThread.Start();
             _udprecThread.Start();
             _tcprecThread.Start();
             _tcplocalhostthread.Start();
                                     
         }
 
-        protected virtual void OnPrivacyChange(EventArgs e) { }  //Questo evento deve riattivare/disattivare l'UDP Sender
-     
+        //protected virtual void OnPrivacyChange(EventArgs e) { }  //Questo evento deve riattivare/disattivare l'UDP Sender
+
+        static void uc_PrivacyChanged(object sender, PrivacyChangedEventArgs e) {
+            if (e.flag)
+            {
+                _udpsend.Start();
+            }
+            else
+            {
+                _udpsend.Stop();
+            }
+            Console.WriteLine("The privacy was changed with value: "+e.flag);
+        }
     }
 }
 

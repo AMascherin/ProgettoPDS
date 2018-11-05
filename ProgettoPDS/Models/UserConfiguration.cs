@@ -7,6 +7,15 @@ using Newtonsoft.Json.Linq;
 
 namespace ProgettoPDS
 {
+    public class PrivacyChangedEventArgs : EventArgs {
+        public PrivacyChangedEventArgs(bool value)
+        {
+            flag = value;
+        }
+
+        public bool flag { get; set; }
+    }
+
     class UserConfiguration
     {
 
@@ -17,7 +26,13 @@ namespace ProgettoPDS
         private static string _ImgLastModified;
         private static bool _DefaultDownloadPathFlag; //If true, the user has provided a default download path for all the files
         private static string _DefaultDownloadPathString;
-       
+
+        public static event EventHandler<PrivacyChangedEventArgs> PrivacyFlagChanged;
+
+        protected virtual void OnPrivacyFlagChanged(PrivacyChangedEventArgs e)
+        {
+            PrivacyFlagChanged?.Invoke(this, e);
+        }
 
         private readonly object _UserDatalocker = new object();
 
@@ -42,7 +57,13 @@ namespace ProgettoPDS
         public bool PrivacyFlag
         {
             get { lock (_UserDatalocker) {  return _PrivacyFlag;  } }
-            set { lock (_UserDatalocker) {  _PrivacyFlag = value; } }
+            set {
+                lock (_UserDatalocker)
+                {
+                    _PrivacyFlag = value;
+                    OnPrivacyFlagChanged(new PrivacyChangedEventArgs(value));
+                }
+            }
         }
         public string Username
         {

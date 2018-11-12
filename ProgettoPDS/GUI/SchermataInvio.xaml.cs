@@ -48,8 +48,7 @@ namespace ProgettoPDS
             this.listauser = listauser;
             InitializeComponent();
             pathToFile = filepath;
-
-            System.Windows.MessageBox.Show("Gli utenti sono: "+listauser.Count);
+            
             foreach (NetworkUser user in listauser)
             {
 
@@ -191,23 +190,25 @@ namespace ProgettoPDS
                 listaSender.Add(tcpsender);
                 Thread TCPSenderThread = new Thread(() => tcpsender.handleFileSend(filestosend));
                 TCPSenderThread.Start();
-              //Models.ActiveTCPSenderManager.AddActiveSender(tcpsender);
                 Models.ActiveTCPSenderManager.TcpSenderCollection.Add((TCPSender)tcpsender);
-
-               // if (Application.Current.MainWindow == null) {
-                    StatusInvio status = new StatusInvio();
-                    //Application.Current.MainWindow = new StatusInvio();
-                    //Application.Current.MainWindow.Show();
-                    status.Show();
-
-               // }
                 
-             //   tcpsender.handleFileSend(filestosend);
+                if (!IsWindowOpen<StatusInvio>())
+                {
+                    StatusInvio status = new StatusInvio();
+                    status.Show();
+                }
             }
 
            
 
-            this.Close();
+            Close();
+        }
+
+        private static bool IsWindowOpen<T>(string name = "") where T : Window
+        {
+            return string.IsNullOrEmpty(name)
+                ? Application.Current.Windows.OfType<T>().Any()
+                : Application.Current.Windows.OfType<T>().Any(w => w.Name.Equals(name));
         }
     }
 }

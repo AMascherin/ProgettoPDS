@@ -187,6 +187,9 @@ namespace ProgettoPDS
             var ns = client.GetStream();
             ns.Close();         
             client.Close();
+            System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate {
+                SetSuspended();
+            });
         }
       
 

@@ -65,7 +65,7 @@ namespace ProgettoPDS
                 if (!File.Exists(fullpath))
                 {
                     string msg = "Non sono stati inseriti i dati richiesti";
-                    System.Windows.MessageBox.Show(msg);
+                    //System.Windows.MessageBox.Show(msg);
                     return;
                 }
             }

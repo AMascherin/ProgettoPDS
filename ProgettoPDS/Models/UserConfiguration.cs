@@ -174,11 +174,11 @@ namespace ProgettoPDS
                 System.IO.File.WriteAllText(fullpath, json);
             }
             catch (UnauthorizedAccessException ec) {
-                System.Windows.MessageBox.Show(ec.ToString());
+                //System.Windows.MessageBox.Show(ec.ToString());
             }
             catch (IOException ex)
             {
-                System.Windows.MessageBox.Show(ex.ToString());
+               // System.Windows.MessageBox.Show(ex.ToString());
 
             }
         }

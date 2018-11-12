@@ -34,12 +34,12 @@ namespace ProgettoPDS
 
             listener.Start();
             Console.WriteLine("Listener started");
-            System.Windows.MessageBox.Show("Listener started");
+            //System.Windows.MessageBox.Show("Listener started");
             while (!done)
             {
                 TcpClient clientSocket = listener.AcceptTcpClient();
                 Console.WriteLine("New connection accepted");
-                System.Windows.MessageBox.Show("New connection accepted");
+                //System.Windows.MessageBox.Show("New connection accepted");
                 handleClient client = new handleClient(clientSocket); //Nuovo thread per gestire la comunicazione con lo specifico utente
             }
         }
@@ -235,8 +235,8 @@ namespace ProgettoPDS
             }
             catch (Exception e)
             {
-                System.Windows.MessageBox.Show(e.StackTrace.ToString());
-                System.Windows.MessageBox.Show(e.Message);
+                //System.Windows.MessageBox.Show(e.StackTrace.ToString());
+                //System.Windows.MessageBox.Show(e.Message);
             }
             finally
             {

@@ -154,7 +154,7 @@ namespace ProgettoPDS
             Suspend = false;
             Progress = 0;
 
-            System.Windows.MessageBox.Show("TCP Sender created");
+            //System.Windows.MessageBox.Show("TCP Sender created");
         }
 
         private void SendData(string pathToObj, NetworkStream nwStream)
@@ -245,7 +245,7 @@ namespace ProgettoPDS
                 int clientMessage = nwStream.Read(inStream, 0, inStream.Length); //Leggo il messaggio dell'utente
                 String returndata = System.Text.Encoding.UTF8.GetString(inStream).TrimEnd('\0');
 
-                System.Windows.MessageBox.Show("Data from Server : " + returndata);
+                //System.Windows.MessageBox.Show("Data from Server : " + returndata);
 
                 if (returndata.Equals("200 OK"))
                 {
@@ -349,8 +349,8 @@ namespace ProgettoPDS
                 }
                 catch (Exception e)
                 {
-                    System.Windows.MessageBox.Show(e.Message);
-                    System.Windows.MessageBox.Show(e.StackTrace);
+                    //System.Windows.MessageBox.Show(e.Message);
+                    //System.Windows.MessageBox.Show(e.StackTrace);
                 }
             }
             nwStream.Close();

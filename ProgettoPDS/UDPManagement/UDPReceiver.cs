@@ -152,7 +152,7 @@ namespace ProgettoPDS
 
                     // Displays the MessageBox.
 
-                    result = MessageBox.Show(message, caption);
+                    //result = MessageBox.Show(message, caption);
 
 
                 }  // IOE means that Take() was called on a completed collection.

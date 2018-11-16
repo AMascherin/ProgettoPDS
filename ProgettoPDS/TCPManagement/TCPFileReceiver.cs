@@ -214,6 +214,10 @@ namespace ProgettoPDS
                             }
                             archive.Dispose();
                         }
+                        catch (UnauthorizedAccessException)
+                        {
+                            System.Windows.MessageBox.Show("You need to open the app as an administrator");
+                        }
                         catch ( Exception ex)
                         when (ex is InvalidDataException ||
                               ex is ArgumentException)
@@ -254,6 +258,15 @@ namespace ProgettoPDS
             catch (ObjectDisposedException) 
             {
                 Console.WriteLine("The network stream was already disposed");
+            }
+            catch (System.InvalidOperationException)
+            {
+                Console.WriteLine("The socket was not connected");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.StackTrace);
+                Console.WriteLine(e.Message);
             }
             clientSocket.Close();
 

@@ -9,6 +9,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Input;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Globalization;
 
 namespace ProgettoPDS
 {
@@ -244,24 +247,24 @@ namespace ProgettoPDS
             {
                 int clientMessage = nwStream.Read(inStream, 0, inStream.Length); //Leggo il messaggio dell'utente
                 String returndata = System.Text.Encoding.UTF8.GetString(inStream).TrimEnd('\0');
-
-                //System.Windows.MessageBox.Show("Data from Server : " + returndata);
-
+                
                 if (returndata.Equals("200 OK"))
                 {
                     //https://www.codeguru.com/csharp/.net/zip-and-unzip-files-programmatically-in-c.htm
 
                     string zipPath = DateTime.Now.ToString("yyyyMMddTHHmmss") + "_zip"+".zip";
 
+                    //Compressing the data to send in a zip archive
                     using (ZipArchive zip = ZipFile.Open(zipPath, ZipArchiveMode.Create))
                     {
                         foreach (String inputPath in filesPathToSend)
                         {
-                            if (Suspend) {
+                            if (Suspend)
+                            {
                                 if (File.Exists(zipPath))
                                     File.Delete(zipPath);
                                 CloseConnection();
-                                return; //TODO test
+                                return;
                             }
 
                             if (File.Exists(inputPath))
@@ -274,7 +277,8 @@ namespace ProgettoPDS
 
                                 foreach (var filePath in System.IO.Directory.GetFiles(inputPath, "*.*", SearchOption.AllDirectories))
                                 {
-                                    var relativePath = filePath.Replace(directoryInfo.Parent.FullName, string.Empty);
+                                    var cleanPath = Path.GetFullPath(filePath);
+                                    var relativePath = cleanPath.Replace(directoryInfo.Parent.FullName, string.Empty);
                                     using (Stream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
                                     using (Stream fileStreamInZip = zip.CreateEntry(relativePath).Open())
                                         fileStream.CopyTo(fileStreamInZip);
@@ -286,28 +290,60 @@ namespace ProgettoPDS
                         }
 
                         zip.Dispose();
+                    }
 
-                        using (var fileIO = File.OpenRead(zipPath))
+                    Stopwatch stopWatch = new Stopwatch();
+                    List<long> previousTime = new List<long>(); //list for the moving average
+
+                    using (var fileIO = File.OpenRead(zipPath))
+                    {
+                        var bytesArrayToSend = new byte[1024 * 8];
+                        long totalSize = new FileInfo(zipPath).Length; //Total size of the zip in byte
+
+                        long totalByteSent = 0;
+                        long byteSentInInterval = 0;
+                        int count = 0;
+                        long remainingTime = 0;
+                        stopWatch.Reset();
+                        stopWatch.Start();
+
+                        while ((count = fileIO.Read(bytesArrayToSend, 0, bytesArrayToSend.Length)) > 0)
                         {
-                            var bytesArrayToSend = new byte[1024 * 8];
-                            long totalSize = new System.IO.FileInfo(zipPath).Length;
-                            long byteSent = 0;
-
-                            int count;
-                            while ((count = fileIO.Read(bytesArrayToSend, 0, bytesArrayToSend.Length)) > 0)
+                            if (!Suspend)
                             {
-                                if (!Suspend)
+                                nwStream.Write(bytesArrayToSend, 0, count);
+
+                                if (stopWatch.Elapsed.TotalMilliseconds > 500)
                                 {
-                                    nwStream.Write(bytesArrayToSend, 0, count);
-                                    byteSent += count;
-                                    Progress = (int)Math.Floor((double)(byteSent * 100 / totalSize));
+                                    //moving average...
+                                    remainingTime = (totalSize - totalByteSent) / byteSentInInterval * stopWatch.ElapsedMilliseconds;
+                                    previousTime.Add(remainingTime);
+                                    if (previousTime.Count > 10)
+                                    {
+                                        previousTime = previousTime.GetRange(previousTime.Count - 10, 10); //moving average of the last 10 elements
+                                    }
+                                    long sum = previousTime.Sum();
+                                    remainingTime = sum / previousTime.Count();
+                                    var date = (new DateTime(1970, 1, 1)).AddMilliseconds(remainingTime);
+                                    Console.WriteLine("Remaining time: " + date.ToString("T", DateTimeFormatInfo.InvariantInfo));
+                                    byteSentInInterval = 0;
+                                    stopWatch.Restart();
                                 }
-                                else
-                                    break;
+                                totalByteSent += count;
+                                byteSentInInterval += count;
+
+                                Progress = (int)Math.Floor((double)(totalByteSent * 100 / totalSize));
+                                
+                            }
+                            else
+                            {
+                                stopWatch?.Stop();
+                                break;
                             }
                         }
                     }
-                    
+
+
                     CloseConnection();
                     if (File.Exists(zipPath))
                         File.Delete(zipPath);

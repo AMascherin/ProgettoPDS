@@ -184,7 +184,6 @@ namespace ProgettoPDS
                                 bytesread = networkStream.Read(clientData, 0, clientData.Length);
                             }
                             fileStream.Close();
-                            //System.Windows.MessageBox.Show("File data received, start save");  //TODO: Gestire la chiusura della connessione
 
                         }
 

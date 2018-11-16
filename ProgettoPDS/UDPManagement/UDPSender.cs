@@ -113,14 +113,12 @@ namespace ProgettoPDS
             
             while (!TerminateThread)
             {
-              //  if (user.PrivacyFlag)
-              //  {
                     try
                     {
                         string data = user.GetJSONConfiguration();
                         Byte[] data_b = Encoding.Unicode.GetBytes(data);
                         udpclient.Send(data_b, data_b.Length, remoteEndPoint);
-                        Console.WriteLine("data sent");
+                        //Console.WriteLine("data sent");
                     }
                     catch (ArgumentNullException)
                     {
@@ -132,9 +130,11 @@ namespace ProgettoPDS
                         break;
 
                     }
-              //  }
-              //  else break;
-                Thread.Sleep(10000);
+                    catch (SocketException)
+                    {
+                    break;
+                    }
+                Thread.Sleep(7500);
 
             }
             Console.WriteLine("Thread Stopped");

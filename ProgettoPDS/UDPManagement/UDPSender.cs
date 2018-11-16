@@ -132,6 +132,10 @@ namespace ProgettoPDS
                         break;
 
                     }
+                    catch (SocketException)
+                    {
+                    break;
+                    }
               //  }
               //  else break;
                 Thread.Sleep(10000);

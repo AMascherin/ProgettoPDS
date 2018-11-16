@@ -30,6 +30,7 @@ namespace ProgettoPDS
         private ImageSource _userImage;
         private string _userName;
         private ICommand _stopCommand;
+        private string estimatedUploadTime;
 
         public bool Suspend
         {
@@ -115,6 +116,26 @@ namespace ProgettoPDS
             }
         }
 
+        public string EstimatedUploadTime
+        {
+            get
+            {
+                lock (_UserDatalocker)
+                {
+
+                    return estimatedUploadTime;
+                }
+            }
+
+            set
+            {
+                lock (_UserDatalocker)
+                {
+                    estimatedUploadTime = value;
+                    OnPropertyChanged("EstimatedUploadTime");
+                }
+            }
+        }
 
         public NetworkUser Nu { get; set; }
 
@@ -243,6 +264,8 @@ namespace ProgettoPDS
             nwStream.Flush();
             byte[] inStream = new byte[chunkSize];
 
+            EstimatedUploadTime = "Waiting for the other user response";
+
             try
             {
                 int clientMessage = nwStream.Read(inStream, 0, inStream.Length); //Leggo il messaggio dell'utente
@@ -251,6 +274,7 @@ namespace ProgettoPDS
                 if (returndata.Equals("200 OK"))
                 {
                     //https://www.codeguru.com/csharp/.net/zip-and-unzip-files-programmatically-in-c.htm
+                    EstimatedUploadTime = "Compressing... ";
 
                     string zipPath = DateTime.Now.ToString("yyyyMMddTHHmmss") + "_zip"+".zip";
 
@@ -278,7 +302,7 @@ namespace ProgettoPDS
                                 foreach (var filePath in System.IO.Directory.GetFiles(inputPath, "*.*", SearchOption.AllDirectories))
                                 {
                                     var cleanPath = Path.GetFullPath(filePath);
-                                    var relativePath = cleanPath.Replace(directoryInfo.Parent.FullName, string.Empty);
+                                    var relativePath = cleanPath.Replace(directoryInfo.FullName, string.Empty);
                                     using (Stream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
                                     using (Stream fileStreamInZip = zip.CreateEntry(relativePath).Open())
                                         fileStream.CopyTo(fileStreamInZip);
@@ -325,7 +349,8 @@ namespace ProgettoPDS
                                     long sum = previousTime.Sum();
                                     remainingTime = sum / previousTime.Count();
                                     var date = (new DateTime(1970, 1, 1)).AddMilliseconds(remainingTime);
-                                    Console.WriteLine("Remaining time: " + date.ToString("T", DateTimeFormatInfo.InvariantInfo));
+                                    // Console.WriteLine("Remaining time: " + date.ToString("T", DateTimeFormatInfo.InvariantInfo));
+                                    EstimatedUploadTime = "Remaining time: "+date.ToString("T", DateTimeFormatInfo.InvariantInfo);
                                     byteSentInInterval = 0;
                                     stopWatch.Restart();
                                 }

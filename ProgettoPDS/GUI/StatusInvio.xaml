@@ -102,6 +102,8 @@
                        <!-- <TextBlock Text=" (" /> -->
                         <ProgressBar Value="{Binding Progress, UpdateSourceTrigger=PropertyChanged}" Maximum="100.0" Minimum="0.0" Width="100" Height="10" Margin="100,10,10,10" Style="{StaticResource myProgress}"/>
                        <!-- <TextBlock Text=")" /> -->
+                        <TextBlock Text="{Binding EstimatedUploadTime, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" Margin="150,20,10,10"/>
+                        <!-- <TextBlock Text=" (" /> -->
                         <Button Command="{Binding StopCommand}" Width="30" Height="30" Style="{StaticResource MyButton}" Margin="150,10,10,10">
                             <Button.Background>
                             <ImageBrush ImageSource="/ProgettoPDS;component/Media/cestino_icona.png"/>

@@ -11,6 +11,7 @@ using ProgettoPDS.GUI;
 
 namespace ProgettoPDS
 {
+    //Classe che si occupa di ricevere l'input dal comando collegato al tasto destro e mostrare la relativa UI
     class TCP_LocalHostReceiver
     {
         public TCP_LocalHostReceiver() { }

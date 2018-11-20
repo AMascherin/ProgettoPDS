@@ -37,7 +37,7 @@ namespace ProgettoPDS
             //Immagine profilo
             if (!(File.Exists(cfg.ImgPath))) //Se l'immagine scelta dall'utente non è più disponibile....
             {
-                cfg.SetDefaultPath(); //TODO: Controllare che le immagini di default non vengano cancellate
+                cfg.SetDefaultPath(); 
             }
             ImageBrush myBrush = new ImageBrush();
             myBrush.ImageSource = new BitmapImage(new Uri(cfg.ImgPath));

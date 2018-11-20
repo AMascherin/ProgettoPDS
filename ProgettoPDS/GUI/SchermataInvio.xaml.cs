@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Microsoft.Win32;
 using System.Threading;
 using ProgettoPDS.GUI;
 
@@ -33,8 +27,7 @@ namespace ProgettoPDS
         List<CheckBox> listacheck = new List<CheckBox>();
 
         List<NetworkUser> listauserinvio = new List<NetworkUser>(); //Utenti selezionati a cui inviare i file
-
-        //TODO:passarla come parametro a questa classe
+        
         List<NetworkUser> listauser = new List<NetworkUser>(); //Tutti gli utenti presenti in rete e con profilo pubblico
 
         ProgressBar prog = new ProgressBar();
@@ -58,7 +51,6 @@ namespace ProgettoPDS
 
         }
 
-
         void generaGriglia(NetworkUser user, List<Label> listalabel, List<Image> listaimmagini, List<CheckBox> listacheck)
         // FUNZIONE CHE CREA LA GRIGLIA DI UTENTI CONNESSI
         {
@@ -71,16 +63,13 @@ namespace ProgettoPDS
             image.Width = 47;
             System.Windows.Thickness thick = new Thickness(21, 10, 672, 10);
             image.Margin = thick;
-
             
-
             if(user.DefaultImage)
             {
                 BitmapImage imagebitmap = new BitmapImage(new Uri(cfg.ImgPath));
                 image.Source = imagebitmap;
                 image.Stretch = Stretch.Fill;
                 listaimmagini.Add(image);
-
             }
             else
             {
@@ -89,8 +78,7 @@ namespace ProgettoPDS
                 image.Stretch = Stretch.Fill;
                 listaimmagini.Add(image);
             }
-            
-
+           
             
             image.Stretch = Stretch.Fill;
             listaimmagini.Add(image);
@@ -117,18 +105,22 @@ namespace ProgettoPDS
             griglia.Children.Add(cb);
             stack.Children.Add(griglia);
         }
+
+        //funzione che serve a colorare la checkbox quando gli si passa sopra il mouse
         private void CheckBox_MouseEnter(object sender, MouseEventArgs e)
         {
             CheckBox obj = sender as CheckBox;
-            obj.Opacity = 100;                                     //funzione che serve a colorare la checkbox quando gli si passa sopra il mouse
+            obj.Opacity = 100;                                     
         }
 
+        //funzione che serve a decolorare la checkbox quando il mouse non è più sopra di essa
         private void cb_MouseLeave(object sender, MouseEventArgs e)
         {
-            CheckBox obj = sender as CheckBox;
-            //funzione che serve a decolorare la checkbox quando il mouse non è più sopra di essa
+            CheckBox obj = sender as CheckBox;            
             obj.Opacity = 0;
         }
+
+        //funzione che seleziona la checkbox e aggiunge l'utente corrispettivo alla lista di utenti a cui inviare
         private void cb_Checked(object sender, RoutedEventArgs e)
         {
             CheckBox obj = sender as CheckBox;
@@ -136,35 +128,38 @@ namespace ProgettoPDS
             obj.MouseLeave -= cb_MouseLeave;
             for (int i = 0; i < listacheck.Count; i++)
             {
-                if (obj == listacheck[i]) listauserinvio.Add(listauser[i]);    //funzione che seleziona la checkbox e aggiunge l'utente corrispettivo alla lista di utenti a cui inviare
+                if (obj == listacheck[i]) listauserinvio.Add(listauser[i]);   
             }
             stampaListaInvio();
         }
 
+        //funzione che deseleziona la checkbox e rimuove l'utente corrispettivo dalla lista di utenti a cui inviare
         private void cb_Unchecked(object sender, RoutedEventArgs e)
         {
             CheckBox obj = sender as CheckBox;
             obj.Opacity = 0;
             obj.MouseLeave += cb_MouseLeave;
             for (int i = 0; i < listacheck.Count; i++)
-            {                                                                 //funzione che deseleziona la checkbox e rimuove l'utente corrispettivo dalla lista di utenti a cui inviare
+            {                                                                 
                 if (obj == listacheck[i]) listauserinvio.Remove(listauser[i]);
             }
             stampaListaInvio();
         }
 
+        //funzione di debug che serve a stampare la lista di utenti a cui inviare
         private void stampaListaInvio()
         {
             for (int i = 0; i < listauserinvio.Count; i++)
             {
-                Console.WriteLine(listauserinvio[i].Username);                  //funzione di debug che serve a stampare la lista di utenti a cui inviare
+                Console.WriteLine(listauserinvio[i].Username);                  
             }
         }
+
+        //fa comparire la progbar quando si clicca sul bottone invia
         private void OnBtnClick(object sender, EventArgs e)
         {
 
-            if (listauserinvio.Count != 0) prog.Opacity = 100;                    //fa comparire la progbar quando si clicca sul bottone invia
-
+            if (listauserinvio.Count != 0) prog.Opacity = 100;   
 
         }
 
@@ -181,6 +176,7 @@ namespace ProgettoPDS
             }
         }
 
+        //Attivazione di una connessione TCP per ogni utente destinatario dei file
         private void bottoneinvia_Click(object sender, RoutedEventArgs e)
         {
             List<String> filestosend = new List<string>();
@@ -198,12 +194,11 @@ namespace ProgettoPDS
                     status.Show();
                 }
             }
-
-           
-
+            
             Close();
         }
 
+        //Funzione per controllare se una generica finestra T è al momento visibile
         private static bool IsWindowOpen<T>(string name = "") where T : Window
         {
             return string.IsNullOrEmpty(name)

@@ -146,13 +146,13 @@ namespace ProgettoPDS
                 catch (InvalidOperationException) {
 
                     string message = "Invalid Operation. Please try again";
-                    string caption = "Invalid operation";
+                   // string caption = "Invalid operation";
 
-                    DialogResult result;
+                  //  DialogResult result;
 
                     // Displays the MessageBox.
 
-                    //result = MessageBox.Show(message, caption);
+                    Console.WriteLine(message);
 
 
                 }  // IOE means that Take() was called on a completed collection.

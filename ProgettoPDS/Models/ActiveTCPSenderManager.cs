@@ -7,6 +7,8 @@ using System.Collections.ObjectModel;
 
 namespace ProgettoPDS.Models
 {
+
+    //Collezione dei TCP sender al momento attivi
     public static class ActiveTCPSenderManager 
     {
         public static List<TCPSender> ActiveTcpSender { get; set; } = new List<TCPSender>();

@@ -10,6 +10,9 @@ using System.Net.NetworkInformation;
 
 namespace ProgettoPDS
 {
+
+    //Classe che si occupa di creare e gestire dei client UDP che annunciano l'utente in rete.
+    //Viene creato un client UDP per ogni rete rilevata e valida
     class UDPSenderManager
     {
         private UserConfiguration user;
@@ -28,6 +31,7 @@ namespace ProgettoPDS
             senderThreads = new List<SenderData>();
             senderStatus = false;
         }
+
         public void Stop() {
             if (senderStatus)
             {
@@ -118,12 +122,10 @@ namespace ProgettoPDS
                         string data = user.GetJSONConfiguration();
                         Byte[] data_b = Encoding.Unicode.GetBytes(data);
                         udpclient.Send(data_b, data_b.Length, remoteEndPoint);
-                        //Console.WriteLine("data sent");
                     }
                     catch (ArgumentNullException)
                     {
                         break;
-
                     }
                     catch (EncoderFallbackException)
                     {

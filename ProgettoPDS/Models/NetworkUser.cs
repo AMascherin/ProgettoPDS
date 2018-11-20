@@ -28,10 +28,7 @@ namespace ProgettoPDS
             TimeStamp = DateTime.Parse(time);
 
             ImageTimeStamp = DateTime.Parse((string)o["Image change timestamp"]);
-
-            //TODO: if(defimage)-->immagine default
-            //          else richiesta nuova immagine
-
+            
         }
 
         public bool DefaultImage {

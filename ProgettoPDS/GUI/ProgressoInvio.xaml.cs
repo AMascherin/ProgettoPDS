@@ -1,18 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.IO;
-using Path = System.IO.Path;
 
 namespace ProgettoPDS.GUI
 {
@@ -22,8 +14,6 @@ namespace ProgettoPDS.GUI
     public partial class ProgressoInvio : Window
     {
 
-    
-
         UserConfiguration cfg = new UserConfiguration();
 
         List<Button> listabutton = new List<Button>();
@@ -31,14 +21,12 @@ namespace ProgettoPDS.GUI
         List<Grid> listagriglie = new List<Grid>();
         List<Grid> listagriglieesterne = new List<Grid>();
 
-        
-
 
         public ProgressoInvio()
         {
-
+            //Default initialization
             InitializeComponent();
-            generaGriglia(NetworkUserManager.userlist[0], "file di prova");
+            generaGriglia(NetworkUserManager.userlist[0], "default");
 
         }
 
@@ -83,9 +71,7 @@ namespace ProgettoPDS.GUI
                 image.Stretch = Stretch.Fill;
                 
             }
-
-
-
+            
             image.Stretch = Stretch.Fill;
 
             ProgressBar progressBar = new ProgressBar();
@@ -155,11 +141,6 @@ namespace ProgettoPDS.GUI
 
                 }    //funzione che seleziona la checkbox e aggiunge l'utente corrispettivo alla lista di utenti a cui inviare
             }
-
-
-
         }
     }
-
-
 }

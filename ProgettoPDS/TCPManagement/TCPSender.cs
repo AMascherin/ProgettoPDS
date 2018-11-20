@@ -17,8 +17,6 @@ namespace ProgettoPDS
 {
     public class TCPSender : INotifyPropertyChanged
     {
-       // private int PORT_NO = 13370;
-
         private TcpClient client;
 
         UserConfiguration uc = new UserConfiguration();
@@ -163,7 +161,6 @@ namespace ProgettoPDS
         public void SetSuspended() {
 
             Suspend = true;
-            //Models.ActiveTCPSenderManager.RemoveSender(this);
             Models.ActiveTCPSenderManager.TcpSenderCollection.Remove((TCPSender)this);
         }
 
@@ -177,15 +174,13 @@ namespace ProgettoPDS
 
             Suspend = false;
             Progress = 0;
-
-            //System.Windows.MessageBox.Show("TCP Sender created");
+            
         }
 
         private void SendData(string pathToObj, NetworkStream nwStream)
         {
             try
             {
-                //NetworkStream nwStream = client.GetStream();
 
                 byte[] bytesToSend = File.ReadAllBytes(pathToObj);
 
@@ -408,10 +403,8 @@ namespace ProgettoPDS
                     }
                     fileStream.Close();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    //System.Windows.MessageBox.Show(e.Message);
-                    //System.Windows.MessageBox.Show(e.StackTrace);
                 }
             }
             nwStream.Close();
@@ -422,7 +415,7 @@ namespace ProgettoPDS
         {
             // 1.
             // Get array of all file names.
-            string[] a = Directory.GetFiles(p, " *.*");
+            string[] a = Directory.GetFiles(p, " *.*", SearchOption.AllDirectories);
 
             // 2.
             // Calculate total bytes of all files in a loop.

@@ -40,12 +40,13 @@ namespace ProgettoPDS
             catch (System.UnauthorizedAccessException)
             {
                 MessageBox.Show("Esegui il programma in modalità amministratore per assicurare un corretto funzionamento");
+                System.Windows.Application.Current.Shutdown();
             }
-            
+
             notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
 
-             mainHub = new MainHub();
-             mainHub.Initialize();
+            mainHub = new MainHub();
+            mainHub.Initialize();
         }
 
         protected override void OnExit(ExitEventArgs e)

@@ -173,12 +173,12 @@ namespace ProgettoPDS
             {
                 System.IO.File.WriteAllText(fullpath, json);
             }
-            catch (UnauthorizedAccessException ec) {
+            catch (UnauthorizedAccessException) {
                 //System.Windows.MessageBox.Show(ec.ToString());
             }
-            catch (IOException ex)
+            catch (IOException)
             {
-               // System.Windows.MessageBox.Show(ex.ToString());
+               System.Windows.MessageBox.Show("Errore in I/O nel salvataggio dei file di configurazione, verifica che il percorso di installazione sia valido e riavvia l'applicazione");
 
             }
         }

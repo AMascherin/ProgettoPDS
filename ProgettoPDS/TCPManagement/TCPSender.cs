@@ -203,12 +203,23 @@ namespace ProgettoPDS
 
         private void CloseConnection()
         {
-            var ns = client.GetStream();
-            ns.Close();         
-            client.Close();
-            System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate {
-                SetSuspended();
-            });
+            try
+            {
+                var ns = client.GetStream();
+                ns.Close();
+                client.Close();
+                System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate {
+                    SetSuspended();
+                });
+            }
+            catch (InvalidOperationException)
+            {
+                Console.WriteLine("The application was already closed");
+                System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate {
+                    SetSuspended();
+                });
+            }
+
         }
       
 

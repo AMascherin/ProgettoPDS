@@ -139,11 +139,15 @@ namespace ProgettoPDS
 
             if ((cfg.Username == null))
             {
-                string msg = "Scegliere un nome utente per completare la configurazione. La mancata scelta di un nome utente comporterà la chiusura dell'applicazione";
+                string msg = "Scegliere un nome utente per completare la configurazione. La mancata scelta di un nome utente comporterà la chiusura dell'applicazione. Vuoi veramente uscire?";
                 var result = System.Windows.MessageBox.Show(msg, "Attenzione", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Cancel)
                 {
                     e.Cancel = true;
+                }
+                if (result == MessageBoxResult.OK)
+                {
+                    Environment.Exit(Environment.ExitCode);
                 }
             }
 

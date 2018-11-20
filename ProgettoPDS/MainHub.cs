@@ -32,14 +32,19 @@ namespace ProgettoPDS
 
             _udprecThread = new Thread(_udprec.StartListener);
             _udprecThread.Name = "UdpReceiverThread";
+            _udprecThread.IsBackground = true;
 
             _udpsenderManagerThread = new Thread(_udpsend.Start);
             _udpsenderManagerThread.Name = "UdpSenderManagerThread";
+            _udpsenderManagerThread.IsBackground = true;
 
             _tcprecThread = new Thread(_tcpReceiver.StartListener);
             _tcprecThread.Name = "TCPServerThread";
+            _tcprecThread.IsBackground = true;
+
             _tcplocalhostthread = new Thread(tcplocalhost.StartListener);
             _tcplocalhostthread.Name = "TCPLocalHost";
+            _tcplocalhostthread.IsBackground = true;
 
         }
 

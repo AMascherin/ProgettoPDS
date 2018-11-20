@@ -67,7 +67,7 @@ namespace ProgettoPDS
         {
             get
             {
-                return new DelegateCommand { CommandAction = () => Application.Current.Shutdown() };
+                return new DelegateCommand { CommandAction = () => Environment.Exit(Environment.ExitCode) };
             }
         }
 

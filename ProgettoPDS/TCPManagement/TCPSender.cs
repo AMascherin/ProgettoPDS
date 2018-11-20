@@ -344,7 +344,6 @@ namespace ProgettoPDS
                                     long sum = previousTime.Sum();
                                     remainingTime = sum / previousTime.Count();
                                     var date = (new DateTime(1970, 1, 1)).AddMilliseconds(remainingTime);
-                                    // Console.WriteLine("Remaining time: " + date.ToString("T", DateTimeFormatInfo.InvariantInfo));
                                     EstimatedUploadTime = "Remaining time: "+date.ToString("T", DateTimeFormatInfo.InvariantInfo);
                                     byteSentInInterval = 0;
                                     stopWatch.Restart();
@@ -415,7 +414,7 @@ namespace ProgettoPDS
         {
             // 1.
             // Get array of all file names.
-            string[] a = Directory.GetFiles(p, " *.*", SearchOption.AllDirectories);
+            string[] a = Directory.GetFiles(Path.GetFullPath(p), "*.*", SearchOption.AllDirectories);
 
             // 2.
             // Calculate total bytes of all files in a loop.
